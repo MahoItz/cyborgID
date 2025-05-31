@@ -7,12 +7,31 @@
     body { background: #111; color: #fff; font-family: sans-serif; padding: 40px; }
     form { max-width: 700px; margin: auto; display: flex; flex-direction: column; gap: 14px; }
     input, textarea, button { padding: 10px; border-radius: 4px; font-size: 14px; }
-    button { background: #333; color: #fff; cursor: pointer; }
+    button { background: #333; color: #fff; cursor: pointer; border: none; }
+    button:hover { background: #555; }
+    button:disabled { background: #222; cursor: not-allowed; opacity: 0.6; }
+    .button-group { display: flex; gap: 10px; margin-bottom: 20px; }
+    .back-btn { background: #444; }
+    .back-btn:hover { background: #666; }
+    .autofill-btn { background: #0066cc; }
+    .autofill-btn:hover { background: #0080ff; }
+    .submit-btn { background: #006600; }
+    .submit-btn:hover { background: #008800; }
     #message { margin-top: 15px; white-space: pre-wrap; }
+    .header { text-align: center; margin-bottom: 30px; }
+    .header h1 { margin: 0 0 10px 0; color: #fff; }
   </style>
   <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
 </head>
 <body>
+
+  <div class="header">
+    <h1>Application Form</h1>
+    <div class="button-group">
+      <button type="button" class="back-btn" onclick="goBack()">← Back to Index</button>
+      <button type="button" class="autofill-btn" id="autofill-btn" onclick="autoFillForm()">🤖 Auto-fill with AI</button>
+    </div>
+  </div>
 
   <form id="application-form">
     <input type="text" name="full_name" placeholder="Full Name" required />
@@ -28,7 +47,7 @@
     <input type="file" name="thesis_file" accept=".pdf,.doc,.docx" required />
     <input type="text" name="social_link" placeholder="Social Media (username or full link)" />
     <textarea name="goal" placeholder="Purpose or Idea of Participation" required></textarea>
-    <button type="submit">Submit</button>
+    <button type="submit" class="submit-btn">Submit Application</button>
     <div id="message"></div>
   </form>
 
@@ -40,6 +59,105 @@
 
   const form = document.getElementById("application-form");
   const message = document.getElementById("message");
+  const autofillBtn = document.getElementById("autofill-btn");
+
+  // Функция возврата на главную страницу
+  function goBack() {
+    window.location.href = 'index.html';
+  }
+
+  // Функция автозаполнения формы с помощью ИИ
+  async function autoFillForm() {
+    autofillBtn.disabled = true;
+    autofillBtn.textContent = "🤖 Generating...";
+    message.style.color = "#ccc";
+    message.textContent = "AI is generating sample data for the form...";
+
+    try {
+      const aiResponse = await fetch("https://api.together.xyz/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${Together_AI}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model: "Qwen/Qwen2.5-72B-Instruct-Turbo",
+          messages: [
+            { 
+              role: "system", 
+              content: "You are a helpful assistant that generates realistic sample data for application forms." 
+            },
+            {
+              role: "user",
+              content: `Generate realistic sample data for an artistic application form. Return ONLY a JSON object with these exact keys:
+{
+  "full_name": "realistic full name",
+  "position": "artistic position/role",
+  "birthplace": "city, country",
+  "birthdate": "YYYY-MM-DD format",
+  "gender": "gender",
+  "location": "current city, country",
+  "email": "realistic email",
+  "artistic_practice": "detailed description of artistic practice (2-3 sentences)",
+  "artistic_research": "detailed description of artistic research (2-3 sentences)",
+  "graduation_year": "year as number",
+  "social_link": "social media username or link",
+  "goal": "detailed purpose or idea of participation (2-3 sentences)"
+}`
+            }
+          ],
+          temperature: 0.7,
+          max_tokens: 500
+        })
+      });
+
+      if (!aiResponse.ok) {
+        throw new Error(`AI API error: ${aiResponse.status}`);
+      }
+
+      const aiData = await aiResponse.json();
+      const content = aiData.choices?.[0]?.message?.content?.trim();
+      
+      if (!content) {
+        throw new Error("AI did not return content.");
+      }
+
+      // Попытка извлечь JSON из ответа
+      let jsonData;
+      try {
+        // Ищем JSON в ответе
+        const jsonMatch = content.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          jsonData = JSON.parse(jsonMatch[0]);
+        } else {
+          throw new Error("No JSON found in AI response");
+        }
+      } catch (parseError) {
+        throw new Error("Failed to parse AI response as JSON");
+      }
+
+      // Заполняем форму данными
+      const formElements = form.elements;
+      
+      Object.keys(jsonData).forEach(key => {
+        const element = formElements[key];
+        if (element && jsonData[key]) {
+          element.value = jsonData[key].toString();
+        }
+      });
+
+      message.style.color = "#0f0";
+      message.textContent = "✅ Form auto-filled successfully! You can modify any fields before submitting.";
+
+    } catch (error) {
+      console.error(error);
+      message.style.color = "#f66";
+      message.textContent = `❌ Auto-fill error: ${error.message}`;
+    } finally {
+      autofillBtn.disabled = false;
+      autofillBtn.textContent = "🤖 Auto-fill with AI";
+    }
+  }
 
   form.addEventListener("submit", async (e) => {
   e.preventDefault();
