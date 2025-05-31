@@ -36,7 +36,7 @@
   const SUPABASE_URL = "https://uomyodvgfgtvmbqjeazm.supabase.co";
   const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvbXlvZHZnZmd0dm1icWplYXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc1MDE0NTQsImV4cCI6MjA2MzA3NzQ1NH0.ufzKKHpyDm34CwDlNB8zs4rGGV5MbvpE3cA6P_Hvu9g";
   const SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvbXlvZHZnZmd0dm1icWplYXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc1MDE0NTQsImV4cCI6MjA2MzA3NzQ1NH0.ufzKKHpyDm34CwDlNB8zs4rGGV5MbvpE3cA6P_Hvu9g"; 
-  const OPENAI_API_KEY = "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";
+  const Together_AI = "1b8390600849e2ba1c81a0dbaf1b62cf958e127cb9e8a67f203394e46ab75a32";
 
   const form = document.getElementById("application-form");
   const message = document.getElementById("message");
@@ -82,14 +82,14 @@ Please write a concise and professional summary of this candidate in 2-3 sentenc
     `;
 
       // Запрос к OpenAI
-      const aiResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      const aiResponse = await fetch("https://api.together.xyz/v1/chat/completions", {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${OPENAI_API_KEY}`,
+          "Authorization": `Bearer ${Together_AI}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          model: "gpt-3.5-turbo",
+          model: "Qwen/Qwen2.5-72B-Instruct-Turbo",
           messages: [
             { role: "system", content: "You are a professional resume writer." },
             {
