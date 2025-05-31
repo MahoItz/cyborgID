@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Application Form</title>
+  <style>
+    body { background: #111; color: #fff; font-family: sans-serif; padding: 40px; }
+    form { max-width: 700px; margin: auto; display: flex; flex-direction: column; gap: 14px; }
+    input, textarea, button { padding: 10px; border-radius: 4px; font-size: 14px; }
+    button { background: #333; color: #fff; cursor: pointer; }
+    #message { margin-top: 15px; white-space: pre-wrap; }
+  </style>
+  <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+</head>
+<body>
+
+  <form id="application-form">
+    <input type="text" name="full_name" placeholder="Full Name" required />
+    <input type="text" name="position" placeholder="Position" required />
+    <input type="text" name="birthplace" placeholder="Place of Birth" required />
+    <input type="date" name="birthdate" placeholder="Date of Birth" required />
+    <input type="text" name="gender" placeholder="Gender" required />
+    <input type="text" name="location" placeholder="Current Location" required />
+    <input type="email" name="email" placeholder="Email" required />
+    <textarea name="artistic_practice" placeholder="Artistic Practice" required></textarea>
+    <textarea name="artistic_research" placeholder="Artistic Research" required></textarea>
+    <input type="number" name="graduation_year" placeholder="Year of Graduation" required />
+    <input type="file" name="thesis_file" accept=".pdf,.doc,.docx" required />
+    <input type="text" name="social_link" placeholder="Social Media (username or full link)" />
+    <textarea name="goal" placeholder="Purpose or Idea of Participation" required></textarea>
+    <button type="submit">Submit</button>
+    <div id="message"></div>
+  </form>
+
+<script>
+  const SUPABASE_URL = "https://uomyodvgfgtvmbqjeazm.supabase.co";
+  const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvbXlvZHZnZmd0dm1icWplYXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc1MDE0NTQsImV4cCI6MjA2MzA3NzQ1NH0.ufzKKHpyDm34CwDlNB8zs4rGGV5MbvpE3cA6P_Hvu9g";
+  const SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvbXlvZHZnZmd0dm1icWplYXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc1MDE0NTQsImV4cCI6MjA2MzA3NzQ1NH0.ufzKKHpyDm34CwDlNB8zs4rGGV5MbvpE3cA6P_Hvu9g"; 
+  const OPENAI_API_KEY = "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";
+
+  const form = document.getElementById("application-form");
+  const message = document.getElementById("message");
+
+  form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  message.style.color = "#ccc";
+  message.textContent = "Submitting... Please wait.";
+
+  try {
+    const formData = new FormData(form);
+    const file = formData.get("thesis_file");
+
+    let thesisText = "";
+
+    // Проверка и чтение .docx файла
+    if (file && file.name.endsWith(".docx")) {
+      const arrayBuffer = await file.arrayBuffer();
+      const result = await mammoth.extractRawText({ arrayBuffer });
+      thesisText = result.value.trim();
+    } else {
+      thesisText = "[No supported file content extracted]";
+    }
+
+    // Формируем текст для нейросети
+    const userText = `
+Candidate Profile:
+- Full Name: ${formData.get("full_name")}
+- Position: ${formData.get("position")}
+- Place of Birth: ${formData.get("birthplace")}
+- Date of Birth: ${formData.get("birthdate")}
+- Gender: ${formData.get("gender")}
+- Location: ${formData.get("location")}
+- Email: ${formData.get("email")}
+- Artistic Practice: ${formData.get("artistic_practice")}
+- Artistic Research: ${formData.get("artistic_research")}
+- Graduation Year: ${formData.get("graduation_year")}
+- Social Link: ${formData.get("social_link")}
+- Goal: ${formData.get("goal")}
+- Thesis Content: ${thesisText}
+---
+Please write a concise and professional summary of this candidate in 2-3 sentences.
+    `;
+
+      // Запрос к OpenAI
+      const aiResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${OPENAI_API_KEY}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          messages: [
+            { role: "system", content: "You are a professional resume writer." },
+            {
+              role: "user",
+              content: `Here is the user profile: ${userText}. Start resume with you are: first name last name. The answer should contain only a description of the person from the profile and nothing more.`
+            }
+          ],
+          temperature: 0.4,
+          max_tokens: 200
+        })
+      });
+
+      if (!aiResponse.ok) {
+        const errText = await aiResponse.text();
+        throw new Error(`OpenAI API error: ${aiResponse.status} ${aiResponse.statusText}\n${errText}`);
+      }
+
+      const aiData = await aiResponse.json();
+      const summary = aiData.choices?.[0]?.message?.content?.trim();
+
+      if (!summary) {
+        throw new Error("OpenAI did not return a summary.");
+      }
+      
+
+      // Подготовка данных для Supabase
+      const submission = {
+        Full_Name: formData.get("full_name"),
+        Resume: summary
+      };
+
+      // Отправка данных в Supabase
+      const supabaseResponse = await fetch(`${SUPABASE_URL}/rest/v1/user_profiles`, {
+        method: "POST",
+        headers: {
+          "apikey": API_KEY,
+          "Authorization": `Bearer ${SERVICE_ROLE_KEY}`,
+          "Content-Type": "application/json",
+          "Prefer": "return=representation"
+        },
+        body: JSON.stringify([submission])
+      });
+
+      if (!supabaseResponse.ok) {
+        const errorBody = await supabaseResponse.text();
+        throw new Error(`Supabase insert error: ${supabaseResponse.status} ${supabaseResponse.statusText}\n${errorBody}`);
+      }
+
+      const supabaseData = await supabaseResponse.json();
+
+      message.style.color = "#0f0";
+      message.textContent = "✅ Application submitted successfully!\n\nSummary:\n" + summary;
+
+      form.reset();
+
+    } catch (error) {
+      console.error(error);
+      message.style.color = "#f66";
+      message.textContent = `❌ Error:\n${error.message}`;
+    }
+  });
+</script>
+
+</body>
+</html>
