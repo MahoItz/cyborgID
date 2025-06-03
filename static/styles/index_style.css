@@ -23,14 +23,10 @@
             justify-content: space-between;
             align-items: center;
             padding: 20px 40px;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(23, 23, 23, 0.128);
             backdrop-filter: blur(10px);
             z-index: 1000;
             transition: all 0.3s ease;
-        }
-
-        .top-bar:hover {
-            background: rgba(0, 0, 0, 0.9);
         }
 
         .nav-left, .nav-right {
@@ -126,13 +122,21 @@
             letter-spacing: 2px;
         }
 
-        /* Next Button */
-        .next-button {
+        /* Buttons */
+        .buttons {
             position: absolute;
-            bottom: 10%;
+            bottom: 15%;
             left: 50%;
             transform: translateX(-50%);
-            display: inline-block;
+            display: flex;
+            justify-content: space-between;
+
+        }
+
+
+        /* Create Avater Button */
+        .create-avater-button {
+            margin-right: 10px;
             padding: 16px 40px;
             background: linear-gradient(135deg, #00ffff, #ff00ff);
             color: #000;
@@ -146,15 +150,38 @@
             animation: pulse 2s infinite;
         }
 
-        .next-button:hover {
-            transform: translateX(-50%) translateY(-5px) scale(1.05);
+        .create-avater-button:hover {
+            transform: scale(1.05);
             box-shadow: 0 20px 40px rgba(0, 255, 255, 0.5);
             background: linear-gradient(135deg, #ff00ff, #00ffff);
         }
 
-        .next-button:active {
+        .create-avater-button:active {
             transform: translateX(-50%) translateY(-2px) scale(1.02);
         }
+
+        /* Dialogue generation Button */
+        .dialogue-button {
+            margin-left: 10px;
+            padding: 16px 40px;
+            background: linear-gradient(135deg, #510045, #1b002b);;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 18px;
+            border-radius: 50px;
+            transition: all 0.4s ease;
+            z-index: 10;
+            box-shadow: 0 10px 30px #3f003f81;
+            animation: pulse2 2s infinite;
+        }
+
+        .dialogue-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px rgba(147, 147, 147, 0.5);
+            background: #240036
+        }
+
 
         /* Animations */
         @keyframes fadeInUp {
@@ -174,6 +201,15 @@
             }
             50% {
                 box-shadow: 0 15px 40px rgba(0, 255, 255, 0.6);
+            }
+        }   
+
+        @keyframes pulse2 {
+            0%, 100% {
+                box-shadow: 0 10px 30px rgba(153, 0, 255, 0.3);
+            }
+            50% {
+                box-shadow: 0 15px 40px rgba(195, 0, 255, 0.405);
             }
         }
 
