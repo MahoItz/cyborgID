@@ -3,9 +3,10 @@ class BotDialogGenerator {
     constructor() {
         this.isGenerating = false;
         this.isPaused = false;
-        this.currentMessageCount = 0;
+        this.currentBatchCount = 0; // Количество сообщений в текущей пачке генерации
         this.messageLimit = 2;
         this.users = [];
+        this.dialogStarted = false; // Флаг для отслеживания начала диалога
         this.apiKeys = {
             openai: '',
             togetherai: '1b8390600849e2ba1c81a0dbaf1b62cf958e127cb9e8a67f203394e46ab75a32',
@@ -52,13 +53,6 @@ class BotDialogGenerator {
             }
         } catch (error) {
             this.logMessage(`Error loading users: ${error.message}`, 'error');
-            // Fallback users for testing
-            this.users = [
-                { Full_Name: 'Josefin Hello', Resume: 'You are Josefin Hello, a Swedish artist specializing in food photography and culinary storytelling.' },
-                { Full_Name: 'Leila Farouk', Resume: 'You are Leila Farouk, an interdisciplinary artist based in Cairo, working with digital media and traditional crafts.' },
-                { Full_Name: 'Default User', Resume: 'You are a helpful assistant.' }
-            ];
-            this.populateUserDropdowns();
         }
     }
 
@@ -263,15 +257,45 @@ createAccordionContent() {
     }
 
     async startDialog() {
-        if (this.isGenerating) {
+        if (this.isGenerating && !this.isPaused) {
             this.logMessage('Dialog is already in progress', 'warning');
             return;
         }
 
-        const initialPrompt = this.getInitialPrompt();
-        if (!initialPrompt.trim()) {
-            this.logMessage('Please enter an initial prompt', 'error');
+        // Если диалог на паузе, продолжаем его
+        if (this.isPaused) {
+            this.isPaused = false;
+            this.updatePauseButtons();
+            this.logMessage('Dialog resumed', 'info');
+            await this.continueDialog();
             return;
+        }
+
+        // Сбрасываем счетчик текущей пачки для новой генерации
+        this.currentBatchCount = 0;
+
+        // Если это первый запуск диалога
+        if (!this.dialogStarted) {
+            const initialPrompt = this.getInitialPrompt();
+            if (!initialPrompt.trim()) {
+                this.logMessage('Please enter an initial prompt', 'error');
+                return;
+            }
+
+            if (!this.validateApiKeys()) {
+                this.logMessage('Please configure API keys first', 'error');
+                return;
+            }
+
+            this.logMessage('Starting dialog generation...', 'info');
+            this.clearDialogArea();
+            
+            // Add initial prompt to dialog
+            this.addMessageToDialog('user', initialPrompt);
+            this.dialogStarted = true;
+        } else {
+            // Если диалог уже начался, просто продолжаем
+            this.logMessage('Continuing dialog generation...', 'info');
         }
 
         if (!this.validateApiKeys()) {
@@ -281,16 +305,9 @@ createAccordionContent() {
 
         this.isGenerating = true;
         this.isPaused = false;
-        this.currentMessageCount = 0;
-        
-        this.logMessage('Starting dialog generation...', 'info');
-        this.clearDialogArea();
-        
-        // Add initial prompt to dialog
-        this.addMessageToDialog('user', initialPrompt);
         
         try {
-            await this.generateDialog(initialPrompt);
+            await this.generateDialog();
         } catch (error) {
             this.logMessage(`Error generating dialog: ${error.message}`, 'error');
         } finally {
@@ -298,17 +315,57 @@ createAccordionContent() {
         }
     }
 
-    async generateDialog(initialPrompt) {
-        let currentPrompt = initialPrompt;
-        let currentBot = 1;
+    async continueDialog() {
+        if (!this.dialogStarted) {
+            this.logMessage('No dialog to continue', 'warning');
+            return;
+        }
+
+        this.isGenerating = true;
         
-        while (this.currentMessageCount < this.messageLimit && !this.isPaused) {
+        try {
+            await this.generateDialog();
+        } catch (error) {
+            this.logMessage(`Error continuing dialog: ${error.message}`, 'error');
+        } finally {
+            this.isGenerating = false;
+        }
+    }
+
+    getLastBotMessage() {
+        const messages = document.querySelectorAll('.message-bot1, .message-bot2');
+        if (messages.length > 0) {
+            const lastMessage = messages[messages.length - 1];
+            return lastMessage.querySelector('.message-content').textContent;
+        }
+        
+        // Если нет сообщений от ботов, используем initial prompt
+        const userMessages = document.querySelectorAll('.message-user');
+        if (userMessages.length > 0) {
+            const lastUserMessage = userMessages[userMessages.length - 1];
+            return lastUserMessage.querySelector('.message-content').textContent;
+        }
+        
+        return '';
+    }
+
+    async generateDialog() {
+        let currentPrompt = this.getLastBotMessage();
+        let currentBot = this.getCurrentBot();
+        
+        // Генерируем именно messageLimit сообщений в каждой пачке
+        while (this.currentBatchCount < this.messageLimit && !this.isPaused) {
             try {
+                // Показываем индикатор "Thinking..."
+                this.showThinkingIndicator(currentBot);
+                
                 const botConfig = this.getBotConfig(currentBot);
                 const response = await this.callAPI(botConfig.systemPrompt, currentPrompt, currentBot);
                 
+                // Убираем индикатор "Thinking..." и добавляем реальное сообщение
+                this.removeThinkingIndicator();
                 this.addMessageToDialog(`bot${currentBot}`, response);
-                this.currentMessageCount++;
+                this.currentBatchCount++;
                 
                 // Switch to next bot
                 currentBot = currentBot === 1 ? 2 : 1;
@@ -318,13 +375,27 @@ createAccordionContent() {
                 await this.delay(1000);
                 
             } catch (error) {
+                this.removeThinkingIndicator();
                 this.logMessage(`Error from bot ${currentBot}: ${error.message}`, 'error');
                 break;
             }
         }
         
-        if (this.currentMessageCount >= this.messageLimit) {
-            this.logMessage(`Dialog completed. Generated ${this.currentMessageCount} messages.`, 'success');
+        if (this.currentBatchCount >= this.messageLimit) {
+            this.logMessage(`Generated ${this.currentBatchCount} messages. Click Send to generate more.`, 'success');
+        }
+    }
+
+    getCurrentBot() {
+        // Определяем какой бот должен отвечать следующим на основе количества сообщений
+        const botMessages = document.querySelectorAll('.message-bot1, .message-bot2');
+        if (botMessages.length === 0) return 1;
+        
+        const lastBotMessage = botMessages[botMessages.length - 1];
+        if (lastBotMessage.classList.contains('message-bot1')) {
+            return 2;
+        } else {
+            return 1;
         }
     }
 
@@ -333,9 +404,16 @@ createAccordionContent() {
                                         : '.bot-profile:last-child textarea, .mobile-bot-card:last-child textarea';
         const textarea = document.querySelector(selector);
         return {
-            systemPrompt: textarea?.value || 'You are a helpful assistant.',
+            systemPrompt: textarea?.value || 'You are a nothing.',
             temperature: this.temperatures[`bot${botNumber}`]
         };
+    }
+
+    getBotName(botNumber) {
+        const selector = botNumber === 1 ? '.bot-profile:first-child select, .mobile-bot-card:first-child select' 
+                                        : '.bot-profile:last-child select, .mobile-bot-card:last-child select';
+        const select = document.querySelector(selector);
+        return select?.value || `Bot${botNumber}`;
     }
 
     async callAPI(systemPrompt, userPrompt, botNumber) {
@@ -389,7 +467,7 @@ createAccordionContent() {
             body: JSON.stringify({
                 model: 'Qwen/Qwen2.5-72B-Instruct-Turbo',
                 messages: [
-                    { role: 'system', content: systemPrompt },
+                    { role: 'system', content: `You are ${systemPrompt} Answer with short messages 1–3 sentences. Ask questions, have a dialogue. No greetings allowed.`  },
                     { role: 'user', content: userPrompt }
                 ],
                 temperature: temperature,
@@ -432,6 +510,52 @@ createAccordionContent() {
         return data.candidates[0].content.parts[0].text;
     }
 
+    showThinkingIndicator(botNumber) {
+        const dialogArea = document.querySelector('.dialog-section') || document.querySelector('.mobile-chat-section');
+        if (!dialogArea) return;
+
+        // Удаляем предыдущий индикатор, если он есть
+        this.removeThinkingIndicator();
+
+        const thinkingDiv = document.createElement('div');
+        thinkingDiv.className = `message message-bot${botNumber} thinking-indicator`;
+        thinkingDiv.id = 'thinking-indicator';
+        
+        const botName = this.getBotName(botNumber);
+        const timeStamp = new Date().toLocaleTimeString();
+        let headerContent = '';
+        
+        if (botNumber === 1) {
+            headerContent = `<strong>${botName}</strong><span class="message-time">${timeStamp}</span>`;
+        } else {
+            headerContent = `<span class="message-time">${timeStamp}</span><strong>${botName}</strong>`;
+        }
+        
+        thinkingDiv.innerHTML = `
+            <div class="message-header">
+                ${headerContent}
+            </div>
+            <div class="message-content thinking-content">
+                <span class="thinking-text">Thinking</span>
+                <span class="thinking-dots">
+                    <span>.</span>
+                    <span>.</span>
+                    <span>.</span>
+                </span>
+            </div>
+        `;
+        
+        dialogArea.appendChild(thinkingDiv);
+        dialogArea.scrollTop = dialogArea.scrollHeight;
+    }
+
+    removeThinkingIndicator() {
+        const thinkingIndicator = document.getElementById('thinking-indicator');
+        if (thinkingIndicator) {
+            thinkingIndicator.remove();
+        }
+    }
+
     addMessageToDialog(sender, message) {
         const dialogArea = document.querySelector('.dialog-section') || document.querySelector('.mobile-chat-section');
         if (!dialogArea) return;
@@ -440,14 +564,23 @@ createAccordionContent() {
         messageDiv.className = `message message-${sender}`;
         
         let senderLabel = '';
-        if (sender === 'user') senderLabel = 'Initial Prompt';
-        else if (sender === 'bot1') senderLabel = 'Bot 1';
-        else if (sender === 'bot2') senderLabel = 'Bot 2';
+        let timeStamp = new Date().toLocaleTimeString();
+        let headerContent = '';
+        
+        if (sender === 'user') {
+            senderLabel = 'Initial Prompt';
+            headerContent = `<strong>${senderLabel}</strong><span class="message-time">${timeStamp}</span>`;
+        } else if (sender === 'bot1') {
+            senderLabel = this.getBotName(1);
+            headerContent = `<strong>${senderLabel}</strong><span class="message-time">${timeStamp}</span>`;
+        } else if (sender === 'bot2') {
+            senderLabel = this.getBotName(2);
+            headerContent = `<span class="message-time">${timeStamp}</span><strong>${senderLabel}</strong>`;
+        }
         
         messageDiv.innerHTML = `
             <div class="message-header">
-                <strong>${senderLabel}</strong>
-                <span class="message-time">${new Date().toLocaleTimeString()}</span>
+                ${headerContent}
             </div>
             <div class="message-content">${message}</div>
         `;
@@ -476,26 +609,52 @@ createAccordionContent() {
     }
 
     togglePause() {
+        if (!this.isGenerating && !this.dialogStarted) {
+            this.logMessage('No active dialog to pause/resume', 'warning');
+            return;
+        }
+
         this.isPaused = !this.isPaused;
+        this.updatePauseButtons();
+        
+        if (this.isPaused) {
+            // Remove thinking indicator when pausing
+            this.removeThinkingIndicator();
+            this.logMessage('Dialog paused', 'info');
+        } else {
+            this.logMessage('Dialog resumed', 'info');
+            if (this.dialogStarted && this.currentBatchCount < this.messageLimit) {
+                this.continueDialog();
+            }
+        }
+    }
+
+    updatePauseButtons() {
         const pauseButtons = document.querySelectorAll('.pause');
         pauseButtons.forEach(btn => {
             btn.textContent = this.isPaused ? '▶️ Resume' : '⏸️ Пауза';
         });
-        
-        this.logMessage(this.isPaused ? 'Dialog paused' : 'Dialog resumed', 'info');
     }
 
     clearDialog() {
         this.clearDialogArea();
+        this.clearLogs();
         this.isGenerating = false;
         this.isPaused = false;
-        this.currentMessageCount = 0;
+        this.currentBatchCount = 0;
+        this.dialogStarted = false;
+        
+        // Remove thinking indicator if present
+        this.removeThinkingIndicator();
         
         // Clear input
         const textareas = document.querySelectorAll('textarea[placeholder*="initial prompt"], .mobile-input-textarea');
         textareas.forEach(textarea => textarea.value = '');
         
-        this.logMessage('Dialog cleared', 'info');
+        // Reset pause buttons
+        this.updatePauseButtons();
+        
+        this.logMessage('Chat cleared successfully', 'success');
     }
 
     clearDialogArea() {
@@ -507,8 +666,15 @@ createAccordionContent() {
         });
     }
 
+    clearLogs() {
+        const logAreas = document.querySelectorAll('.logs-section, .mobile-logs-section');
+        logAreas.forEach(logArea => {
+            logArea.innerHTML = '';
+        });
+    }
+
     resetCounters() {
-        this.currentMessageCount = 0;
+        this.currentBatchCount = 0;
         this.logMessage('Message counters have been reset', 'info');
     }
 
@@ -619,6 +785,53 @@ const additionalCSS = `
 .creativity-controls input[type="range"] {
     width: 100%;
     margin-top: 5px;
+}
+
+.thinking-indicator {
+    opacity: 0.8;
+}
+
+.thinking-content {
+    display: flex;
+    align-items: center;
+    font-style: italic;
+    color: #888;
+}
+
+.thinking-text {
+    margin-right: 4px;
+}
+
+.thinking-dots {
+    display: inline-flex;
+}
+
+.thinking-dots span {
+    animation: thinking 1.4s infinite;
+    animation-fill-mode: both;
+}
+
+.thinking-dots span:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.thinking-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.thinking-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes thinking {
+    0%, 80%, 100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    40% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
 }
 
 .log-message {
