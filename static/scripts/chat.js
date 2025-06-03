@@ -722,8 +722,7 @@ const additionalCSS = `
     -webkit-backdrop-filter: blur(10px);    
     border: 1px solid rgba(215, 215, 215, 0.1); 
     border-radius: 8px;                     
-    margin-left: auto;
-    margin-right: 0;
+    margin: 0 auto; /* Центрирование по горизонтали */
 }
 
 .message-bot1 {

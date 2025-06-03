@@ -89,8 +89,8 @@ body {
     border-radius: 8px;
     padding: 15px;
     overflow-y: auto;
-    max-height: 40vh;
-    min-height: 200px;
+    max-height: 100vh;
+    min-height: 390px;
 }
 
 .accordion-item {
@@ -134,7 +134,7 @@ body {
 }
 
 .accordion-content.open {
-    max-height: 500px; /* поставь значение, достаточное для самого большого блока */
+    max-height: 500px; /*  значение, достаточное для самого большого блока */
     padding: 15px;
     opacity: 1;
     pointer-events: auto;
@@ -172,7 +172,7 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 15px;
-    margin-bottom: 15px;
+    margin-bottom: 5px;
     height: fit-content;
 }
 
@@ -793,8 +793,19 @@ body {
     }
     
     .bot-profile {
-        min-height: 180px;
+        min-height: 50px;
     }
+
+    .bot-profile textarea {
+        flex: 0.5;
+        min-height: 60px;
+    }
+
+    .bot-profile-header {
+        margin-bottom: 5px;
+    }
+
+
 }
 
 @media (min-width: 1600px) {
@@ -807,6 +818,20 @@ body {
     .bot-profiles {
         grid-template-columns: 1fr 1fr;
     }
+
+    .bot-profile {
+        min-height: 200px;
+    }
+
+    .bot-profile textarea {
+        flex: 1;
+        min-height: 120px;
+    }
+
+    .bot-profile-header {
+        margin-bottom: 10px;
+    }
+
 }
 
 /* Анимации для улучшения UX */
