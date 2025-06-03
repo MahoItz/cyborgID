@@ -157,7 +157,7 @@
         }
 
         .create-avater-button:active {
-            transform: translateX(-50%) translateY(-2px) scale(1.02);
+            transform: scale(1.02);
         }
 
         /* Dialogue generation Button */
@@ -180,6 +180,10 @@
             transform: scale(1.05);
             box-shadow: 0 20px 40px rgba(147, 147, 147, 0.5);
             background: #240036
+        }
+
+        .dialogue-button:active {
+            transform: scale(1.02);
         }
 
 
