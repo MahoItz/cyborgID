@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Application Form</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+  <link rel="icon" href="static/image/Cyborg_Logo2.png">
+  <link rel="stylesheet" href="static/styles/welcome_style.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Application Form</h1>
+      <div class="button-group">
+        <button type="button" class="btn back-btn" onclick="goBack()">← Back</button>
+        <button type="button" class="btn autofill-btn" id="autofill-btn" onclick="autoFillForm()">🤖 Auto-fill with
+          AI</button>
+      </div>
+    </div>
+
+    <form id="application-form" class="form-container">
+      <div class="form-group">
+        <label for="full_name">Full Name *</label>
+        <input type="text" id="full_name" name="full_name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="position">Position *</label>
+        <input type="text" id="position" name="position" required>
+      </div>
+
+      <div class="form-group">
+        <label for="birthplace">Place of Birth *</label>
+        <input type="text" id="birthplace" name="birthplace" required>
+      </div>
+
+      <div class="form-group">
+        <label for="birthdate">Date of Birth *</label>
+        <input type="date" id="birthdate" name="birthdate" required>
+      </div>
+
+      <div class="form-group">
+        <label for="gender">Gender *</label>
+        <select id="gender" name="gender" required>
+          <option value="">Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Non-binary">Non-binary</option>
+          <option value="Prefer not to say">Prefer not to say</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="location">Current Location *</label>
+        <input type="text" id="location" name="location" required>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email *</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+
+      <div class="form-group">
+        <label for="artistic_practice">Artistic Practice *</label>
+        <textarea id="artistic_practice" name="artistic_practice" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="artistic_research">Artistic Research *</label>
+        <textarea id="artistic_research" name="artistic_research" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="graduation_year">Year of Graduation *</label>
+        <input type="number" id="graduation_year" name="graduation_year" min="1950" max="2030" required>
+      </div>
+
+      <div class="form-group">
+        <label for="thesis_file">Thesis File (PDF, DOC, DOCX)</label>
+        <div class="file-input">
+          <input type="file" id="thesis_file" name="thesis_file" accept=".pdf,.doc,.docx">
+          <label for="thesis_file" class="file-input-label">
+            <span id="file-label">📁 Click to select file or drag & drop</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="social_link">Social Media (username or full link)</label>
+        <input type="text" id="social_link" name="social_link">
+      </div>
+
+      <div class="form-group">
+        <label for="goal">Purpose or Idea of Participation *</label>
+        <textarea id="goal" name="goal" required></textarea>
+      </div>
+
+      <button type="submit" class="btn submit-btn" id="submit-btn">Submit Application</button>
+    </form>
+
+    <div id="message"></div>
+  </div>
+
+  <script src="static/scripts/welcome.js"></script>
+</body>
+
+</html>
