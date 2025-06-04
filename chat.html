@@ -5,20 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bot Dialog Generator</title>
-    <link rel="icon" href="static/image/Cyborg_Logo2.png">
-    <link rel="stylesheet" href="static/styles/chat_style.css">
+    <link rel="icon" href="static/image/Cyborg_Logo2.png"> <!-- Icon -->
+    <link rel="stylesheet" href="static/styles/chat_style.css"> <!-- CSS -->
+     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet"> <!-- Font -->
 </head>
 
 <body>
     <!-- Desktop Layout -->
-    <div class="container">
+     <div class="container"> <!-- Левый контейнер -->
         <div class="left-panel">
             <div class="logs-section">
                 <div class="logs-header">Chat history cleared</div>
                 <div class="logs-header">Message counters have been reset</div>
             </div>
 
-            <div class="settings-section">
+            <div class="settings-section"> <!-- Блок с настройками -->
                 <div class="settings-controls">
                     <div class="control-group">
                         <label>Select model</label>
@@ -29,21 +30,21 @@
                         </select>
                     </div>
 
-                    <div class="accordion-item">
+                    <div class="accordion-item">  <!-- Аккордион API ключей  -->
                         <div class="accordion-header">
                             <span>API Keys</span>
                             <span class="accordion-arrow">▼</span>
                         </div>
                     </div>
 
-                    <div class="accordion-item">
+                    <div class="accordion-item">  <!-- Аккордион слайдеров с креативностью  -->
                         <div class="accordion-header">
                             <span>Creativity</span>
                             <span class="accordion-arrow">▼</span>
                         </div>
                     </div>
 
-                    <div class="control-group">
+                    <div class="control-group">  <!-- Лимит сообщений  -->
                         <label>Message limit</label>
                         <div class="number-input">
                             <input type="number" value="2" min="1" max="100">
@@ -54,46 +55,60 @@
             </div>
         </div>
 
-        <div class="right-panel">
-            <div class="dialog-section">
-                <div class="dialog-header">
+        <div class="right-panel">  <!-- Правый контейнер  -->
+            <div class="dialog-section">  <!-- Секция с диалогом  -->
+                <div class="dialog-header"> 
                     <button class="control-button fullscreen">⛶ Full Screen</button>
+                </div>
+                <div class="playback-controls"> <!-- Нижнее всплывающее меню -->
+                    <button id="exit-demo"><img src="static/image/chevron-left.png" alt="Back"> </button>
+                    <button id="play-demo"> <img src="static/image/play.png" alt="Play"> </button>
+                    <label>
+                        <img src="static/image/delay.png" alt="Delay"> Delay:
+                        <input type="range" id="delay-slider" min="300" max="5000" step="100" value="1000">
+                    </label>
                 </div>
                 <!-- Dialog messages will appear here -->
             </div>
 
-            <div class="bot-profiles">
-                <div class="bot-profile">
+            <div class="bot-profiles">  <!-- Группа с двумя полями для ввода системного промпта  -->
+                <div class="bot-profile">  <!-- Блок с полем системного промпта одного бота  -->
                     <div class="bot-profile-header">
                         <h3>User 1</h3>
-                        <select>
-                            <option>User 1</option>
-                        </select>
+                        <div class="user-select-delete">
+                            <button class="delete-user-button">🗑️</button>
+                            <select>
+                                <option>User 1</option>
+                            </select>
+                        </div>
                     </div>
                     <textarea placeholder="Enter system prompt for Bot 1..."></textarea>
                 </div>
-                <div class="bot-profile">
+                <div class="bot-profile"> <!-- Блок с полем системного промпта одного бота  -->
                     <div class="bot-profile-header">
                         <h3>User 2</h3>
-                        <select>
-                            <option>User 2</option>
-                        </select>
+                        <div class="user-select-delete">
+                            <button class="delete-user-button">🗑️</button>
+                            <select>
+                                <option>User 2</option>
+                            </select>
+                        </div>
                     </div>
                     <textarea placeholder="Enter system prompt for Bot 2..."></textarea>
                 </div>
             </div>
 
-            <div class="input-section">
+            <div class="input-section"> <!-- Блок для ввода пользовательского промпта  -->
                 <div class="input-section-header">
                     <h3>Ask something...</h3>
                     <div class="input-controls">
-                        <button class="control-button pause">⏸️ Пауза</button>
-                        <button class="control-button clear">🗑️ Очистка</button>
+                        <button class="control-button pause">⏸️ Pause</button>
+                        <button class="control-button clear">🗑️ Clear</button>
                     </div>
                 </div>
                 <div class="input-wrapper">
                     <textarea placeholder="Enter your initial prompt here..."></textarea>
-                    <button class="send-button">🛩️</button>
+                    <button class="send-button"> <img src="static/image/send.png" alt="Send"></button>
                 </div>
             </div>
         </div>
@@ -112,8 +127,8 @@
             <div class="mobile-input-header">
                 <h3 class="mobile-input-title">Ask something...</h3>
                 <div class="mobile-input-controls">
-                    <button class="control-button pause">⏸️ Пауза</button>
-                    <button class="control-button clear">🗑️ Очистка</button>
+                    <button class="control-button pause">⏸️ Pause</button>
+                    <button class="control-button clear">🗑️ Clear</button>
                 </div>
             </div>
             <div class="mobile-input-wrapper">
