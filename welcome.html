@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Application Form</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Font -->
+  <link rel="icon" href="static/image/Cyborg_Logo2.png">
+  <link rel="stylesheet" href="static/styles/welcome_style.css">
+</head>
+
+<!-- Header -->
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Application Form</h1>
+      <div class="button-group">
+        <button type="button" class="btn back-btn" onclick="goBack()">← Back</button>
+        <button type="button" class="btn autofill-btn" id="autofill-btn" onclick="autoFillForm()">Auto-fill with
+          AI</button>
+      </div>
+    </div>
+
+    <form id="application-form" class="form-container">
+      <!-- System Name -->
+      <div class="form-group">
+        <div class="label-with-tooltip">
+          <label for="system_name">System Name *</label>
+          <div class="tooltip">
+            <div class="tooltip-icon">?</div>
+            <span class="tooltip-text">
+              Enter a realistic full name as if for an official ID. E.g., "Alexis Morgan", "Liu Wenhao".
+            </span>
+          </div>
+        </div>
+        <input type="text" id="system_name" name="system_name" required>
+      </div>
+
+      <!-- Real Name -->
+      <div class="form-group">
+        <div class="label-with-tooltip">
+          <label for="real_name">Real Name *</label>
+          <div class="tooltip">
+            <div class="tooltip-icon">?</div>
+            <span class="tooltip-text">
+              Write the fictional name or nickname. E.g., "ZeroGhost", "EVA-9".
+            </span>
+          </div>
+        </div>
+        <input type="text" id="real_name" name="real_name" required>
+      </div>
+
+      <!-- System Position -->
+      <div class="form-group">
+        <div class="label-with-tooltip">
+          <label for="system_position">System Position *</label>
+          <div class="tooltip">
+            <div class="tooltip-icon">?</div>
+            <span class="tooltip-text">
+              Define artistic or professional role. E.g., "Sound artist", "Cybernetic poet".
+            </span>
+          </div>
+        </div>
+        <input type="text" id="system_position" name="system_position" required>
+      </div>
+
+      <!-- Self-Defined Role -->
+      <div class="form-group">
+        <div class="label-with-tooltip">
+          <label for="self_defined_role">Self-Defined Role *</label>
+          <div class="tooltip">
+            <div class="tooltip-icon">?</div>
+            <span class="tooltip-text">
+              How does describe themselves? Write their personal or invented role/identity.
+            </span>
+          </div>
+        </div>
+        <input type="text" id="self_defined_role" name="self_defined_role" required>
+      </div>
+
+      <!-- System place of birth -->
+      <div class="form-group">
+        <div class="label-with-tooltip">
+          <label for="system_place_of_birth">System place of birth *</label>
+          <div class="tooltip">
+            <div class="tooltip-icon">?</div>
+            <span class="tooltip-text">
+              Enter the city and country where the character was "born". E.g., "Osaka, Japan".
+            </span>
+          </div>
+        </div>
+        <input type="text" id="system_place_of_birth" name="system_place_of_birth" required>
+      </div>
+
+      <!-- Place Of Becoming -->
+      <div class="form-group">
+        <div class="label-with-tooltip">
+          <label for="place_of_becoming">Place Of Becoming *</label>
+          <div class="tooltip">
+            <div class="tooltip-icon">?</div>
+            <span class="tooltip-text">
+              Where did truly "become" themselves? A city, memory, or symbolic place.
+            </span>
+          </div>
+        </div>
+        <input type="text" id="place_of_becoming" name="place_of_becoming" required>
+      </div>
+
+      <!-- System Date Of Birth -->
+      <div class="form-group">
+        <div class="label-with-tooltip">
+          <label for="system_date_of_birth">System Date Of Birth *</label>
+          <div class="tooltip">
+            <div class="tooltip-icon">?</div>
+            <span class="tooltip-text">
+              Enter a date in YYYY-MM-DD format between 1980 and 2005. Represents system birth.
+            </span>
+          </div>
+        </div>
+        <input type="text" id="system_date_of_birth" name="system_date_of_birth" required>
+      </div>
+
+      <!-- Time Of Awakening -->
+      <div class="form-group">
+        <div class="label-with-tooltip">
+          <label for="time_of_awakening">Time Of Awakening *</label>
+          <div class="tooltip">
+            <div class="tooltip-icon">?</div>
+            <span class="tooltip-text">
+              Enter the symbolic awakening date (YYYY-MM-DD). When became self-aware.
+            </span>
+          </div>
+        </div>
+        <input type="text" id="time_of_awakening" name="time_of_awakening" required>
+      </div>
+
+      <!-- System Gender -->
+      <div class="form-group">
+        <div class="label-with-tooltip">
+          <label for="system_gender">System Gender *</label>
+          <div class="tooltip">
+            <div class="tooltip-icon">?</div>
+            <span class="tooltip-text">
+              Select the system-defined gender. Options: Male, Female, Non-binary, Other.
+            </span>
+          </div>
+        </div>
+        <select id="system_gender" name="system_gender" required>
+          <option value="">Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Non-binary">Non-binary</option>
+          <option value="Prefer not to say">Prefer not to say</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <!-- Fluid Zone -->
+      <div class="form-group">
+        <div class="label-with-tooltip">
+          <label for="fluid_zone">Fluid Zone *</label>
+          <div class="tooltip">
+            <div class="tooltip-icon">?</div>
+            <span class="tooltip-text">
+              Describe the character's space of identity transition. Can be literal or metaphorical.
+            </span>
+          </div>
+        </div>
+        <input type="text" id="fluid_zone" name="fluid_zone" required>
+      </div>
+
+      <!-- Current Location -->
+      <div class="form-group">
+        <div class="label-with-tooltip">
+          <label for="current_location">Current Location *</label>
+          <div class="tooltip">
+            <div class="tooltip-icon">?</div>
+            <span class="tooltip-text">
+              Where is the character located now? City and country. E.g., "Berlin, Germany".
+            </span>
+          </div>
+        </div>
+        <input type="text" id="current_location" name="current_location" required>
+      </div>
+
+      <!-- Inner Coordinates -->
+      <div class="form-group">
+        <div class="label-with-tooltip">
+          <label for="inner_coordinates">Inner Coordinates *</label>
+          <div class="tooltip">
+            <div class="tooltip-icon">?</div>
+            <span class="tooltip-text">
+              A poetic description of inner state. E.g., "Between longing and logic".
+            </span>
+          </div>
+        </div>
+        <input type="text" id="inner_coordinates" name="inner_coordinates" required>
+      </div>
+
+      <div id="message"></div>
+      <button type="submit" class="btn submit-btn" id="submit-btn">Submit Application</button>
+      <a href="chat.html" class="btn-dialog-generation">Dialogue Generation</a>
+    </form>
+
+  </div>
+
+  <script src="static/scripts/welcome.js"></script>
+</body>
+
+</html>

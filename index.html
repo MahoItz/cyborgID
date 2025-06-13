@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyborgID - Create Your Digital Identity</title>
+    <link rel="icon" href="static/image/Cyborg_Logo2.png">
+    <link rel="stylesheet" href="static/styles/index_style.css"> 
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="top-bar">
+        <div class="nav-left">
+            <a href="#" onclick="showAbout()">About Us</a>
+            <a href="#" onclick="showInfo()">Info</a>
+        </div>
+    </nav>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" onclick="closeSidebar()"></div>
+
+    <!-- Slider -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="slider-title" id="sliderTitle">Information</div>
+        </div>
+        <div class="slider-content" id="sliderContent"></div>
+    </div>
+
+    <!-- Video Header -->
+    <div class="video-header">
+        <video autoplay muted loop playsinline preload="auto">
+            <source src="static/video/The Thing_3.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <!-- Main Content -->
+    <div class="center-logo">
+        <h1>Welcome to <br> <span>Cyborg ID</span></h1> 
+    </div>
+
+    <div class="buttons">
+        <!-- To Application Form -->
+        <a href="welcome.html" class="create-avater-button">
+            Create Your Avatar
+        </a>
+
+        <!-- To Dialog -->
+        <a href="chat.html" class="dialogue-button">
+            Dialogue generation
+        </a>
+    </div>
+
+    <script src="static/scripts/index.js"></script>
+</body>
+
+</html>

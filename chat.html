@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Dialog Generator</title>
+    <link rel="icon" href="static/image/Cyborg_Logo2.png"> <!-- Icon -->
+    <link rel="stylesheet" href="static/styles/chat_style.css"> <!-- CSS -->
+     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet"> <!-- Font -->
+</head>
+
+<body>
+    <!-- Desktop Layout -->
+     <div class="container"> <!-- Левый контейнер -->
+        <div class="left-panel">
+            <div class="logs-section">
+                <div class="logs-header">Chat history cleared</div>
+                <div class="logs-header">Message counters have been reset</div>
+            </div>
+
+            <div class="settings-section"> <!-- Блок с настройками -->
+                <div class="settings-controls">
+                    <div class="control-group">
+                        <label>Select model</label>
+                        <select>
+                            <option>TogetherAI</option>
+                            <!-- <option>GPT-4</option>
+                            <option>Gemini</option> -->
+                        </select>
+                    </div>
+
+                    <div class="accordion-item">  <!-- Аккордион API ключей  -->
+                        <div class="accordion-header">
+                            <span>API Keys</span>
+                            <span class="accordion-arrow">▼</span>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">  <!-- Аккордион слайдеров с креативностью  -->
+                        <div class="accordion-header">
+                            <span>Creativity</span>
+                            <span class="accordion-arrow">▼</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">  <!-- Лимит сообщений  -->
+                        <label>Message limit</label>
+                        <div class="number-input">
+                            <input type="number" value="2" min="1" max="100">
+                            <button class="refresh-btn">🔄</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-panel">  <!-- Правый контейнер  -->
+            <div class="dialog-section">  <!-- Секция с диалогом  -->
+                <div class="dialog-header"> 
+                    <button class="control-button fullscreen">⛶ Full Screen</button>
+                </div>
+                <div class="playback-controls"> <!-- Нижнее всплывающее меню -->
+                    <button id="exit-demo"><img src="static/image/chevron-left.png" alt="Back"> </button>
+                    <button id="play-demo"> <img src="static/image/play.png" alt="Play"> </button>
+                    <button id="clear-demo"> <img src="static/image/clear.png" alt="Play"> </button>
+                    <label>
+                        <img src="static/image/delay.png" alt="Delay"> Delay:
+                        <input type="range" id="delay-slider" min="300" max="5000" step="100" value="1000">
+                    </label>
+                </div>
+                <!-- Dialog messages will appear here -->
+            </div>
+
+            <div class="bot-profiles">  <!-- Группа с двумя полями для ввода системного промпта  -->
+                <div class="bot-profile">  <!-- Блок с полем системного промпта одного бота  -->
+                    <div class="bot-profile-header">
+                        <h3>User 1</h3>
+                        <div class="user-select-delete">
+                            <button class="delete-user-button">🗑️</button>
+                            <select>
+                                <option>User 1</option>
+                            </select>
+                        </div>
+                    </div>
+                    <textarea placeholder="Enter system prompt for Bot 1..."></textarea>
+                </div>
+                <div class="bot-profile"> <!-- Блок с полем системного промпта одного бота  -->
+                    <div class="bot-profile-header">
+                        <h3>User 2</h3>
+                        <div class="user-select-delete">
+                            <button class="delete-user-button">🗑️</button>
+                            <select>
+                                <option>User 2</option>
+                            </select>
+                        </div>
+                    </div>
+                    <textarea placeholder="Enter system prompt for Bot 2..."></textarea>
+                </div>
+            </div>
+
+            <div class="input-section"> <!-- Блок для ввода пользовательского промпта  -->
+                <div class="input-section-header">
+                    <h3>Ask something...</h3>
+                    <div class="input-controls">
+                        <button class="control-button pause">⏸️ Pause</button>
+                        <button class="control-button clear">🗑️ Clear</button>
+                    </div>
+                </div>
+                <div class="input-wrapper">
+                    <textarea placeholder="Enter your initial prompt here..."></textarea>
+                    <button class="send-button"> <img src="static/image/send.png" alt="Send"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Layout -->
+    <div class="mobile-section active" id="chat-section">
+        <div class="mobile-chat-section">
+            <div class="mobile-dialog-header">
+                <button class="control-button fullscreen">⛶ Full Screen</button>
+            </div>
+            <!-- Chat messages will appear here -->
+        </div>
+
+        <div class="mobile-input-section">
+            <div class="mobile-input-header">
+                <h3 class="mobile-input-title">Ask something...</h3>
+                <div class="mobile-input-controls">
+                    <button class="control-button pause">⏸️ Pause</button>
+                    <button class="control-button clear">🗑️ Clear</button>
+                </div>
+            </div>
+            <div class="mobile-input-wrapper">
+                <textarea class="mobile-input-textarea" placeholder="Enter your initial prompt here..."></textarea>
+                <button class="mobile-send-button">🛩️</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="mobile-section" id="bots-section">
+        <div class="mobile-bot-setup">
+            <div class="mobile-bot-card">
+                <div class="mobile-bot-header">
+                    <h3 class="mobile-bot-title">You are Josefin Hello, a Swedish artist specializing in food</h3>
+                    <select class="mobile-bot-select">
+                        <option>Josefin Hello</option>
+                        <option>Creative Writer</option>
+                        <option>Technical Expert</option>
+                        <option>Default User</option>
+                    </select>
+                </div>
+                <textarea class="mobile-bot-textarea" placeholder="Enter system prompt for Bot 1..."></textarea>
+            </div>
+
+            <div class="mobile-bot-card">
+                <div class="mobile-bot-header">
+                    <h3 class="mobile-bot-title">You are Leila Farouk, an interdisciplinary artist based in</h3>
+                    <select class="mobile-bot-select">
+                        <option>Leila Farouk</option>
+                        <option>Creative Writer</option>
+                        <option>Technical Expert</option>
+                        <option>Default User</option>
+                    </select>
+                </div>
+                <textarea class="mobile-bot-textarea" placeholder="Enter system prompt for Bot 2..."></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="mobile-section" id="settings-section">
+        <div class="mobile-settings-section">
+            <div class="mobile-settings-controls">
+                <div class="mobile-control-group">
+                    <label>Select model</label>
+                    <select>
+                        <option>GPT-4</option>
+                        <option>TogetherAI</option>
+                        <option>Gemini</option>
+                    </select>
+                </div>
+
+                <div class="mobile-accordion-item">
+                    <div class="mobile-accordion-header">
+                        <span>API Keys</span>
+                        <span class="accordion-arrow">▼</span>
+                    </div>
+                </div>
+
+                <div class="mobile-control-group">
+                    <label>Select user</label>
+                    <select>
+                        <option>Default User</option>
+                        <option>Creative Writer</option>
+                        <option>Technical Expert</option>
+                    </select>
+                </div>
+
+                <div class="mobile-accordion-item">
+                    <div class="mobile-accordion-header">
+                        <span>Creativity</span>
+                        <span class="accordion-arrow">▼</span>
+                    </div>
+                </div>
+
+                <div class="mobile-control-group">
+                    <label>Message limit</label>
+                    <div class="number-input">
+                        <input type="number" value="2" min="1" max="100">
+                        <button class="refresh-btn">🔄</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mobile-section" id="logs-section">
+        <div class="mobile-logs-section">
+            <div class="mobile-logs-header">Chat history cleared</div>
+            <div class="mobile-logs-header">Message counters have been reset</div>
+        </div>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav">
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection('chat-section', this)">💬 Chat</button>
+            <button class="nav-tab" onclick="showSection('bots-section', this)">🤖 Bots</button>
+            <button class="nav-tab" onclick="showSection('settings-section', this)">⚙️ Settings</button>
+            <button class="nav-tab" onclick="showSection('logs-section', this)">📋 Logs</button>
+        </div>
+    </div>
+
+    <script>
+        // Desktop accordion functionality
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const arrow = header.querySelector('.accordion-arrow');
+                if (arrow.textContent === '▼') {
+                    arrow.textContent = '▶';
+                } else {
+                    arrow.textContent = '▼';
+                }
+            });
+        });
+
+        // Mobile accordion functionality
+        document.querySelectorAll('.mobile-accordion-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const arrow = header.querySelector('.accordion-arrow');
+                if (arrow.textContent === '▼') {
+                    arrow.textContent = '▶';
+                } else {
+                    arrow.textContent = '▼';
+                }
+            });
+        });
+
+        // Mobile navigation
+        function showSection(sectionId, tabElement) {
+            // Hide all sections
+            document.querySelectorAll('.mobile-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remove active class from all tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+
+            // Add active class to clicked tab
+            tabElement.classList.add('active');
+        }
+    </script>
+    <script src="static/scripts/chat.js"></script>
+</body>
+
+</html>
