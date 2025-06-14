@@ -45,16 +45,25 @@ function showInfo() {
 
 function showAbout() {
   document.getElementById("sidebarTitle").textContent = "About us";
-  document.getElementById("sidebarContent").innerHTML = `
+  document.getElementById("sidebarContent").innerHTML = ` 
+  <div class="person">
     <h3>Evgenia</h3>
-    <a href="https://www.instagram.com/readheadthoughts?igsh=MXYzaTh3OTM5OHFraQ==">Instagram</a>
+    <p>Креативный мыслитель, исследует психологию, визуальную эстетику и сторителлинг. Обожает создавать смыслы через искусство и текст.</p>
+    <a href="https://www.instagram.com/readheadthoughts?igsh=MXYzaTh3OTM5OHFraQ==" target="_blank">Instagram</a>
+  </div>
+
+  <div class="person">
     <h3>Sofia</h3>
-    <p>UX/UI designer, frontend developer</p>
-    <a href="https://www.instagram.com/sofiia.oli?igsh=MTd0Zmdpd3hoeHdyMQ==">Instagram</a>
+    <p>UX/UI дизайнер и фронтенд-разработчица с тонким чувством стиля. Создаёт интерфейсы, которые не просто работают — они радуют пользователя.</p>
+    <a href="https://www.instagram.com/sofiia.oli?igsh=MTd0Zmdpd3hoeHdyMQ==" target="_blank">Instagram</a>
+  </div>
+
+  <div class="person">
     <h3>Aleksandr</h3>
-    <p>UX/UI designer, full stack developer</p>
-    <a href="https://www.instagram.com/chesterlink95?igsh=MXZneWZ4aTRmbHp0bg==">Instagram</a>
-    `;
+    <p>Full stack разработчик и UX/UI дизайнер. Совмещает техническую точность с визуальной гармонией, создавая веб-продукты с душой.</p>
+    <a href="https://www.instagram.com/chesterlink95?igsh=MXZneWZ4aTRmbHp0bg==" target="_blank">Instagram</a>
+  </div>
+`;
   showSidebar();
 }
 

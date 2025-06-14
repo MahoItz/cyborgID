@@ -151,8 +151,12 @@ body {
     font-size: 1.2rem;
     font-weight: 100px;
     letter-spacing: 2px;
-    color: white;
+    color: #00ffc3;
     text-decoration: none;
+}
+
+.sidebar-content a:hover {
+    text-decoration: underline;
 }
 
 .feature-list {
