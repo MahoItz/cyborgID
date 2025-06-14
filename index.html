@@ -6,27 +6,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CyborgID - Create Your Digital Identity</title>
     <link rel="icon" href="static/image/Cyborg_Logo2.png">
-    <link rel="stylesheet" href="static/styles/index_style.css"> 
+    <link rel="stylesheet" href="static/styles/index_style.css">
 </head>
 
 <body>
     <!-- Navigation -->
     <nav class="top-bar">
         <div class="nav-left">
-            <a href="#" onclick="showAbout()">About Us</a>
-            <a href="#" onclick="showInfo()">Info</a>
+            <p onclick="showAbout()">About Us</p>
+            <p onclick="showInfo()">Info</p>
         </div>
     </nav>
 
     <!-- Sidebar Overlay -->
     <div class="sidebar-overlay" onclick="closeSidebar()"></div>
 
-    <!-- Slider -->
+    <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <div class="slider-title" id="sliderTitle">Information</div>
+            <div class="sidebar-title" id="sidebarTitle">Information</div>
+            <button class="close-btn" onclick="closeSidebar()">X</button>
         </div>
-        <div class="slider-content" id="sliderContent"></div>
+        <div class="sidebar-content" id="sidebarContent">
+
+        </div>
+
     </div>
 
     <!-- Video Header -->
@@ -39,7 +43,7 @@
 
     <!-- Main Content -->
     <div class="center-logo">
-        <h1>Welcome to <br> <span>Cyborg ID</span></h1> 
+        <h1>Welcome to <br> <span>Cyborg ID</span></h1>
     </div>
 
     <div class="buttons">
