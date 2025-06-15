@@ -13,13 +13,13 @@ function scrollToTop() {
 // Sidebar
 function showSidebar() {
   document.getElementById("sidebar").classList.add("active");
-  document.querySelector("sidebar-overlay").classList.add("active");
+  document.querySelector(".sidebar-overlay").classList.add("active");
   document.body.style.overflow = "hidden";
 }
 
 function closeSidebar() {
   document.getElementById("sidebar").classList.remove("active");
-  document.querySelector("sidebar-overlay").classList.remove("active");
+  document.querySelector(".sidebar-overlay").classList.remove("active");
   document.body.style.overflow = "auto";
 }
 
@@ -49,19 +49,28 @@ function showAbout() {
   <div class="person">
     <h3>Evgenia</h3>
     <p>Креативный мыслитель, исследует психологию, визуальную эстетику и сторителлинг. Обожает создавать смыслы через искусство и текст.</p>
-    <a href="https://www.instagram.com/readheadthoughts?igsh=MXYzaTh3OTM5OHFraQ==" target="_blank">Instagram</a>
+    <div class="instagram">
+        <img src="static/image/instagram.png">
+        <a href="https://www.instagram.com/readheadthoughts?igsh=MXYzaTh3OTM5OHFraQ==" target="_blank">Instagram</a>
+    </div>
   </div>
 
   <div class="person">
     <h3>Sofia</h3>
     <p>UX/UI дизайнер и фронтенд-разработчица с тонким чувством стиля. Создаёт интерфейсы, которые не просто работают — они радуют пользователя.</p>
-    <a href="https://www.instagram.com/sofiia.oli?igsh=MTd0Zmdpd3hoeHdyMQ==" target="_blank">Instagram</a>
+    <div class="instagram">
+        <img src="static/image/instagram.png">
+        <a href="https://www.instagram.com/sofiia.oli?igsh=MTd0Zmdpd3hoeHdyMQ==" target="_blank">Instagram</a>
+    </div>
   </div>
 
   <div class="person">
     <h3>Aleksandr</h3>
     <p>Full stack разработчик и UX/UI дизайнер. Совмещает техническую точность с визуальной гармонией, создавая веб-продукты с душой.</p>
-    <a href="https://www.instagram.com/chesterlink95?igsh=MXZneWZ4aTRmbHp0bg==" target="_blank">Instagram</a>
+    <div class="instagram">
+        <img src="static/image/instagram.png">
+        <a href="https://www.instagram.com/chesterlink95?igsh=MXZneWZ4aTRmbHp0bg==" target="_blank">Instagram</a>
+    </div>
   </div>
 `;
   showSidebar();

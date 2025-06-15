@@ -2,9 +2,37 @@
 const CONFIG = {
     SUPABASE_URL: "https://uomyodvgfgtvmbqjeazm.supabase.co",
     API_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvbXlvZHZnZmd0dm1icWplYXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc1MDE0NTQsImV4cCI6MjA2MzA3NzQ1NH0.ufzKKHpyDm34CwDlNB8zs4rGGV5MbvpE3cA6P_Hvu9g",
-    TOGETHER_AI_KEY: "7664bf1eb8c141ba9763769b2297f81e405db57f1531929c3acbf0481de96968",
-    OPEN_ROUTER_KEY: "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"
+    TOGETHER_AI_KEY: "7664bf1eb8c141ba9763769b2297f81e405db57f1531929c3acbf0481de96968"
+};
 
+// AI Providers configuration
+const AI_PROVIDERS = {
+    META_LLAMA: {
+        name: "Meta Llama",
+        url: "https://api.together.xyz/v1/chat/completions",
+        headers: (apiKey) => ({
+            "Authorization": `Bearer ${apiKey}`,
+            "Content-Type": "application/json"
+        }),
+        models: {
+            autofill: "meta-llama/Llama-3.3-70B-Instruct-Turbo-Freey",
+            summary: "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
+        }
+    },
+    QWEN2: {
+        name: "Qwen2",
+        url: "https://api.together.xyz/v1/chat/completions",
+        headers: (apiKey) => ({
+            "Authorization": `Bearer ${apiKey}`,
+            "Content-Type": "application/json",
+            "HTTP-Referer": window.location.origin,
+            "X-Title": "Form Application"
+        }),
+        models: {
+            autofill: "Qwen/Qwen2-VL-72B-Instruct",
+            summary: "Qwen/Qwen2-VL-72B-Instruct"
+        }
+    }
 };
 
 // DOM Elements
@@ -50,59 +78,155 @@ function goBack() {
     }
 }
 
-// AI Auto-fill functionality
-async function autoFillForm() {
-    setButtonState(autofillBtn, true, "🤖 Generating...");
-    showMessage("AI is generating sample data for the form...", 'info');
+// Function to get user-friendly error messages
+function getUserFriendlyError(providerName, status, statusText, errorBody = '') {
+    const errorMappings = {
+        400: `Invalid request to ${providerName}. Please check your settings.`,
+        401: `Invalid API key for ${providerName}. The key is missing or incorrect.`,
+        402: `Insufficient funds on ${providerName} account. Please top up your balance.`,
+        403: `Access to ${providerName} is forbidden. Check your access permissions.`,
+        404: `${providerName} service unavailable or model not found.`,
+        429: `Request limit to ${providerName} exceeded. Please try again later.`,
+        500: `Internal server error on ${providerName}. Please try again later.`,
+        502: `${providerName} is temporarily unavailable (Bad Gateway).`,
+        503: `${providerName} is overloaded or under maintenance.`,
+        504: `Timeout waiting for a response from ${providerName}.`
+    };
 
-    try {
-        const aiResponse = await fetch("https://api.together.xyz/v1/chat/completions", {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${CONFIG.TOGETHER_AI_KEY}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                model: "Qwen/Qwen2-VL-72B-Instruct",
+    // Try to get a user-friendly message
+    const friendlyMessage = errorMappings[status];
+    
+    if (friendlyMessage) {
+        return friendlyMessage;
+    }
+
+    // For unknown errors, provide a generic message
+    if (status >= 400 && status < 500) {
+        return `Client error when accessing ${providerName} (код ${status}). Check your settings.`;
+    } else if (status >= 500) {
+        return `Server error ${providerName} (код ${status}). Try again later.`;
+    }
+
+    return `Unknown error ${providerName}: ${status} ${statusText}`;
+}
+
+// Generic AI API call function with fallback
+async function callAIWithFallback(prompt, systemPrompt, taskType = 'autofill') {
+    const providers = [
+        {
+            config: AI_PROVIDERS.META_LLAMA,
+            apiKey: CONFIG.TOGETHER_AI_KEY
+        },
+        {
+            config: AI_PROVIDERS.QWEN2,
+            apiKey: CONFIG.TOGETHER_AI_KEY
+        }
+    ];
+
+    let lastError = null;
+    let userFriendlyErrors = [];
+
+    for (let i = 0; i < providers.length; i++) {
+        const { config, apiKey } = providers[i];
+        
+        try {
+            console.log(`Attempting ${config.name} for ${taskType}...`);
+            
+            // Check if API key exists
+            if (!apiKey || apiKey.trim() === '') {
+                throw new Error(`API ключ для ${config.name} не настроен.`);
+            }
+            
+            const requestBody = {
+                model: config.models[taskType],
                 messages: [
                     {
                         role: "system",
-                        content: "You are a helpful assistant that generates realistic and unique sample data for application forms. Each time, generate a completely new and different fictional person with a unique background."
+                        content: systemPrompt
                     },
                     {
                         role: "user",
-                        content: `Fill in these fields of the questionnaire as a completely unique fictional person. Return ONLY a JSON object with these exact keys:
-{
-    "system_name": "realistic full name",
-    "real_name": "fictional name. nickname",
-    "system_position": "artistic position/role",
-    "self_defined_role": "role or identity defined by the character themselves",
-    "system_place_of_birth": "city, country",
-    "place_of_becoming": "city or context where transformation occurred",
-    "system_date_of_birth": "YYYY-MM-DD format (between 1980-2005)",
-    "time_of_awakening": "YYYY-MM-DD format (between 1980-2005)",
-    "system_gender": "Male/Female/Non-binary/Other",
-    "fluid_zone": "abstract or metaphorical space of identity transition",
-    "current_location": "current city, country",
-    "inner_coordinates": "metaphorical or psychological location (e.g. 'between longing and logic')"
-}`
+                        content: prompt
                     }
                 ],
-                temperature: 1,
-                max_tokens: 600
-            })
-        });
+                temperature: taskType === 'autofill' ? 0.7 : 0.4,
+                max_tokens: taskType === 'autofill' ? 600 : 200
+            };
 
-        if (!aiResponse.ok) {
-            throw new Error(`AI API error: ${aiResponse.status} ${aiResponse.statusText}`);
+            const response = await fetch(config.url, {
+                method: "POST",
+                headers: config.headers(apiKey),
+                body: JSON.stringify(requestBody)
+            });
+
+            if (!response.ok) {
+                let errorBody = '';
+                try {
+                    errorBody = await response.text();
+                } catch (e) {
+                    // Ignore error reading response body
+                }
+                
+                const userFriendlyMessage = getUserFriendlyError(config.name, response.status, response.statusText, errorBody);
+                throw new Error(userFriendlyMessage);
+            }
+
+            const data = await response.json();
+            const content = data.choices?.[0]?.message?.content?.trim();
+
+            if (!content) {
+                throw new Error(`${config.name} вернул пустой ответ. Попробуйте еще раз.`);
+            }
+
+            console.log(`✅ Success with ${config.name}`);
+            return { content, provider: config.name };
+
+        } catch (error) {
+            console.error(`❌ ${config.name} failed:`, error.message);
+            lastError = error;
+            userFriendlyErrors.push(`${config.name}: ${error.message}`);
+            
+            // If this is not the last provider, show a warning and continue
+            if (i < providers.length - 1) {
+                const nextProvider = providers[i + 1].config.name;
+                showMessage(`${error.message} Switching to ${nextProvider}...`, 'info');
+                // Small delay before trying next provider
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
         }
+    }
 
-        const aiData = await aiResponse.json();
-        const content = aiData.choices?.[0]?.message?.content?.trim();
+    // If we get here, all providers failed
+    const combinedErrors = userFriendlyErrors.join('\n\n');
+    throw new Error(`All AI services are unavailable:\n\n${combinedErrors}\n\nPlease try again later or contact the administrator.`);
+}
 
-        if (!content) {
-            throw new Error("AI did not return content");
-        }
+// AI Auto-fill functionality with fallback
+async function autoFillForm() {
+    setButtonState(autofillBtn, true, "Generating...");
+    showMessage("AI is generating sample data for the form...", 'info');
+
+    try {
+        const systemPrompt = "You are a helpful assistant that generates realistic and unique sample data for application forms. Each time, generate a completely new and different fictional person with a unique background.";
+        
+        const userPrompt = `Fill in these fields of the questionnaire as a completely unique fictional person. Return ONLY a JSON object with these exact keys:
+{
+    "system_name": "full name as it would appear in official documents",
+    "real_name": "the name the character chooses for themselves — could be a pseudonym, sound, word, or identity",
+    "system_position": "how the system defines their role — artistic or professional (e.g., 'UX researcher', 'Sound artist')",
+    "self_defined_role": "how they define themselves — informal, poetic, symbolic, or metaphorical (e.g., 'Digital prophet')",
+    "system_place_of_birth": "place of birth as it appears in documents — city and country",
+    "place_of_becoming": "the place, context, or metaphor where they truly began to become themselves",
+    "system_date_of_birth": "date of birth from official records — YYYY-MM-DD format, between 1980 and 2005",
+    "time_of_awakening": "moment of symbolic awakening — can be a date, memory, state, phrase, or age",
+    "system_gender": "gender identity as recorded in documents (Male/Female)",
+    "fluid_zone": "how the character experiences themselves in body and society — may be abstract, metaphorical, or sensory",
+    "current_location": "where the character is currently located — city and country",
+    "inner_coordinates": "current emotional, creative, or psychic state — poetic or metaphorical"
+}`;
+
+        const result = await callAIWithFallback(userPrompt, systemPrompt, 'autofill');
+        const content = result.content;
 
         // Extract JSON from response
         let jsonData;
@@ -125,17 +249,18 @@ async function autoFillForm() {
             }
         });
 
-        showMessage("✅ Form auto-filled successfully! You can modify any fields before submitting.", 'success');
+        showMessage(`✅ Form auto-filled successfully using ${result.provider}! You can modify any fields before submitting.`, 'success');
+        console.log("AI generated data:", jsonData);
 
     } catch (error) {
         console.error('Auto-fill error:', error);
         showMessage(`❌ Auto-fill error: ${error.message}`, 'error');
     } finally {
-        setButtonState(autofillBtn, false, "🤖 Auto-fill with AI");
+        setButtonState(autofillBtn, false, "Auto-fill with AI");
     }
 }
 
-// AI Summary generation
+// AI Summary generation with fallback
 async function generateSummary(formData) {
     const userText = `
 Candidate Profile:
@@ -153,42 +278,47 @@ Candidate Profile:
 - Inner Coordinates: ${formData.get("inner_coordinates")}
     `.trim();
 
-    const aiResponse = await fetch("https://api.together.xyz/v1/chat/completions", {
-        method: "POST",
-        headers: {
-            "Authorization": `Bearer ${CONFIG.TOGETHER_AI_KEY}`,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            model: "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
-            messages: [
-                {
-                    role: "system",
-                    content: "You are a professional resume writer. Create concise, professional summaries."
-                },
-                {
-                    role: "user",
-                    content: `Based on this candidate profile, write a professional summary starting with "You are: [System Name]". Keep it to 2-3 sentences focusing on their artistic background and goals. Profile: ${userText}`
-                }
-            ],
-            temperature: 0.4,
-            max_tokens: 200
-        })
-    });
+    const systemPrompt = "You are a professional resume writer. Create concise, professional summaries.";
+    const userPrompt = `Based on this candidate profile, write a professional summary starting with "You are: [System Name]". Keep it to 2-3 sentences focusing on their artistic background and goals. Profile: ${userText}`;
 
-    if (!aiResponse.ok) {
-        const errorText = await aiResponse.text();
-        throw new Error(`AI API error: ${aiResponse.status} ${aiResponse.statusText}\n${errorText}`);
+    try {
+        const result = await callAIWithFallback(userPrompt, systemPrompt, 'summary');
+        console.log(`Summary generated using ${result.provider}`);
+        return result.content;
+    } catch (error) {
+        throw new Error(`Failed to generate summary: ${error.message}`);
+    }
+}
+
+// Function to get user-friendly database error messages
+function getDatabaseFriendlyError(status, statusText, errorBody = '') {
+    const dbErrorMappings = {
+        400: 'Invalid data for saving. Please check the form fields.',
+        401: 'Authorization error with the database. Please contact the administrator.',
+        403: 'Access denied to the database. Please contact the administrator.',
+        404: 'Database or table not found. Please contact the administrator.',
+        409: 'Data conflict. The record may already exist.',
+        422: 'Data validation failed. Please check the entered information.',
+        429: 'Too many requests to the database. Please try again later.',
+        500: 'Internal database error. Please try again later.',
+        502: 'The database is temporarily unavailable.',
+        503: 'The database is overloaded or under maintenance.',
+        504: 'Connection to the database timed out.'
+    };
+
+    const friendlyMessage = dbErrorMappings[status];
+    
+    if (friendlyMessage) {
+        return friendlyMessage;
     }
 
-    const aiData = await aiResponse.json();
-    const summary = aiData.choices?.[0]?.message?.content?.trim();
-
-    if (!summary) {
-        throw new Error("AI did not return a summary");
+    if (status >= 400 && status < 500) {
+        return `Error sending data (code ${status}). Check that the form is filled out.`;
+    } else if (status >= 500) {
+        return `Error sending data (code ${status}). Try again later.`;
     }
 
-    return summary;
+    return `Unknown database error: ${status} ${statusText}`;
 }
 
 // Supabase submission
@@ -198,23 +328,41 @@ async function submitToSupabase(fullName, summary) {
         Resume: summary
     };
 
-    const response = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/user_profiles`, {
-        method: "POST",
-        headers: {
-            "apikey": CONFIG.API_KEY,
-            "Authorization": `Bearer ${CONFIG.API_KEY}`,
-            "Content-Type": "application/json",
-            "Prefer": "return=representation"
-        },
-        body: JSON.stringify([submission])
-    });
+    try {
+        const response = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/user_profiles`, {
+            method: "POST",
+            headers: {
+                "apikey": CONFIG.API_KEY,
+                "Authorization": `Bearer ${CONFIG.API_KEY}`,
+                "Content-Type": "application/json",
+                "Prefer": "return=representation"
+            },
+            body: JSON.stringify([submission])
+        });
 
-    if (!response.ok) {
-        const errorBody = await response.text();
-        throw new Error(`Database error: ${response.status} ${response.statusText}\n${errorBody}`);
+        if (!response.ok) {
+            let errorBody = '';
+            try {
+                errorBody = await response.text();
+            } catch (e) {
+                // Ignore error reading response body
+            }
+            
+            const userFriendlyMessage = getDatabaseFriendlyError(response.status, response.statusText, errorBody);
+            throw new Error(userFriendlyMessage);
+        }
+
+        return await response.json();
+        
+    } catch (error) {
+        // If it's a network error or other fetch error
+        if (error.name === 'TypeError' || error.message.includes('fetch')) {
+            throw new Error('No connection to the database. Check your internet connection.');
+        }
+        
+        // Re-throw our custom errors
+        throw error;
     }
-
-    return await response.json();
 }
 
 // Form submission handler

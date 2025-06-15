@@ -146,17 +146,29 @@ body {
     color: rgba(255, 255, 255, 0.8);
 }
 
-.sidebar-content a {
-    font-family:  "Troglodyte", Helvetica;
-    font-size: 1.2rem;
-    font-weight: 100px;
-    letter-spacing: 2px;
-    color: #00ffc3;
-    text-decoration: none;
+.sidebar-content .instagram {
+  margin-top: 10px;
 }
 
-.sidebar-content a:hover {
-    text-decoration: underline;
+.sidebar-content .instagram a {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: #00ffc3;
+  font-family: "Troglodyte", Helvetica;
+  font-size: 1.4rem;
+  letter-spacing: 2px;
+  transition: color 0.3s ease;
+}
+
+.sidebar-content .instagram a:hover {
+  color: #FBB3F3;
+  text-decoration: underline;
+}
+
+.sidebar-content .instagram img {
+  width: 18px;
+  height: 18px;
 }
 
 .feature-list {
