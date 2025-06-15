@@ -15,7 +15,7 @@ const AI_PROVIDERS = {
             "Content-Type": "application/json"
         }),
         models: {
-            autofill: "meta-llama/Llama-3.3-70B-Instruct-Turbo-Freey",
+            autofill: "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
             summary: "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
         }
     },
