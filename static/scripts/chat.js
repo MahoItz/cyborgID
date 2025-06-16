@@ -2,15 +2,16 @@ class BotDialogGenerator {
   constructor() {
     this.isGenerating = false;
     this.isPaused = false;
-    this.currentBatchCount = 0; // Количество сообщений в текущей пачке генерации
     this.messageLimit = 2;
     this.users = [];
-    this.dialogStarted = false; // Флаг для отслеживания начала диалога
-    this.generatedMessages = []; // Храним сгенерированные сообщения
-    this.delayMs = 1000;         // Задержка между воспроизведением сообщений
+    this.currentBatchCount = 0; // Количество сообщений в текущей пачке генерации
+    this.generatedMessages = []; // Сгенерированные сообщения
+    this.delayMs = 1000; // Задержка между воспроизведением сообщений
+    this.isPlaying = false; // Флаг для отслеживания начала диалога
+    this.currentIndex = 0;
+    this.timeoutId = null;
     this.isReplaying = false;
     this.replayPaused = false;
-    this.replayIndex = 0;
     this.apiKeys = {
       openai: "",
       togetherai:
@@ -18,7 +19,7 @@ class BotDialogGenerator {
       openrouter: "",
     };
     this.supabaseKey =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvbXlvZHZnZmd0dm1icWplYXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc1MDE0NTQsImV4cCI6MjA2MzA3NzQ1NH0.ufzKKHpyDm34CwDlNB8zs4rGGV5MbvpE3cA6P_Hvu9g";
+      "$eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvbXlvZHZnZmd0dm1icWplYXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc1MDE0NTQsImV4cCI6MjA2MzA3NzQ1NH0.ufzKKHpyDm34CwDlNB8zs4rGGV5MbvpE3cA6P_Hvu9g";
     this.temperatures = {
       bot1: 0.7,
       bot2: 0.7,
@@ -35,7 +36,7 @@ class BotDialogGenerator {
     this.setupMobileNavigation();
     this.populateUserDropdowns();
     this.bindUserDeletion();
-    this.setupFullscreenPlayback();
+    this.setupFullscreenMenu();
   }
 
   // Supabase integration
@@ -66,26 +67,26 @@ class BotDialogGenerator {
     }
   }
 
-populateUserDropdowns() {
-  const dropdowns = document.querySelectorAll(
-    ".bot-profile select, .mobile-bot-select"
-  );
-  dropdowns.forEach((dropdown) => {
-    dropdown.innerHTML = "";
-    
-    const emptyOption = document.createElement("option");
-    emptyOption.value = "";
-    emptyOption.textContent = "Select user...";
-    dropdown.appendChild(emptyOption);
-    
-    this.users.forEach((user) => {
-      const option = document.createElement("option");
-      option.value = user.Full_Name;
-      option.textContent = user.Full_Name;
-      dropdown.appendChild(option);
+  populateUserDropdowns() {
+    const dropdowns = document.querySelectorAll(
+      ".bot-profile select, .mobile-bot-select"
+    );
+    dropdowns.forEach((dropdown) => {
+      dropdown.innerHTML = "";
+
+      const emptyOption = document.createElement("option");
+      emptyOption.value = "";
+      emptyOption.textContent = "Select user...";
+      dropdown.appendChild(emptyOption);
+
+      this.users.forEach((user) => {
+        const option = document.createElement("option");
+        option.value = user.Full_Name;
+        option.textContent = user.Full_Name;
+        dropdown.appendChild(option);
+      });
     });
-  });
-}
+  }
 
   setupEventListeners() {
     // Send button listeners
@@ -106,6 +107,17 @@ populateUserDropdowns() {
     document
       .querySelector(".clear")
       ?.addEventListener("click", () => this.clearDialog());
+
+    document
+      .getElementById("menu-play")
+      ?.addEventListener("click", () => this.toggleReplay());
+
+    document
+      .getElementById("delay-slider")
+      ?.addEventListener(
+        "input",
+        (e) => (this.delayMs = parseInt(e.target.value, 10))
+      );
 
     // Mobile control buttons
     document
@@ -158,38 +170,22 @@ populateUserDropdowns() {
         });
       }
     });
-
-    // Кнопка Play — воспроизведение сгенерированных сообщений
-    document.getElementById("play-demo")?.addEventListener("click", async () => {
-      if (this.isReplaying && !this.replayPaused) {
-        this.replayPaused = true;
-        this.updatePlayPauseButton(true); // Показать Play
-      } else {
-        this.replayPaused = false;
-        this.updatePlayPauseButton(false); // Показать Pause
-
-        // Если не шло воспроизведение — запустить
-        if (!this.isReplaying) {
-          await this.replayDialog();
-        } else {
-          // Иначе просто продолжить с того же места
-          await this.replayDialog();
-        }
-      }
-    });
   }
 
-  updatePlayPauseButton(showPlay) {
-    const btn = document.getElementById("play-demo");
-    if (!btn) return;
-
-    const img = btn.querySelector("img");
-    if (img) {
-      img.src = showPlay
-        ? "static/image/play.png"
-        : "static/image/pause.png";
-      img.alt = showPlay ? "Play" : "Pause";
-    }
+  initVantaBackground() {
+    VANTA.CELLS({
+      el: "#vanta-bg",
+      mouseControls: true,
+      touchControls: true,
+      gyroControls: false,
+      minHeight: 200.0,
+      minWidth: 200.0,
+      scale: 1.0,
+      color1: 0x208c00,
+      color2: 0x3577f2,
+      size: 5.0,
+      speed: 0.3,
+    });
   }
 
   bindUserDeletion() {
@@ -221,215 +217,6 @@ populateUserDropdowns() {
       });
     });
   }
-
-setupFullscreenPlayback() {
-  let demoMode = false;
-  let hideTimeout = null;
-  let isMenuVisible = false;
-
-  const fullscreenBtn = document.querySelector(".control-button.fullscreen");
-
-  fullscreenBtn?.addEventListener("click", () => {
-    demoMode = true;
-    this.clearDialogArea(); // Очистить окно, но не удалять сохранённые сообщения
-
-    const dialogContainer = document.querySelector(".dialog-section");
-    if (dialogContainer?.requestFullscreen) {
-      dialogContainer.requestFullscreen();
-    } else if (dialogContainer?.webkitRequestFullscreen) {
-      dialogContainer.webkitRequestFullscreen(); // Safari
-    } else if (dialogContainer?.msRequestFullscreen) {
-      dialogContainer.msRequestFullscreen(); // IE/Edge
-    }
-
-    const controls = document.querySelector(".playback-controls");
-    if (controls) {
-      // Добавляем CSS класс для полноэкранного режима
-      controls.classList.add("fullscreen-mode");
-
-      // Форсируем reflow для корректной инициализации
-      controls.offsetHeight;
-
-      // Добавляем класс готовности к полноэкранному режиму
-      setTimeout(() => {
-        controls.classList.add("fullscreen-ready");
-      }, 50);
-    }
-  });
-
-  // Функция для показа меню
-  const showMenu = () => {
-    if (!demoMode || isMenuVisible) return;
-
-    const controls = document.querySelector(".playback-controls");
-    if (controls) {
-      // Очищаем таймер скрытия
-      if (hideTimeout) {
-        clearTimeout(hideTimeout);
-        hideTimeout = null;
-      }
-
-      isMenuVisible = true;
-      controls.classList.add("visible");
-    }
-  };
-
-  // Функция для скрытия меню с задержкой
-  const hideMenu = () => {
-    if (!demoMode || !isMenuVisible) return;
-
-    // Очищаем предыдущий таймер
-    if (hideTimeout) {
-      clearTimeout(hideTimeout);
-    }
-
-    hideTimeout = setTimeout(() => {
-      const controls = document.querySelector(".playback-controls");
-      if (controls && demoMode) {
-        isMenuVisible = false;
-        controls.classList.remove("visible");
-      }
-      hideTimeout = null;
-    }, 500); // Задержка до скрытия меню
-  };
-
-  // Функция для немедленного скрытия меню
-  const hideMenuImmediate = () => {
-    if (!demoMode) return;
-
-    if (hideTimeout) {
-      clearTimeout(hideTimeout);
-      hideTimeout = null;
-    }
-
-    const controls = document.querySelector(".playback-controls");
-    if (controls) {
-      isMenuVisible = false;
-      controls.classList.remove("visible");
-    }
-  };
-
-  // Обработчик движения мыши с debounce
-  let mouseMoveTimeout = null;
-  document.addEventListener("mousemove", (e) => {
-    if (!demoMode) return;
-
-    // Debounce для mousemove
-    if (mouseMoveTimeout) {
-      clearTimeout(mouseMoveTimeout);
-    }
-
-    mouseMoveTimeout = setTimeout(() => {
-      const triggerZone = 180; // Зона триггера
-
-      if (e.clientY > window.innerHeight - triggerZone) {
-        showMenu();
-      } else {
-        hideMenu();
-      }
-    }, 10);
-  });
-
-  // Обработчик для области меню - предотвращаем скрытие при наведении
-  document.addEventListener(
-    "mouseenter",
-    (e) => {
-      if (!demoMode) return;
-
-      const controls = document.querySelector(".playback-controls");
-      if (
-        controls &&
-        (controls.contains(e.target) || controls === e.target)
-      ) {
-        // Отменяем скрытие при наведении на меню
-        if (hideTimeout) {
-          clearTimeout(hideTimeout);
-          hideTimeout = null;
-        }
-        showMenu();
-      }
-    },
-    true
-  );
-
-  // Обработчик ухода мыши с области меню
-  document.addEventListener(
-    "mouseleave",
-    (e) => {
-      if (!demoMode) return;
-
-      const controls = document.querySelector(".playback-controls");
-      if (
-        controls &&
-        (controls.contains(e.target) || controls === e.target)
-      ) {
-        // Запускаем скрытие при уходе мыши с меню
-        hideMenu();
-      }
-    },
-    true
-  );
-
-  // Скрываем меню при клике вне его области
-  document.addEventListener("click", (e) => {
-    if (!demoMode) return;
-
-    const controls = document.querySelector(".playback-controls");
-    if (controls && !controls.contains(e.target)) {
-      hideMenuImmediate();
-    }
-  });
-
-  // Функция для сброса состояния меню при выходе из полноэкранного режима
-  const resetMenuState = () => {
-    demoMode = false;
-    isMenuVisible = false;
-
-    // Очищаем все таймеры
-    if (hideTimeout) {
-      clearTimeout(hideTimeout);
-      hideTimeout = null;
-    }
-    if (mouseMoveTimeout) {
-      clearTimeout(mouseMoveTimeout);
-      mouseMoveTimeout = null;
-    }
-
-    const controls = document.querySelector(".playback-controls");
-    if (controls) {
-      // Удаляем CSS классы для возврата в исходное состояние
-      controls.classList.remove("fullscreen-mode", "fullscreen-ready", "visible");
-    }
-
-  };
-
-  // Универсальный обработчик изменения полноэкранного режима
-  const handleFullscreenChange = () => {
-    const isFullscreen = !!(
-      document.fullscreenElement ||
-      document.webkitFullscreenElement ||
-      document.mozFullScreenElement ||
-      document.msFullscreenElement
-    );
-
-    if (!isFullscreen && demoMode) {
-      resetMenuState();
-    }
-  };
-
-  // Обработчики выхода из полноэкранного режима для всех браузеров
-  document.addEventListener("fullscreenchange", handleFullscreenChange);
-  document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
-  document.addEventListener("mozfullscreenchange", handleFullscreenChange);
-  document.addEventListener("msfullscreenchange", handleFullscreenChange);
-
-  // Обработчик ESC для выхода из полноэкранного режима
-  document.addEventListener("keydown", (e) => {
-    if (demoMode && e.key === "Escape") {
-      resetMenuState();
-    }
-  });
-}
 
   setupAccordions() {
     // Desktop accordions
@@ -714,46 +501,118 @@ setupFullscreenPlayback() {
     }
   }
 
-  async replayDialog() {
-    if (this.generatedMessages.length === 0) {
-      this.logMessage("No messages to replay", "warning");
-      return;
-    }
+  setupFullscreenMenu() {
+    const fullscreenBtn = document.querySelector(".fullscreen");
+    const fullscreenDialogue = document.getElementById("fullscreen-dialogue");
+    const menu = document.getElementById("fullscreen-menu");
+    const triggerZone = document.querySelector(".bottom-trigger-zone");
+
+    let isInTriggerZone = false;
+    let isInMenu = false;
+
+    if (!fullscreenBtn || !fullscreenDialogue || !menu || !triggerZone) return;
+
+    fullscreenBtn.addEventListener("click", () => {
+      fullscreenDialogue.classList.add("active");
+
+      if (!this.vantaEffect) {
+        this.initVantaBackground();
+      }
+    });
+
+    // Закрытие fullscreen
+    document.getElementById("menu-exit")?.addEventListener("click", () => {
+      fullscreenDialogue.classList.remove("active");
+
+      if (this.vantaEffect) {
+        this.vantaEffect.destroy();
+        this.vantaEffect = null;
+      }
+    });
+
+    // Остальная логика меню при наведении
+    triggerZone.addEventListener("mouseenter", () => {
+      isInTriggerZone = true;
+      menu.classList.add("visible");
+    });
+
+    triggerZone.addEventListener("mouseleave", () => {
+      isInTriggerZone = false;
+      setTimeout(() => {
+        if (!isInMenu) {
+          menu.classList.remove("visible");
+        }
+      }, 200);
+    });
+
+    menu.addEventListener("mouseenter", () => {
+      isInMenu = true;
+    });
+
+    menu.addEventListener("mouseleave", () => {
+      isInMenu = false;
+      setTimeout(() => {
+        if (!isInTriggerZone) {
+          menu.classList.remove("visible");
+        }
+      }, 200);
+    });
+
+    document.addEventListener("click", (e) => {
+      const isOutside =
+        !menu.contains(e.target) &&
+        !triggerZone.contains(e.target) &&
+        !fullscreenBtn.contains(e.target);
+      if (isOutside) {
+        menu.classList.remove("visible");
+      }
+    });
+  }
+
+  toggleReplay() {
+    this.isReplaying = !this.isReplaying;
+
+    const playBtn = document.getElementById("menu-play");
+    const playIcon = '<img src="static/image/play.png" alt="Play">';
+    const pauseIcon = '<img src="static/image/pause.png" alt="Pause">';
+    playBtn.innerHTML = this.isReplaying ? pauseIcon : playIcon;
 
     if (this.isReplaying) {
-      this.logMessage("Already replaying", "info");
-      return;
+      this.replayMessages();
+    } else {
+      clearTimeout(this.timeoutId);
     }
+  }
+
+  replayMessages() {
+    if (this.isReplaying || this.generatedMessages.length === 0) return;
 
     this.isReplaying = true;
     this.replayPaused = false;
-    if (!this.isReplaying) {
-      this.replayIndex = 0;
-    }
+    this.currentIndex = 0;
 
-    for (; this.replayIndex < this.generatedMessages.length; this.replayIndex++) {
-      if (this.replayPaused) break;
+    const container = document.getElementById("fullscreen-messages");
+    container.innerHTML = "";
 
-      const { sender, message } = this.generatedMessages[this.replayIndex];
+    const showNextMessage = () => {
+      if (
+        this.replayPaused ||
+        this.currentIndex >= this.generatedMessages.length
+      ) {
+        this.isReplaying = false;
+        return;
+      }
 
-    if (sender === "bot1" || sender === "bot2") {
-      const botNumber = sender === "bot2" ? 2 : 1;
-      this.showThinkingIndicator(botNumber);
-      await this.delay(this.delayMs / 2);
-      this.removeThinkingIndicator();
-    }
+      const msg = this.generatedMessages[this.currentIndex];
 
-      this.addMessageToDialog(sender, message);
-      await this.delay(this.delayMs);
-    }
+      container.innerHTML += `<div class="message"><b>${msg.user}:</b> ${msg.message}</div>`;
+      container.scrollTop = container.scrollHeight;
 
-    // Завершено
-    if (this.replayIndex >= this.generatedMessages.length) {
-      this.isReplaying = false;
-      this.replayPaused = false;
-      this.replayIndex = 0;
-      this.updatePlayPauseButton(true); // Показать Play
-    }
+      this.currentIndex++;
+      this.timeoutId = setTimeout(showNextMessage, this.delayMs);
+    };
+
+    showNextMessage();
   }
 
   getCurrentBot() {

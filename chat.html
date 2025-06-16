@@ -7,12 +7,15 @@
     <title>Bot Dialog Generator</title>
     <link rel="icon" href="static/image/Cyborg_Logo2.png"> <!-- Icon -->
     <link rel="stylesheet" href="static/styles/chat_style.css"> <!-- CSS -->
-     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet"> <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta/dist/vanta.cells.min.js"></script>
+    <!-- Font -->
 </head>
 
 <body>
     <!-- Desktop Layout -->
-     <div class="container"> <!-- Левый контейнер -->
+    <div class="container"> <!-- Левый контейнер -->
         <div class="left-panel">
             <div class="logs-section">
                 <div class="logs-header">Chat history cleared</div>
@@ -30,21 +33,21 @@
                         </select>
                     </div>
 
-                    <div class="accordion-item">  <!-- Аккордион API ключей  -->
+                    <div class="accordion-item"> <!-- Аккордион API ключей  -->
                         <div class="accordion-header">
                             <span>API Keys</span>
                             <span class="accordion-arrow">▼</span>
                         </div>
                     </div>
 
-                    <div class="accordion-item">  <!-- Аккордион слайдеров с креативностью  -->
+                    <div class="accordion-item"> <!-- Аккордион слайдеров с креативностью  -->
                         <div class="accordion-header">
                             <span>Creativity</span>
                             <span class="accordion-arrow">▼</span>
                         </div>
                     </div>
 
-                    <div class="control-group">  <!-- Лимит сообщений  -->
+                    <div class="control-group"> <!-- Лимит сообщений  -->
                         <label>Message limit</label>
                         <div class="number-input">
                             <input type="number" value="2" min="1" max="100">
@@ -57,27 +60,17 @@
             </div>
         </div>
 
-        <div class="right-panel">  <!-- Правый контейнер  -->
-            <div class="dialog-section">  <!-- Секция с диалогом  -->
-                <div class="dialog-header"> 
+        <div class="right-panel"> <!-- Правый контейнер  -->
+            <div class="dialog-section"> <!-- Секция с диалогом  -->
+                <div class="dialog-header">
                     <button class="control-button fullscreen">
                         <img src="static/image/full_screen.png" alt="Full Screen">
                     </button>
                 </div>
-                <div class="playback-controls"> <!-- Нижнее всплывающее меню -->
-                    <button id="exit-demo"><img src="static/image/chevron-left.png" alt="Back"> </button>
-                    <button id="play-demo"> <img src="static/image/play.png" alt="Play"> </button>
-                    <button id="clear-demo"> <img src="static/image/clear.png" alt="Play"> </button>
-                    <label>
-                        <img src="static/image/delay.png" alt="Delay"> Delay:
-                        <input type="range" id="delay-slider" min="300" max="5000" step="100" value="1000">
-                    </label>
-                </div>
-                <!-- Dialog messages will appear here -->
             </div>
 
-            <div class="bot-profiles">  <!-- Группа с двумя полями для ввода системного промпта  -->
-                <div class="bot-profile">  <!-- Блок с полем системного промпта одного бота  -->
+            <div class="bot-profiles"> <!-- Группа с двумя полями для ввода системного промпта  -->
+                <div class="bot-profile"> <!-- Блок с полем системного промпта одного бота  -->
                     <div class="bot-profile-header">
                         <h3>User 1</h3>
                         <div class="user-select-delete">
@@ -119,6 +112,24 @@
         </div>
     </div>
 
+    <!-- Fullscreen Mode -->
+    <div class="fullscreen-dialogue-" id="fullscreen-dialogue">
+        <div id="vanta-bg"></div>
+        <div class="bottom-trigger-zone"></div>
+
+        <div class="fullscreen-menu" id="fullscreen-menu">
+            <div class="grid-overlay"></div>
+            <div class="scanlines"></div>
+            <button id="menu-exit"><img src="static/image/chevron-left.png" alt="Exit"></button>
+            <button id="menu-play"><img src="static/image/play.png" alt="Play"></button>
+            <button id="menu-clear"><img src="static/image/clear.png" alt="Clear"></button>
+            <label for="delay-range"><img src="static/image/delay.png" alt="Delay"> Delay:
+                <input type="range" id="delay-range" min="0" max="5000" step="100" value="1000">
+            </label>
+        </div>
+        <div class="fullscreen-messages" id="fullscreen-messages"></div>
+    </div>
+
     <!-- Mobile Layout -->
     <div class="mobile-section active" id="chat-section">
         <div class="mobile-chat-section">
@@ -132,8 +143,8 @@
             <div class="mobile-input-header">
                 <h3 class="mobile-input-title">Ask something...</h3>
                 <div class="mobile-input-controls">
-                    <button class="control-button pause">⏸️ Pause</button>
-                    <button class="control-button clear">🗑️ Clear</button>
+                    <button class="control-button pause">Pause</button>
+                    <button class="control-button clear">Clear</button>
                 </div>
             </div>
             <div class="mobile-input-wrapper">

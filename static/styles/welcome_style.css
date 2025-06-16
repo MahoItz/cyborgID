@@ -254,9 +254,10 @@ body::before {
     left: 50%;
     opacity: 0;
     transition: opacity 0.3s, visibility 0.3s;
-    font-size: 14px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 16px;
     line-height: 1.4;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    box-shadow: 0 0 30px rgba(141, 48, 208, 0.403);
 }
 
 
