@@ -28,38 +28,38 @@ export default async function handler(req, res) {
     return res.status(200).json(data);
   }
 
-  if (req.method === "DELETE") {
-    try {
-      const { user } = await req.json();
+if (req.method === "DELETE") {
+  try {
+    const { user } = req.body;
 
-      if (!user || typeof user !== "string") {
-        return res.status(400).json({ error: "Invalid user name" });
-      }
-
-      const deleteUrl = `${SUPABASE_URL}/rest/v1/user_profiles?Full_Name=eq.${encodeURIComponent(
-        user
-      )}`;
-
-      const deleteRes = await fetch(deleteUrl, {
-        method: "DELETE",
-        headers,
-      });
-
-      if (!deleteRes.ok) {
-        return res
-          .status(deleteRes.status)
-          .json({ error: "Failed to delete user" });
-      }
-
-      return res.status(200).json({ message: "User deleted successfully" });
-    } catch (error) {
-      console.error("DELETE ERROR:", error);
-      return res.status(500).json({
-        error: "Server error during deletion",
-        message: error.message,
-      });
+    if (!user || typeof user !== "string") {
+      return res.status(400).json({ error: "Invalid user name" });
     }
+
+    const deleteUrl = `${SUPABASE_URL}/rest/v1/user_profiles?Full_Name=eq.${encodeURIComponent(
+      user
+    )}`;
+
+    const deleteRes = await fetch(deleteUrl, {
+      method: "DELETE",
+      headers,
+    });
+
+    if (!deleteRes.ok) {
+      return res
+        .status(deleteRes.status)
+        .json({ error: "Failed to delete user" });
+    }
+
+    return res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.error("DELETE ERROR:", error);
+    return res.status(500).json({
+      error: "Server error during deletion",
+      message: error.message,
+    });
   }
+}
 
   return res.status(405).json({ error: "Method not allowed" });
 }
