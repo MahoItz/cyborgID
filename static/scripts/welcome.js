@@ -1,38 +1,25 @@
 // Configuration
 const CONFIG = {
     SUPABASE_URL: "https://uomyodvgfgtvmbqjeazm.supabase.co",
-    API_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvbXlvZHZnZmd0dm1icWplYXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc1MDE0NTQsImV4cCI6MjA2MzA3NzQ1NH0.ufzKKHpyDm34CwDlNB8zs4rGGV5MbvpE3cA6P_Hvu9g",
-    TOGETHER_AI_KEY: "7664bf1eb8c141ba9763769b2297f81e405db57f1531929c3acbf0481de96968"
+    API_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvbXlvZHZnZmd0dm1icWplYXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc1MDE0NTQsImV4cCI6MjA2MzA3NzQ1NH0.ufzKKHpyDm34CwDlNB8zs4rGGV5MbvpE3cA6P_Hvu9g"
 };
 
 // AI Providers configuration
 const AI_PROVIDERS = {
-    META_LLAMA: {
-        name: "Meta Llama",
-        url: "https://api.together.xyz/v1/chat/completions",
-        headers: (apiKey) => ({
-            "Authorization": `Bearer ${apiKey}`,
-            "Content-Type": "application/json"
-        }),
-        models: {
-            autofill: "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
-            summary: "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
-        }
-    },
-    QWEN2: {
-        name: "Qwen2",
-        url: "https://api.together.xyz/v1/chat/completions",
-        headers: (apiKey) => ({
-            "Authorization": `Bearer ${apiKey}`,
-            "Content-Type": "application/json",
-            "HTTP-Referer": window.location.origin,
-            "X-Title": "Form Application"
-        }),
-        models: {
-            autofill: "Qwen/Qwen2-VL-72B-Instruct",
-            summary: "Qwen/Qwen2-VL-72B-Instruct"
-        }
+  META_LLAMA: {
+    name: "Meta Llama",
+    models: {
+      autofill: "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
+      summary: "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
     }
+  },
+  QWEN2: {
+    name: "Qwen2",
+    models: {
+      autofill: "Qwen/Qwen2-VL-72B-Instruct",
+      summary: "Qwen/Qwen2-VL-72B-Instruct"
+    }
+  }
 };
 
 // DOM Elements
@@ -112,89 +99,75 @@ function getUserFriendlyError(providerName, status, statusText, errorBody = '') 
 
 // Generic AI API call function with fallback
 async function callAIWithFallback(prompt, systemPrompt, taskType = 'autofill') {
-    const providers = [
-        {
-            config: AI_PROVIDERS.META_LLAMA,
-            apiKey: CONFIG.TOGETHER_AI_KEY
-        },
-        {
-            config: AI_PROVIDERS.QWEN2,
-            apiKey: CONFIG.TOGETHER_AI_KEY
-        }
-    ];
-
-    let lastError = null;
-    let userFriendlyErrors = [];
-
-    for (let i = 0; i < providers.length; i++) {
-        const { config, apiKey } = providers[i];
-        
-        try {
-            console.log(`Attempting ${config.name} for ${taskType}...`);
-            
-            // Check if API key exists
-            if (!apiKey || apiKey.trim() === '') {
-                throw new Error(`API ключ для ${config.name} не настроен.`);
-            }
-            
-            const requestBody = {
-                model: config.models[taskType],
-                messages: [
-                    {
-                        role: "system",
-                        content: systemPrompt
-                    },
-                    {
-                        role: "user",
-                        content: prompt
-                    }
-                ],
-                temperature: taskType === 'autofill' ? 0.7 : 0.4,
-                max_tokens: taskType === 'autofill' ? 600 : 200
-            };
-
-            const response = await fetch(config.url, {
-                method: "POST",
-                headers: config.headers(apiKey),
-                body: JSON.stringify(requestBody)
-            });
-
-            if (!response.ok) {
-                let errorBody = '';
-                try {
-                    errorBody = await response.text();
-                } catch (e) {
-                    // Ignore error reading response body
-                }
-                
-                const userFriendlyMessage = getUserFriendlyError(config.name, response.status, response.statusText, errorBody);
-                throw new Error(userFriendlyMessage);
-            }
-
-            const data = await response.json();
-            const content = data.choices?.[0]?.message?.content?.trim();
-
-            if (!content) {
-                throw new Error(`${config.name} вернул пустой ответ. Попробуйте еще раз.`);
-            }
-
-            console.log(`✅ Success with ${config.name}`);
-            return { content, provider: config.name };
-
-        } catch (error) {
-            console.error(`❌ ${config.name} failed:`, error.message);
-            lastError = error;
-            userFriendlyErrors.push(`${config.name}: ${error.message}`);
-            
-            // If this is not the last provider, show a warning and continue
-            if (i < providers.length - 1) {
-                const nextProvider = providers[i + 1].config.name;
-                showMessage(`${error.message} Switching to ${nextProvider}...`, 'info');
-                // Small delay before trying next provider
-                await new Promise(resolve => setTimeout(resolve, 1000));
-            }
-        }
+  const providers = [
+    {
+      config: AI_PROVIDERS.META_LLAMA,
+      providerKey: "META_LLAMA",
+    },
+    {
+      config: AI_PROVIDERS.QWEN2,
+      providerKey: "QWEN2",
     }
+  ];
+
+  let lastError = null;
+  let userFriendlyErrors = [];
+
+  for (let i = 0; i < providers.length; i++) {
+    const { config, providerKey } = providers[i];
+
+    try {
+      console.log(`Attempting ${config.name} for ${taskType}...`);
+
+      const requestBody = {
+        systemPrompt: systemPrompt,
+        userPrompt: prompt,
+        temperature: taskType === 'autofill' ? 0.7 : 0.4,
+        provider: providerKey,
+        mode: taskType,
+      };
+
+      const response = await fetch("/api/together", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      if (!response.ok) {
+        const errorBody = await response.text();
+        const userFriendlyMessage = getUserFriendlyError(
+          config.name,
+          response.status,
+          response.statusText,
+          errorBody
+        );
+        throw new Error(userFriendlyMessage);
+      }
+
+      const data = await response.json();
+      const content = data.choices?.[0]?.message?.content?.trim();
+
+      if (!content) {
+        throw new Error(`${config.name} вернул пустой ответ. Попробуйте еще раз.`);
+      }
+
+      console.log(`✅ Success with ${config.name}`);
+      return { content, provider: config.name };
+
+    } catch (error) {
+      console.error(`❌ ${config.name} failed:`, error.message);
+      lastError = error;
+      userFriendlyErrors.push(`${config.name}: ${error.message}`);
+
+      if (i < providers.length - 1) {
+        const nextProvider = providers[i + 1].config.name;
+        showMessage(`${error.message} Switching to ${nextProvider}...`, 'info');
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+    }
+  }
 
     // If we get here, all providers failed
     const combinedErrors = userFriendlyErrors.join('\n\n');
