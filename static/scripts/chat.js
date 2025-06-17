@@ -16,8 +16,6 @@ class BotDialogGenerator {
       openai: "",
       openrouter: "",
     };
-    this.supabaseKey =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvbXlvZHZnZmd0dm1icWplYXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc1MDE0NTQsImV4cCI6MjA2MzA3NzQ1NH0.ufzKKHpyDm34CwDlNB8zs4rGGV5MbvpE3cA6P_Hvu9g";
     this.temperatures = {
       bot1: 0.7,
       bot2: 0.7,
@@ -40,18 +38,9 @@ class BotDialogGenerator {
   // Supabase integration
   async loadUsers() {
     try {
-      // Данные Supabase
-      const supabaseUrl = "https://uomyodvgfgtvmbqjeazm.supabase.co";
-      const response = await fetch(
-        `${supabaseUrl}/rest/v1/user_profiles?select=id,Full_Name,Resume&order=id.desc`,
-        {
-          headers: {
-            apikey: this.supabaseKey,
-            Authorization: `Bearer ${this.supabaseKey}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch("/api/supabase", {
+        method: "GET",
+      });
 
       if (response.ok) {
         this.users = await response.json();
@@ -187,7 +176,6 @@ class BotDialogGenerator {
   }
 
   bindUserDeletion() {
-    // Удаление пользователя
     document.querySelectorAll(".delete-user-button").forEach((btn) => {
       btn.addEventListener("click", async () => {
         const select = btn.nextElementSibling;
@@ -195,22 +183,24 @@ class BotDialogGenerator {
 
         if (!confirm(`Delete ${user}?`)) return;
 
-        const url =
-          "https://uomyodvgfgtvmbqjeazm.supabase.co/rest/v1/user_profiles?Full_Name=eq." +
-          encodeURIComponent(user);
-        const res = await fetch(url, {
-          method: "DELETE",
-          headers: {
-            apikey: this.supabaseKey,
-            Authorization: `Bearer ${this.supabaseKey}`,
-          },
-        });
+        try {
+          const res = await fetch("/api/supabase", {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ user }),
+          });
 
-        if (res.ok) {
-          select.removeChild(select.querySelector(`option[value="${user}"]`));
-          alert(`${user} Deleted.`);
-        } else {
-          alert(`Error deleting ${user}`);
+          if (res.ok) {
+            select.removeChild(select.querySelector(`option[value="${user}"]`));
+            alert(`${user} Deleted.`);
+          } else {
+            const err = await res.json();
+            alert(`Error deleting ${user}: ${err.error}`);
+          }
+        } catch (err) {
+          alert(`Network error: ${err.message}`);
         }
       });
     });
