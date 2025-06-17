@@ -17,7 +17,7 @@ class BotDialogGenerator {
       openrouter: "",
     };
     this.supabaseKey =
-      "$eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvbXlvZHZnZmd0dm1icWplYXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc1MDE0NTQsImV4cCI6MjA2MzA3NzQ1NH0.ufzKKHpyDm34CwDlNB8zs4rGGV5MbvpE3cA6P_Hvu9g";
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvbXlvZHZnZmd0dm1icWplYXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc1MDE0NTQsImV4cCI6MjA2MzA3NzQ1NH0.ufzKKHpyDm34CwDlNB8zs4rGGV5MbvpE3cA6P_Hvu9g";
     this.temperatures = {
       bot1: 0.7,
       bot2: 0.7,
@@ -690,31 +690,31 @@ class BotDialogGenerator {
     return data.choices[0].message.content;
   }
 
-async callTogetherAI(systemPrompt, userPrompt, temperature) {
-  const response = await fetch("/api/together", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      systemPrompt,
-      userPrompt,
-      temperature,
-    }),
-  });
+  async callTogetherAI(systemPrompt, userPrompt, temperature) {
+    const response = await fetch("/api/together", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        systemPrompt,
+        userPrompt,
+        temperature,
+      }),
+    });
 
-  if (!response.ok) {
-    throw new Error(`Proxy TogetherAI API error: ${response.status}`);
+    if (!response.ok) {
+      throw new Error(`Proxy TogetherAI API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      throw new Error("Invalid response from TogetherAI proxy");
+    }
+
+    return data.choices[0].message.content;
   }
-
-  const data = await response.json();
-
-  if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-    throw new Error("Invalid response from TogetherAI proxy");
-  }
-
-  return data.choices[0].message.content;
-}
 
   async callGoogle(systemPrompt, userPrompt, temperature) {
     const response = await fetch(
@@ -844,7 +844,7 @@ async callTogetherAI(systemPrompt, userPrompt, temperature) {
   validateApiKeys() {
     switch (this.selectedModel) {
       case "TogetherAI":
-        return this.apiKeys.togetherai.length > 0;
+        return true;
       case "GPT-4":
         return this.apiKeys.openai.length > 0;
       case "Gemini":
