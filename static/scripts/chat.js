@@ -681,29 +681,54 @@ class BotDialogGenerator {
   }
 
   async callTogetherAI(systemPrompt, userPrompt, temperature) {
-    const response = await fetch("/api/together", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        systemPrompt,
-        userPrompt,
-        temperature,
-      }),
-    });
+    const providers = [
+      { provider: "QWEN2", name: "Qwen2" },
+      { provider: "META_LLAMA", name: "Meta Llama" },
+    ];
 
-    if (!response.ok) {
-      throw new Error(`Proxy TogetherAI API error: ${response.status}`);
+    let lastError = null;
+
+    for (const { provider, name } of providers) {
+      try {
+        console.log(`🧠 Trying ${name}...`);
+
+        const response = await fetch("/api/together", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            systemPrompt,
+            userPrompt,
+            temperature,
+            provider,
+            mode: "autofill",
+          }),
+        });
+
+        if (!response.ok) {
+          const errorBody = await response.text();
+          throw new Error(`${name} error ${response.status}: ${errorBody}`);
+        }
+
+        const data = await response.json();
+        const content = data.choices?.[0]?.message?.content?.trim();
+
+        if (!content) {
+          throw new Error(`${name} вернул пустой ответ`);
+        }
+
+        console.log(`✅ Success with ${name}`);
+        return content;
+      } catch (err) {
+        console.warn(`⚠️ ${name} failed:`, err.message);
+        lastError = err;
+      }
     }
 
-    const data = await response.json();
-
-    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-      throw new Error("Invalid response from TogetherAI proxy");
-    }
-
-    return data.choices[0].message.content;
+    throw new Error(
+      `❌ Обе модели TogetherAI не ответили: ${lastError.message}`
+    );
   }
 
   async callGoogle(systemPrompt, userPrompt, temperature) {
