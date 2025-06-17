@@ -1,9 +1,3 @@
-// Configuration
-const CONFIG = {
-    SUPABASE_URL: "https://uomyodvgfgtvmbqjeazm.supabase.co",
-    API_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvbXlvZHZnZmd0dm1icWplYXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc1MDE0NTQsImV4cCI6MjA2MzA3NzQ1NH0.ufzKKHpyDm34CwDlNB8zs4rGGV5MbvpE3cA6P_Hvu9g"
-};
-
 // AI Providers configuration
 const AI_PROVIDERS = {
   META_LLAMA: {
@@ -296,46 +290,36 @@ function getDatabaseFriendlyError(status, statusText, errorBody = '') {
 
 // Supabase submission
 async function submitToSupabase(fullName, summary) {
-    const submission = {
-        Full_Name: fullName,
-        Resume: summary
-    };
+  try {
+    const response = await fetch("/api/supabase", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ fullName, summary }),
+    });
 
-    try {
-        const response = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/user_profiles`, {
-            method: "POST",
-            headers: {
-                "apikey": CONFIG.API_KEY,
-                "Authorization": `Bearer ${CONFIG.API_KEY}`,
-                "Content-Type": "application/json",
-                "Prefer": "return=representation"
-            },
-            body: JSON.stringify([submission])
-        });
+    if (!response.ok) {
+      let errorBody = "";
+      try {
+        errorBody = await response.text();
+      } catch (e) {}
 
-        if (!response.ok) {
-            let errorBody = '';
-            try {
-                errorBody = await response.text();
-            } catch (e) {
-                // Ignore error reading response body
-            }
-            
-            const userFriendlyMessage = getDatabaseFriendlyError(response.status, response.statusText, errorBody);
-            throw new Error(userFriendlyMessage);
-        }
-
-        return await response.json();
-        
-    } catch (error) {
-        // If it's a network error or other fetch error
-        if (error.name === 'TypeError' || error.message.includes('fetch')) {
-            throw new Error('No connection to the database. Check your internet connection.');
-        }
-        
-        // Re-throw our custom errors
-        throw error;
+      const userFriendlyMessage = getDatabaseFriendlyError(
+        response.status,
+        response.statusText,
+        errorBody
+      );
+      throw new Error(userFriendlyMessage);
     }
+
+    return await response.json();
+  } catch (error) {
+    if (error.name === "TypeError" || error.message.includes("fetch")) {
+      throw new Error("No connection to the database. Check your internet connection.");
+    }
+    throw error;
+  }
 }
 
 // Form submission handler
