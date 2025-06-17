@@ -14,8 +14,6 @@ class BotDialogGenerator {
     this.replayPaused = false;
     this.apiKeys = {
       openai: "",
-      togetherai:
-        "7664bf1eb8c141ba9763769b2297f81e405db57f1531929c3acbf0481de96968",
       openrouter: "",
     };
     this.supabaseKey =
@@ -692,37 +690,31 @@ class BotDialogGenerator {
     return data.choices[0].message.content;
   }
 
-  async callTogetherAI(systemPrompt, userPrompt, temperature) {
-    const response = await fetch(
-      "https://api.together.xyz/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${this.apiKeys.togetherai}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "Qwen/Qwen2.5-72B-Instruct-Turbo",
-          messages: [
-            {
-              role: "system",
-              content: `You are ${systemPrompt} Answer with short messages 1–3 sentences. Ask questions, have a dialogue. No greetings allowed.`,
-            },
-            { role: "user", content: userPrompt },
-          ],
-          temperature: temperature,
-          max_tokens: 500,
-        }),
-      }
-    );
+async callTogetherAI(systemPrompt, userPrompt, temperature) {
+  const response = await fetch("/api/together", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      systemPrompt,
+      userPrompt,
+      temperature,
+    }),
+  });
 
-    if (!response.ok) {
-      throw new Error(`TogetherAI API error: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data.choices[0].message.content;
+  if (!response.ok) {
+    throw new Error(`Proxy TogetherAI API error: ${response.status}`);
   }
+
+  const data = await response.json();
+
+  if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+    throw new Error("Invalid response from TogetherAI proxy");
+  }
+
+  return data.choices[0].message.content;
+}
 
   async callGoogle(systemPrompt, userPrompt, temperature) {
     const response = await fetch(
