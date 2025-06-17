@@ -53,6 +53,7 @@ export default async function handler(req, res) {
 
       return res.status(200).json({ message: "User deleted successfully" });
     } catch (error) {
+      console.error("DELETE ERROR:", error);
       return res.status(500).json({
         error: "Server error during deletion",
         message: error.message,
