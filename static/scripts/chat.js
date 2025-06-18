@@ -253,15 +253,15 @@ class BotDialogGenerator {
                 <div class="api-keys-form">
                     <div class="input-group">
                         <label>TogetherAI API Key:</label>
-                        <input type="password" id="togetherai-key" placeholder="...">
+                        <input type="password" class="togetherai-key" placeholder="...">
                     </div>
                     <div class="input-group">
                         <label>OpenAI API Key:</label>
-                        <input type="password" id="openai-key" placeholder="sk-...">
+                        <input type="password" class="openai-key" placeholder="sk-...">
                     </div>
                     <div class="input-group">
                         <label>Google AI API Key:</label>
-                        <input type="password" id="google-key" placeholder="AI...">
+                        <input type="password" class="google-key" placeholder="AI...">
                     </div>
                     <button onclick="botGenerator.saveApiKeys()">Save Keys</button>
                 </div>
@@ -893,7 +893,7 @@ class BotDialogGenerator {
   updatePauseButtons() {
     const pauseButtons = document.querySelectorAll(".pause");
     pauseButtons.forEach((btn) => {
-      btn.textContent = this.isPaused ? "▶️ Resume" : "⏸️ Pause";
+      btn.textContent = this.isPaused ? "Resume" : "Pause";
     });
   }
 
@@ -975,171 +975,3 @@ class BotDialogGenerator {
 
 // Initialize the bot dialog generator
 const botGenerator = new BotDialogGenerator();
-
-// CSS for additional styling (add to your existing CSS file)
-const additionalCSS = `
-.message {
-    margin: 10px 0;
-    padding: 10px;
-    border-radius: 8px;
-    max-width: 80%;
-}
-
-.message-user {
-    background-color: rgba(57, 57, 57, 0.5);
-    backdrop-filter: blur(10px);           
-    -webkit-backdrop-filter: blur(10px);    
-    border: 1px solid rgba(215, 215, 215, 0.1); 
-    border-radius: 8px;                     
-    margin: 0 auto; /* Центрирование по горизонтали */
-}
-
-.message-bot1 {
-    background-color: rgba(49, 30, 70, 0.5);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(150, 0, 195, 0.1);
-    border-radius: 8px;
-    margin-right: auto;
-    margin-left: 0;
-}
-
-.message-bot2 {
-    background-color: rgba(7, 84, 84, 0.5);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 174, 55, 0.1);
-    border-radius: 8px;
-    margin-left: auto;
-    margin-right: 0;
-}
-
-.message-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 5px;
-    font-size: 0.9em;
-    color: #666;
-}
-
-.message-content {
-    line-height: 1.5;
-}
-
-.accordion-content {
-    border-top: 1px solid #eee;
-}
-
-.api-keys-form .input-group {
-    margin-bottom: 10px;
-}
-
-.api-keys-form label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-.api-keys-form input {
-    width: 100%;
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-// Кнопка Save Keys
-.api-keys-form button {
-    background: linear-gradient(135deg, #3c3c3c, #5a5a5a);
-    border: 1px solid #777;
-    border-radius: 6px;
-    padding: 8px 14px;
-    color: #fff;
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.5px;
-    cursor: pointer;
-    transition: background 0.3s, border-color 0.3s, transform 0.1s;
-}
-
-.api-keys-form button:hover {
-    background: linear-gradient(135deg,rgb(15, 103, 0),rgb(0, 131, 11));
-    border-color: #aaa;
-    color: #fff;
-    transform: translateY(-1px);
-}
-
-.api-keys-form button:active {
-    background: #333;
-    transform: translateY(1px);
-}
-
-.creativity-controls .slider-group {
-    margin-bottom: 15px;
-}
-
-.creativity-controls input[type="range"] {
-    width: 100%;
-    margin-top: 5px;
-}
-
-.thinking-indicator {
-    opacity: 0.8;
-}
-
-.thinking-content {
-    display: flex;
-    align-items: center;
-    font-style: italic;
-    color: #888;
-}
-
-.thinking-text {
-    margin-right: 4px;
-}
-
-.thinking-dots {
-    display: inline-flex;
-}
-
-.thinking-dots span {
-    animation: thinking 1.4s infinite;
-    animation-fill-mode: both;
-}
-
-.thinking-dots span:nth-child(1) {
-    animation-delay: 0s;
-}
-
-.thinking-dots span:nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-.thinking-dots span:nth-child(3) {
-    animation-delay: 0.4s;
-}
-
-@keyframes thinking {
-    0%, 80%, 100% {
-        opacity: 0.3;
-        transform: scale(1);
-    }
-    40% {
-        opacity: 1;
-        transform: scale(1.2);
-    }
-}
-
-.log-message {
-    padding: 2px 0;
-    font-size: 0.9em;
-}
-
-.log-error { color: #d32f2f; }
-.log-warning { color: #f57c00; }
-.log-success { color: #388e3c; }
-.log-info { color: #1976d2; }
-`;
-
-// Add CSS to page
-const style = document.createElement("style");
-style.textContent = additionalCSS;
-document.head.appendChild(style);
