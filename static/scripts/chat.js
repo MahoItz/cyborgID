@@ -591,13 +591,12 @@ class BotDialogGenerator {
     }
   }
 
-  replayMessages() {
+  async replayMessages() {
     if (this.generatedMessages.length === 0) {
       this.logMessage("No messages to replay", "warning");
       return;
     }
 
-    // Если это продолжение после паузы — НЕ сбрасываем
     if (!this.isReplaying) {
       this.currentIndex = 0;
       document.getElementById("fullscreen-messages").innerHTML = "";
@@ -608,14 +607,28 @@ class BotDialogGenerator {
 
     const container = document.getElementById("fullscreen-messages");
 
-    const showNextMessage = () => {
+    const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+
+    const thinkingWords = [
+      "Initiating",
+      "Estimating",
+      "Analyzing",
+      "Observing",
+      "Responding",
+      "Recalling",
+      "Simulating",
+      "Reconfiguring",
+      "Thinking",
+    ];
+
+    const showNextMessage = async () => {
       if (
         this.replayPaused ||
         this.currentIndex >= this.generatedMessages.length
       ) {
         this.isReplaying = false;
 
-        // Меняем иконку на Play
+        // Обновляем иконку на Play после завершения
         const playBtn = document.getElementById("menu-play");
         if (playBtn) {
           playBtn.innerHTML = '<img src="static/image/play.png" alt="Play">';
@@ -625,22 +638,71 @@ class BotDialogGenerator {
       }
 
       const msg = this.generatedMessages[this.currentIndex];
-      const sender =
-        msg.sender === "bot1" || msg.sender === "bot2" ? msg.sender : "bot1";
+      const sender = msg.sender;
       const name = msg.name || sender;
+      const timeStamp = new Date().toLocaleTimeString();
 
-      // Создаём обёртку сообщения с позиционированием слева/справа
       const messageDiv = document.createElement("div");
-      messageDiv.className = `fullscreen-message bubble ${
-        sender === "bot1" ? "left" : "right"
-      }`;
-      messageDiv.innerHTML = `<div class="bubble-text"><b>${name}:</b> ${msg.message}</div>`;
-      container.appendChild(messageDiv);
 
+      // Если это initial prompt — отобразить по центру
+      if (sender === "user") {
+        messageDiv.className = "fullscreen-message bubble center";
+        messageDiv.innerHTML = `
+        <div class="bubble-text">
+          <b>Initial Prompt:</b> ${msg.message}
+        </div>
+      `;
+        container.appendChild(messageDiv);
+        container.scrollTop = container.scrollHeight;
+
+        this.currentIndex++;
+        await delay(this.delayMs);
+        showNextMessage();
+        return;
+      }
+
+      // Показываем индикатор "Thinking..."
+      const isLeft = sender === "bot1";
+      const thinkingWord =
+        thinkingWords[Math.floor(Math.random() * thinkingWords.length)];
+      const thinkingDiv = document.createElement("div");
+      thinkingDiv.className = `fullscreen-message bubble ${
+        isLeft ? "left" : "right"
+      } thinking-indicator`;
+      thinkingDiv.innerHTML = `
+      <div class="bubble-text thinking-content">
+        <span class="thinking-text">${thinkingWord}</span>
+        <span class="thinking-dots">
+          <span>.</span><span>.</span><span>.</span>
+        </span>
+      </div>
+    `;
+      container.appendChild(thinkingDiv);
+      container.scrollTop = container.scrollHeight;
+
+      await delay(1000);
+      container.removeChild(thinkingDiv);
+
+      // Основное сообщение
+      messageDiv.className = `fullscreen-message bubble ${
+        isLeft ? "left" : "right"
+      }`;
+      messageDiv.innerHTML = `
+      <div class="message-header">
+        ${
+          isLeft
+            ? `<strong>${name}</strong><span class="message-time">${timeStamp}</span>`
+            : `<span class="message-time">${timeStamp}</span><strong>${name}</strong>`
+        }
+      </div>
+      <div class="bubble-text">${msg.message}</div>
+    `;
+      container.appendChild(messageDiv);
       container.scrollTop = container.scrollHeight;
 
       this.currentIndex++;
-      this.timeoutId = setTimeout(showNextMessage, this.delayMs);
+      await delay(this.delayMs);
+      showNextMessage();
     };
 
     showNextMessage();
