@@ -5,7 +5,7 @@ class BotDialogGenerator {
     this.messageLimit = 2;
     this.users = [];
     this.currentBatchCount = 0; // Количество сообщений в текущей пачке генерации
-    this.generatedMessages = [{ sender: "User", message: "Сгенерированные сообщения" }]; // Сгенерированные сообщения
+    this.generatedMessages = []; // Сгенерированные сообщения
     this.delayMs = 1000; // Задержка между воспроизведением сообщений
     this.isPlaying = false; // Флаг для отслеживания начала диалога
     this.currentIndex = 0;
