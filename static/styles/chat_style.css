@@ -549,6 +549,7 @@ body {
 
 .fullscreen-message {
     display: flex;
+    flex-direction: column;
     width: 100%;
     max-width: 70%;
 }
@@ -569,6 +570,17 @@ body {
     font-size: 16px;
     box-shadow: 0 2px 10px rgba(0, 200, 255, 0.1);
     animation: fadeIn 0.4s ease;
+}
+
+.fullscreen-message-header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-left: auto; 
+    margin-bottom: 4px;
+    font-size: 0.8em;
+    color: #ccc;
+    font-family: 'Audiowide', sans-serif;
 }
 
 .bubble-text {
