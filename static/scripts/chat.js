@@ -126,6 +126,25 @@ class BotDialogGenerator {
       btn.addEventListener("click", () => this.resetCounters());
     });
 
+    // Fullscreen clear button
+    document.getElementById("menu-clear")?.addEventListener("click", () => {
+      clearTimeout(this.timeoutId);
+      this.isReplaying = false;
+      this.replayPaused = false;
+      this.currentIndex = 0;
+      const container = document.getElementById("fullscreen-messages");
+      container.innerHTML = "";
+      const playBtn = document.getElementById("menu-play");
+      playBtn.innerHTML = '<img src="static/image/play.png" alt="Play">';
+      this.logMessage("Fullscreen dialog cleared", "success");
+    });
+
+    // Fullscreen delay slider
+    document.getElementById("delay-range")?.addEventListener("input", (e) => {
+      this.delayMs = parseInt(e.target.value, 10);
+      this.logMessage(`Delay set to ${this.delayMs} ms`, "info");
+    });
+
     // Model selection
     document.querySelectorAll("select").forEach((select) => {
       if (
@@ -558,7 +577,7 @@ class BotDialogGenerator {
   }
 
   toggleReplay() {
-    this.isReplaying = !this.isReplaying;
+    this.isReplaying = !this.isReplaying && this.generatedMessages.length > 0;
 
     const playBtn = document.getElementById("menu-play");
     const playIcon = '<img src="static/image/play.png" alt="Play">';
@@ -573,14 +592,21 @@ class BotDialogGenerator {
   }
 
   replayMessages() {
-    if (this.isReplaying || this.generatedMessages.length === 0) return;
+    if (this.generatedMessages.length === 0) {
+      this.logMessage("No messages to replay", "warning");
+      return;
+    }
+
+    // Если это продолжение после паузы — НЕ сбрасываем
+    if (!this.isReplaying) {
+      this.currentIndex = 0;
+      document.getElementById("fullscreen-messages").innerHTML = "";
+    }
 
     this.isReplaying = true;
     this.replayPaused = false;
-    this.currentIndex = 0;
 
     const container = document.getElementById("fullscreen-messages");
-    container.innerHTML = "";
 
     const showNextMessage = () => {
       if (
@@ -588,12 +614,29 @@ class BotDialogGenerator {
         this.currentIndex >= this.generatedMessages.length
       ) {
         this.isReplaying = false;
+
+        // Меняем иконку на Play
+        const playBtn = document.getElementById("menu-play");
+        if (playBtn) {
+          playBtn.innerHTML = '<img src="static/image/play.png" alt="Play">';
+        }
+
         return;
       }
 
       const msg = this.generatedMessages[this.currentIndex];
+      const sender =
+        msg.sender === "bot1" || msg.sender === "bot2" ? msg.sender : "bot1";
+      const name = msg.name || sender;
 
-      container.innerHTML += `<div class="message"><b>${msg.user}:</b> ${msg.message}</div>`;
+      // Создаём обёртку сообщения с позиционированием слева/справа
+      const messageDiv = document.createElement("div");
+      messageDiv.className = `fullscreen-message bubble ${
+        sender === "bot1" ? "left" : "right"
+      }`;
+      messageDiv.innerHTML = `<div class="bubble-text"><b>${name}:</b> ${msg.message}</div>`;
+      container.appendChild(messageDiv);
+
       container.scrollTop = container.scrollHeight;
 
       this.currentIndex++;
@@ -845,7 +888,14 @@ class BotDialogGenerator {
         `;
 
     dialogArea.appendChild(messageDiv);
-    this.generatedMessages.push({ sender, message }); // Сохраняем для повтора
+    const name =
+      sender === "bot1"
+        ? this.getBotName(1)
+        : sender === "bot2"
+        ? this.getBotName(2)
+        : "User";
+
+    this.generatedMessages.push({ sender, message, name });
     dialogArea.scrollTop = dialogArea.scrollHeight;
   }
 
