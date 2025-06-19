@@ -284,7 +284,7 @@ body {
     justify-content: space-between;
 }
 
-.create-avater-button {
+.create-avatar-button {
     margin-right: 10px;
     padding: 14px 24px;
     background: linear-gradient(135deg, #34a7fa, #5ce9ff, #34a7fa);
@@ -303,7 +303,7 @@ body {
     animation: pulse 2s infinite;
 }
 
-.create-avater-button:hover {
+.create-avatar-button:hover {
     transform: scale(1.05);
     box-shadow: 0 20px 40px rgba(0, 255, 255, 0.5);
     background: linear-gradient(135deg, #1890cb, #00ffff);
@@ -471,7 +471,7 @@ body {
         font-size: 80px;
     }
     
-    .create-avater-button,
+    .create-avatar-button,
     .dialogue-button {
         font-size: 24px;
         padding: 12px 20px;
@@ -520,7 +520,7 @@ body {
         max-width: 400px;
     }
     
-    .create-avater-button,
+    .create-avatar-button,
     .dialogue-button {
         margin: 0;
         width: 100%;
@@ -568,7 +568,7 @@ body {
         gap: 12px;
     }
     
-    .create-avater-button,
+    .create-avatar-button,
     .dialogue-button {
         font-size: 16px;
         padding: 10px 18px;
@@ -621,7 +621,7 @@ body {
         gap: 10px;
     }
     
-    .create-avater-button,
+    .create-avatar-button,
     .dialogue-button {
         font-size: 14px;
         padding: 10px 16px;
@@ -657,7 +657,7 @@ body {
         font-size: 32px;
     }
     
-    .create-avater-button,
+    .create-avatar-button,
     .dialogue-button {
         font-size: 12px;
         padding: 8px 14px;
@@ -675,7 +675,7 @@ body {
         font-size: 28px;
     }
     
-    .create-avater-button,
+    .create-avatar-button,
     .dialogue-button {
         font-size: 11px;
         padding: 7px 12px;
@@ -707,7 +707,7 @@ body {
         gap: 10px;
     }
     
-    .create-avater-button,
+    .create-avatar-button,
     .dialogue-button {
         font-size: 12px;
         padding: 8px 16px;
@@ -736,13 +736,13 @@ body {
 /* Улучшения для touch устройств */
 @media (hover: none) and (pointer: coarse) {
     .top-bar a:hover,
-    .create-avater-button:hover,
+    .create-avatar-button:hover,
     .dialogue-button:hover {
         transform: none;
     }
     
     .top-bar a:active,
-    .create-avater-button:active,
+    .create-avatar-button:active,
     .dialogue-button:active {
         transform: scale(0.95);
         opacity: 0.8;
@@ -760,7 +760,7 @@ body {
         justify-content: center;
     }
     
-    .create-avater-button,
+    .create-avatar-button,
     .dialogue-button {
         min-height: 44px;
         display: flex;
