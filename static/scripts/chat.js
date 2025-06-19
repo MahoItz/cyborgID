@@ -527,7 +527,7 @@ class BotDialogGenerator {
       }
 
       if (!this.validateApiKeys()) {
-        this.logMessage("Please select model and configure API key", "error");
+        this.logMessage("Please select the model and configure the API key or select the Together AI model and use the Service Key in the API KEYS menu", "error");
         return;
       }
 
@@ -543,7 +543,7 @@ class BotDialogGenerator {
     }
 
     if (!this.validateApiKeys()) {
-      this.logMessage("Please select model and configure API key", "error");
+      this.logMessage("Please select the model and configure the API key or select the Together AI model and use the Service Key in the API KEYS menu", "error");
       return;
     }
 
