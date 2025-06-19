@@ -552,7 +552,6 @@ body {
     padding: 12px 12px;
     border-radius: 14px;
     font-size: 16px;
-    box-shadow: 0 2px 10px rgba(0, 200, 255, 0.1);
     animation: fadeIn 0.4s ease;
 }
 
