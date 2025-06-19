@@ -1265,7 +1265,7 @@ class BotDialogGenerator {
 
   clearLogs() {
     const logAreas = document.querySelectorAll(
-      ".logs-section, .mobile-logs-section"
+      ".logs-content, .mobile-logs-content"
     );
     logAreas.forEach((logArea) => {
       logArea.innerHTML = "";
@@ -1279,7 +1279,7 @@ class BotDialogGenerator {
 
   logMessage(message, type = "info") {
     const logAreas = document.querySelectorAll(
-      ".logs-section, .mobile-logs-section"
+      ".logs-content, .mobile-logs-content"
     );
     logAreas.forEach((logArea) => {
       // Clear example text on first real log

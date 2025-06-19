@@ -81,7 +81,6 @@ body {
     backdrop-filter: blur(10px);
     position: relative;
     overflow: hidden;
-    overflow-y: auto;
 }
 
 .logs-header {
@@ -95,16 +94,14 @@ body {
 }
 
 .logs-header.model-info {
-    position: sticky;
-    top: 0;
     text-align: center;
     background: rgba(10, 10, 15, 0.8);
-    z-index: 1;
 }
 
 .logs-content {
     flex: 1;
     min-height: 0;
+    overflow-y: auto;
 }
 
 .settings-section {
@@ -1341,7 +1338,6 @@ body {
         border-radius: 8px;
         padding: 15px;
         flex: 1;
-        overflow-y: auto;
         font-family: 'Courier New', monospace;
         font-size: 12px;
         min-height: 200px;
@@ -1358,10 +1354,7 @@ body {
     }
 
     .mobile-logs-header.model-info {
-        position: sticky;
-        top: 0;
         text-align: center;
-        z-index: 1;
     }
 
     .mobile-logs-content {
