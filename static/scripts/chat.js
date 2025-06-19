@@ -1027,6 +1027,19 @@ const showNextMessage = async () => {
     // Reset pause buttons
     this.updatePauseButtons();
 
+    // Reset replay state
+    this.generatedMessages = [];
+    this.currentIndex = 0;
+    this.isReplaying = false;
+    this.replayPaused = false;
+
+    // Clear fullscreen messages and reset play icon
+    const fsContainer = document.getElementById("fullscreen-messages");
+    if (fsContainer) fsContainer.innerHTML = "";
+    const playBtn = document.getElementById("menu-play");
+    if (playBtn)
+      playBtn.innerHTML = '<img src="static/image/play.png" alt="Play">';
+
     this.logMessage("Chat cleared successfully", "success");
   }
 
