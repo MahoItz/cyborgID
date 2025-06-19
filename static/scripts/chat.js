@@ -30,6 +30,7 @@ class BotDialogGenerator {
     await this.loadUsers();
     this.setupEventListeners();
     this.setupAccordions();
+    this.loadApiKeys();
     this.setupMobileNavigation();
     this.populateUserDropdowns();
     this.bindUserDeletion();
@@ -280,21 +281,30 @@ class BotDialogGenerator {
 
       // Вставляем нужный контент
       if (header.textContent.includes("API Keys")) {
-        content.innerHTML = `
+    content.innerHTML = `
                 <div class="api-keys-form">
                     <div class="input-group">
                         <label>TogetherAI API Key:</label>
                         <input type="password" class="togetherai-key" placeholder="...">
+                        <button class="clear-key" data-key="togetherai">
+                            <img src="static/image/clear.png" alt="Delete">
+                        </button>
                     </div>
                     <div class="input-group">
                         <label>OpenAI API Key:</label>
                         <input type="password" class="openai-key" placeholder="sk-...">
+                        <button class="clear-key" data-key="openai">
+                            <img src="static/image/clear.png" alt="Delete">
+                        </button>
                     </div>
                     <div class="input-group">
                         <label>Google AI API Key:</label>
                         <input type="password" class="google-key" placeholder="AI...">
+                        <button class="clear-key" data-key="google">
+                            <img src="static/image/clear.png" alt="Delete">
+                        </button>
                     </div>
-                    <button onclick="botGenerator.saveApiKeys()">Save Keys</button>
+                    <button class="save-keys">Save Keys</button>
                 </div>
             `;
       } else if (header.textContent.includes("Creativity")) {
@@ -332,7 +342,19 @@ class BotDialogGenerator {
       // Вставляем контент в DOM
       header.parentNode.insertBefore(content, header.nextSibling);
 
-      // Обработчик клика на аккордеон
+      // Кнопка сохранения ключей
+      content.querySelector(".save-keys")?.addEventListener("click", () => {
+        this.saveApiKeys();
+      });
+
+      // Кнопки очистки ключей
+      content.querySelectorAll(".clear-key").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          this.clearApiKey(btn.dataset.key);
+        });
+      });
+
+      // Обработчик клика на аккордион
       header.addEventListener("click", () => {
         const isOpen = content.classList.toggle("open");
 
@@ -375,13 +397,49 @@ class BotDialogGenerator {
 
   saveApiKeys() {
     this.apiKeys.openai =
-      document.querySelector(".openai-key")?.value || "";
+      document.querySelector(".openai-key")?.value.trim() || "";
     this.apiKeys.togetherai =
-      document.querySelector(".togetherai-key")?.value || "";
+      document.querySelector(".togetherai-key")?.value.trim() || "";
     this.apiKeys.google =
-      document.querySelector(".google-key")?.value || "";
+      document.querySelector(".google-key")?.value.trim() || "";
+
+    localStorage.setItem("openaiKey", this.apiKeys.openai);
+    localStorage.setItem("togetheraiKey", this.apiKeys.togetherai);
+    localStorage.setItem("googleKey", this.apiKeys.google);
 
     this.logMessage("API keys saved successfully", "success");
+    this.loadApiKeys();
+  }
+
+  loadApiKeys() {
+    const openai = localStorage.getItem("openaiKey") || "";
+    const together = localStorage.getItem("togetheraiKey") || "";
+    const google = localStorage.getItem("googleKey") || "";
+
+    if (openai) {
+      this.apiKeys.openai = openai;
+      const input = document.querySelector(".openai-key");
+      if (input) input.value = openai;
+    }
+    if (together) {
+      this.apiKeys.togetherai = together;
+      const input = document.querySelector(".togetherai-key");
+      if (input) input.value = together;
+    }
+    if (google) {
+      this.apiKeys.google = google;
+      const input = document.querySelector(".google-key");
+      if (input) input.value = google;
+    }
+  }
+
+  clearApiKey(type) {
+    if (!type) return;
+    this.apiKeys[type] = "";
+    localStorage.removeItem(`${type}Key`);
+    const input = document.querySelector(`.${type}-key`);
+    if (input) input.value = "";
+    this.logMessage(`${type} API key removed`, "info");
   }
 
   async startDialog() {
@@ -856,6 +914,7 @@ const showNextMessage = async () => {
             temperature,
             provider,
             mode: "autofill",
+            apiKey: this.apiKeys.togetherai || undefined,
           }),
         });
 

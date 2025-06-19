@@ -1,8 +1,8 @@
 export default async function handler(req, res) {
-  const { systemPrompt, userPrompt, temperature, provider, mode } = req.body;
+  const { systemPrompt, userPrompt, temperature, provider, mode, apiKey } = req.body;
 
   // Безопасный доступ к Together AI ключу из переменной окружения
-  const TOGETHER_API_KEY = process.env.TOGETHER_API_KEY;
+  const TOGETHER_API_KEY = apiKey || process.env.TOGETHER_API_KEY;
 
   // Объект конфигураций провайдеров — дублируем тот, что был у тебя в JS
   const AI_PROVIDERS = {
