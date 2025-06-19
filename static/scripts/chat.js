@@ -170,7 +170,9 @@ class BotDialogGenerator {
           this.selectedModel = e.target.value;
           localStorage.setItem("selectedModel", this.selectedModel);
           document
-            .querySelectorAll('.control-group select, .mobile-control-group select')
+            .querySelectorAll(
+              ".control-group select, .mobile-control-group select"
+            )
             .forEach((s) => (s.value = this.selectedModel));
           this.updateModelInfo();
         });
@@ -288,7 +290,7 @@ class BotDialogGenerator {
 
       // Вставляем нужный контент
       if (header.textContent.includes("API Keys")) {
-    content.innerHTML = `
+        content.innerHTML = `
                 <div class="api-keys-form">
                     <div class="input-group">
                         <label>Open AI:</label>
@@ -358,12 +360,14 @@ class BotDialogGenerator {
         this.saveApiKeys();
       });
 
-      content.querySelector(".use-service-key")?.addEventListener("click", () => {
-        this.useServiceKey = true;
-        localStorage.setItem("useServiceKey", "true");
-        this.logMessage("Using service TogetherAI key", "info");
-        this.updateModelInfo();
-      });
+      content
+        .querySelector(".use-service-key")
+        ?.addEventListener("click", () => {
+          this.useServiceKey = true;
+          localStorage.setItem("useServiceKey", "true");
+          this.logMessage("Using service TogetherAI key", "info");
+          this.updateModelInfo();
+        });
 
       // Кнопки очистки ключей
       content.querySelectorAll(".clear-key").forEach((btn) => {
@@ -394,7 +398,6 @@ class BotDialogGenerator {
         section.classList.remove("active");
       });
       document.querySelectorAll(".nav-tab").forEach((tab) => {
-
         tab.classList.remove("active");
       });
       document.getElementById(sectionId).classList.add("active");
@@ -466,7 +469,8 @@ class BotDialogGenerator {
     if (saved) {
       this.selectedModel = saved;
     }
-    document.querySelectorAll('.control-group select, .mobile-control-group select')
+    document
+      .querySelectorAll(".control-group select, .mobile-control-group select")
       .forEach((s) => {
         if (this.selectedModel) {
           s.value = this.selectedModel;
@@ -769,60 +773,63 @@ class BotDialogGenerator {
       "Thinking",
     ];
 
-const showNextMessage = async () => {
-  if (
-    this.replayPaused ||
-    this.currentIndex >= this.generatedMessages.length
-  ) {
-    this.isReplaying = false;
+    const showNextMessage = async () => {
+      if (
+        this.replayPaused ||
+        this.currentIndex >= this.generatedMessages.length
+      ) {
+        this.isReplaying = false;
 
-    // Обновляем иконку на Play после завершения
-    const playBtn = document.getElementById("menu-play");
-    if (playBtn) {
-      playBtn.innerHTML = '<img src="static/image/play.png" alt="Play">';
-    }
+        // Обновляем иконку на Play после завершения
+        const playBtn = document.getElementById("menu-play");
+        if (playBtn) {
+          playBtn.innerHTML = '<img src="static/image/play.png" alt="Play">';
+        }
 
-    return;
-  }
+        return;
+      }
 
-  const msg = this.generatedMessages[this.currentIndex];
-  const sender = msg.sender;
-  const name = msg.name || sender;
-  const timeStamp = new Date().toLocaleTimeString();
+      const msg = this.generatedMessages[this.currentIndex];
+      const sender = msg.sender;
+      const name = msg.name || sender;
+      const timeStamp = new Date().toLocaleTimeString();
 
-  const messageDiv = document.createElement("div");
+      const messageDiv = document.createElement("div");
 
-  // Initial prompt — по центру
-  if (sender === "user") {
-    messageDiv.className = "fullscreen-message bubble center";
-    messageDiv.innerHTML = `
+      // Initial prompt — по центру
+      if (sender === "user") {
+        messageDiv.className = "fullscreen-message bubble center";
+        messageDiv.innerHTML = `
       <div class="bubble-text">
         <b>Initial Prompt:</b> ${msg.message}
       </div>
     `;
-    container.appendChild(messageDiv);
-    container.scrollTop = container.scrollHeight;
+        container.appendChild(messageDiv);
+        container.scrollTop = container.scrollHeight;
 
-    this.currentIndex++;
-    await delay(this.delayMs);
-    if (!this.replayPaused) {
-      showNextMessage();
-    }
-    return;
-  }
+        this.currentIndex++;
+        await delay(this.delayMs);
+        if (!this.replayPaused) {
+          showNextMessage();
+        }
+        return;
+      }
 
-  // Небольшая задержка перед отображением Thinking
-  await delay(this.thinkingDelayMs);
-  if (this.replayPaused) {
-    return;
-  }
+      // Небольшая задержка перед отображением Thinking
+      await delay(this.thinkingDelayMs);
+      if (this.replayPaused) {
+        return;
+      }
 
-  // Показываем Thinking...
-  const isLeft = sender === "bot1";
-  const thinkingWord = thinkingWords[Math.floor(Math.random() * thinkingWords.length)];
-  const thinkingDiv = document.createElement("div");
-  thinkingDiv.className = `fullscreen-message bubble ${isLeft ? "left" : "right"} thinking-indicator`;
-  thinkingDiv.innerHTML = `
+      // Показываем Thinking...
+      const isLeft = sender === "bot1";
+      const thinkingWord =
+        thinkingWords[Math.floor(Math.random() * thinkingWords.length)];
+      const thinkingDiv = document.createElement("div");
+      thinkingDiv.className = `fullscreen-message bubble ${
+        isLeft ? "left" : "right"
+      } thinking-indicator`;
+      thinkingDiv.innerHTML = `
     <div class="bubble-text thinking-content">
       <span class="thinking-text">${thinkingWord}</span>
       <span class="thinking-dots">
@@ -830,20 +837,22 @@ const showNextMessage = async () => {
       </span>
     </div>
   `;
-  container.appendChild(thinkingDiv);
-  container.scrollTop = container.scrollHeight;
+      container.appendChild(thinkingDiv);
+      container.scrollTop = container.scrollHeight;
 
-  // Задержка отображения Thinking
-  await delay(this.delayMs);
-  if (this.replayPaused) {
-    container.removeChild(thinkingDiv);
-    return;
-  }
-  container.removeChild(thinkingDiv);
+      // Задержка отображения Thinking
+      await delay(this.delayMs);
+      if (this.replayPaused) {
+        container.removeChild(thinkingDiv);
+        return;
+      }
+      container.removeChild(thinkingDiv);
 
-  // Сообщение
-  messageDiv.className = `fullscreen-message bubble ${isLeft ? "left" : "right"}`;
-  messageDiv.innerHTML = `
+      // Сообщение
+      messageDiv.className = `fullscreen-message bubble ${
+        isLeft ? "left" : "right"
+      }`;
+      messageDiv.innerHTML = `
     <div class="bubble-text">
       <div class="fullscreen-message-header">
         ${
@@ -855,15 +864,14 @@ const showNextMessage = async () => {
       ${msg.message}
     </div>
   `;
-  container.appendChild(messageDiv);
-  container.scrollTop = container.scrollHeight;
+      container.appendChild(messageDiv);
+      container.scrollTop = container.scrollHeight;
 
-  this.currentIndex++;
-  if (!this.replayPaused) {
-    showNextMessage();
-  }
-};
-
+      this.currentIndex++;
+      if (!this.replayPaused) {
+        showNextMessage();
+      }
+    };
 
     showNextMessage();
   }
@@ -948,7 +956,7 @@ const showNextMessage = async () => {
 
   async callTogetherAI(systemPrompt, userPrompt, temperature) {
     if (!this.useServiceKey && !this.apiKeys.togetherai) {
-      this.logMessage("Укажите API ключ", "error");
+      this.logMessage("Please provide an API key or use a Service Key in the API KEYS menu", "error");
       throw new Error("Missing TogetherAI API key");
     }
     const providers = [
@@ -1266,13 +1274,13 @@ const showNextMessage = async () => {
 
   getFriendlyErrorMessage(status) {
     const messages = {
-      400: "Некорректный запрос. Проверьте введенные данные.",
-      401: "Ошибка авторизации. Проверьте API ключ.",
-      404: "Ресурс не найден. Проверьте URL.",
-      429: "Слишком много запросов. Попробуйте чуть позже.",
-      500: "Сервер столкнулся с ошибкой. Повторите попытку позже.",
+      400: "Bad request. Please check the submitted data.",
+      401: "Authorization error. Please check your API key.",
+      404: "Resource not found. Please check the URL.",
+      429: "Too many requests. Please try again later.",
+      500: "Server encountered an error. Please try again later.",
     };
-    return messages[status] || `Неизвестная ошибка (${status}). Попробуйте еще раз.`;
+    return messages[status] || `Unknown error (${status}). Please try again.`;
   }
 
   updateModelInfo() {
@@ -1289,7 +1297,7 @@ const showNextMessage = async () => {
     } else {
       shortKey = key ? `${key.slice(0, 4)}...${key.slice(-4)}` : "no key";
     }
-    document.querySelectorAll('.model-info').forEach((el) => {
+    document.querySelectorAll(".model-info").forEach((el) => {
       el.textContent = `${model} | ${shortKey}`;
     });
   }
