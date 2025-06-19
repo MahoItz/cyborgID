@@ -21,8 +21,10 @@ class BotDialogGenerator {
       bot1: 0.7,
       bot2: 0.7,
     };
-    this.selectedModel = "";
-    this.useServiceKey = localStorage.getItem("useServiceKey") === "true";
+    // Default to TogetherAI with a service key unless user saved another choice
+    this.selectedModel = "TogetherAI";
+    const stored = localStorage.getItem("useServiceKey");
+    this.useServiceKey = stored === null ? true : stored === "true";
 
     this.init();
   }
@@ -444,7 +446,8 @@ class BotDialogGenerator {
     const openai = localStorage.getItem("openaiKey") || "";
     const together = localStorage.getItem("togetheraiKey") || "";
     const google = localStorage.getItem("googleKey") || "";
-    this.useServiceKey = localStorage.getItem("useServiceKey") === "true";
+    const stored = localStorage.getItem("useServiceKey");
+    this.useServiceKey = stored === null ? true : stored === "true";
 
     if (openai) {
       this.apiKeys.openai = openai;
