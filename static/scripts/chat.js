@@ -220,33 +220,62 @@ class BotDialogGenerator {
 
   bindUserDeletion() {
     document.querySelectorAll(".delete-user-button").forEach((btn) => {
-      btn.addEventListener("click", async () => {
+      btn.addEventListener("click", () => {
         const select = btn.nextElementSibling;
         const user = select.value;
-
-        if (!confirm(`Delete ${user}?`)) return;
-
-        try {
-          const res = await fetch("/api/supabase", {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ user }),
-          });
-
-          if (res.ok) {
-            select.removeChild(select.querySelector(`option[value="${user}"]`));
-            alert(`${user} Deleted.`);
-          } else {
-            const err = await res.json();
-            alert(`Error deleting ${user}: ${err.error}`);
-          }
-        } catch (err) {
-          alert(`Network error: ${err.message}`);
-        }
+        if (!user) return;
+        this.showDeleteConfirmation(user);
       });
     });
+  }
+
+  showDeleteConfirmation(user) {
+    const overlay = document.getElementById("confirm-overlay");
+    const message = document.getElementById("confirm-message");
+    const okBtn = document.getElementById("confirm-ok");
+    const cancelBtn = document.getElementById("confirm-cancel");
+
+    message.textContent = `Delete ${user}?`;
+    overlay.classList.add("active");
+
+    const onCancel = () => {
+      overlay.classList.remove("active");
+      okBtn.removeEventListener("click", onOk);
+      cancelBtn.removeEventListener("click", onCancel);
+    };
+
+    const onOk = async () => {
+      overlay.classList.remove("active");
+      okBtn.removeEventListener("click", onOk);
+      cancelBtn.removeEventListener("click", onCancel);
+      await this.deleteUser(user);
+    };
+
+    okBtn.addEventListener("click", onOk);
+    cancelBtn.addEventListener("click", onCancel);
+  }
+
+  async deleteUser(user) {
+    try {
+      const res = await fetch("/api/supabase", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ user }),
+      });
+
+      if (res.ok) {
+        this.users = this.users.filter((u) => u.Full_Name !== user);
+        this.populateUserDropdowns();
+        this.logMessage(`${user} deleted successfully`, "success");
+      } else {
+        const err = await res.json();
+        this.logMessage(`Error deleting ${user}: ${err.error}`, "error");
+      }
+    } catch (err) {
+      this.logMessage(`Network error: ${err.message}`, "error");
+    }
   }
 
   setupAccordions() {
