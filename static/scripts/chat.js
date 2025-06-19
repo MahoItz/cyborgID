@@ -374,9 +374,12 @@ class BotDialogGenerator {
   }
 
   saveApiKeys() {
-    this.apiKeys.openai = document.getElementById("openai-key").value;
-    this.apiKeys.togetherai = document.getElementById("togetherai-key").value;
-    this.apiKeys.google = document.getElementById("google-key").value;
+    this.apiKeys.openai =
+      document.querySelector(".openai-key")?.value || "";
+    this.apiKeys.togetherai =
+      document.querySelector(".togetherai-key")?.value || "";
+    this.apiKeys.google =
+      document.querySelector(".google-key")?.value || "";
 
     this.logMessage("API keys saved successfully", "success");
   }
