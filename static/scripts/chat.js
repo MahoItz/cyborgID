@@ -379,6 +379,7 @@ class BotDialogGenerator {
         section.classList.remove("active");
       });
       document.querySelectorAll(".nav-tab").forEach((tab) => {
+
         tab.classList.remove("active");
       });
       document.getElementById(sectionId).classList.add("active");
