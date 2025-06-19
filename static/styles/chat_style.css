@@ -186,17 +186,13 @@ body {
 .dialog-section {
     background:
         var(--grid-pattern),
-        /* сетка */
         linear-gradient(135deg,
-            rgba(10, 10, 15, 0.9) 0%,
+            rgba(28, 22, 59, 0.9) 0%,
             rgba(26, 10, 46, 0.8) 50%,
             rgba(16, 33, 62, 0.7) 100%);
-    /* твой фон */
     background-repeat: repeat;
     background-position: top left;
     background-attachment: local;
-    /* важное отличие */
-
     border: 2px solid var(--border-color);
     border-radius: 12px;
     padding: 25px;
@@ -210,26 +206,6 @@ body {
     box-shadow: var(--border-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-.dialog-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, transparent, var(--teal-glow), transparent);
-    animation: scanLine 3s linear infinite;
-}
-
-@keyframes scanLine {
-    0% {
-        transform: translateX(-100%);
-    }
-
-    100% {
-        transform: translateX(100%);
-    }
-}
 
 
 
