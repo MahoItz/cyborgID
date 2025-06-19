@@ -1515,22 +1515,41 @@ body {
 }
 
 .api-keys-form .input-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     margin-bottom: 10px;
 }
 
 .api-keys-form label {
-    display: block;
-    margin-bottom: 5px;
+    min-width: 110px;
 }
 
 .api-keys-form input {
-    width: 100%;
+    flex: 1;
     padding: 5px;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
 
-.api-keys-form button {
+.api-keys-form .clear-key {
+    background: none;
+    border: 1px solid #777;
+    border-radius: 6px;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.api-keys-form .clear-key img {
+    width: 16px;
+    height: 16px;
+}
+
+.api-keys-form .save-keys {
+    margin-top: 10px;
     background: linear-gradient(135deg, #3c3c3c, #5a5a5a);
     border: 1px solid #777;
     border-radius: 6px;
@@ -1542,14 +1561,14 @@ body {
     cursor: pointer;
 }
 
-.api-keys-form button:hover {
+.api-keys-form .save-keys:hover {
     background: linear-gradient(135deg, rgb(0, 143, 84), rgb(0, 131, 11));
     border-color: #aaa;
     color: #fff;
     transform: translateY(-1px);
 }
 
-.api-keys-form button:active {
+.api-keys-form .save-keys:active {
     background: #333;
     transform: translateY(1px);
 }
