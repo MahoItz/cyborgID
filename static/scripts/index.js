@@ -1,16 +1,4 @@
-// Smooth scroll to top
-function scrollToTop() {
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
-  });
-}
-
-// Show about information
-// function showAbout() {
-// }
-
-// Sidebar
+// Sidebar functionality
 function showSidebar() {
   document.getElementById("sidebar").classList.add("active");
   document.querySelector(".sidebar-overlay").classList.add("active");
