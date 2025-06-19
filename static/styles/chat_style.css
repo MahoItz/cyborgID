@@ -893,7 +893,15 @@ body {
 }
 
 .control-group select {
+    background-color: #15002e;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 6px 12px;
+    color: var(--text-primary);
+    font-size: 14px;
+    outline: none;
     cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .number-input {
@@ -1522,13 +1530,15 @@ body {
 }
 
 .api-keys-form label {
-    min-width: 110px;
+    width: 110px;
 }
 
 .api-keys-form input {
     flex: 1;
     padding: 5px;
-    border: 1px solid #ccc;
+    background-color: #000000;
+    border: 1px solid var(--border-color);
+    color: #ffffff;
     border-radius: 4px;
 }
 
@@ -1544,9 +1554,23 @@ body {
     cursor: pointer;
 }
 
+.api-keys-form .clear-key:hover {
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+    box-shadow: 0 0 10px rgba(53, 127, 236, 0.3);
+    transform: translateY(2px);
+}
+
 .api-keys-form .toggle-key {
     font-size: 16px;
     line-height: 1;
+}
+
+.api-keys-form .toggle-key:hover {
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+    box-shadow: 0 0 10px rgba(53, 127, 236, 0.3);
+    transform: translateY(2px);
 }
 
 .api-keys-form .clear-key img {
@@ -1555,23 +1579,22 @@ body {
 }
 
 .api-keys-form .save-keys {
-    margin-top: 10px;
-    background: linear-gradient(135deg, #3c3c3c, #5a5a5a);
-    border: 1px solid #777;
+    background: linear-gradient(135deg, rgba(26, 10, 46, 0.9), rgba(16, 33, 62, 0.8));
+    border: 1px solid var(--border-color);
     border-radius: 6px;
-    padding: 8px 14px;
-    color: #fff;
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.5px;
+    margin-top: 10px;
+    margin-right: 8px;
+    padding: 6px 8px;
     cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
 }
 
 .api-keys-form .save-keys:hover {
-    background: linear-gradient(135deg, rgb(0, 143, 84), rgb(0, 131, 11));
-    border-color: #aaa;
-    color: #fff;
-    transform: translateY(-1px);
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+    box-shadow: 0 0 10px rgba(53, 127, 236, 0.3);
+    transform: translateY(2px);
 }
 
 .api-keys-form .save-keys:active {

@@ -284,7 +284,15 @@ class BotDialogGenerator {
     content.innerHTML = `
                 <div class="api-keys-form">
                     <div class="input-group">
-                        <label>TogetherAI API Key:</label>
+                        <label>Open AI:</label>
+                        <input type="password" class="openai-key" placeholder="...">
+                        <button class="clear-key" data-key="openai">
+                            <img src="static/image/clear.png" alt="Delete">
+                        </button>
+                        <button class="toggle-key" data-target="openai">👁️</button>
+                    </div>
+                    <div class="input-group">
+                        <label>Together AI:</label>
                         <input type="password" class="togetherai-key" placeholder="...">
                         <button class="clear-key" data-key="togetherai">
                             <img src="static/image/clear.png" alt="Delete">
@@ -292,16 +300,8 @@ class BotDialogGenerator {
                         <button class="toggle-key" data-target="togetherai">👁️</button>
                     </div>
                     <div class="input-group">
-                        <label>OpenAI API Key:</label>
-                        <input type="password" class="openai-key" placeholder="sk-...">
-                        <button class="clear-key" data-key="openai">
-                            <img src="static/image/clear.png" alt="Delete">
-                        </button>
-                        <button class="toggle-key" data-target="openai">👁️</button>
-                    </div>
-                    <div class="input-group">
-                        <label>Google AI API Key:</label>
-                        <input type="password" class="google-key" placeholder="AI...">
+                        <label>Gemini AI:</label>
+                        <input type="password" class="google-key" placeholder="...">
                         <button class="clear-key" data-key="google">
                             <img src="static/image/clear.png" alt="Delete">
                         </button>
