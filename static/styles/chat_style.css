@@ -1067,7 +1067,7 @@ body {
     transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
-/* Mobile responsive styles */
+/* Mobile and tablet layout */
 @media (max-width: 768px) {
     body {
         overflow-y: auto;
@@ -1377,7 +1377,7 @@ body {
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 576px) {
     .mobile-bot-title {
         font-size: 10px;
         min-width: 150px;

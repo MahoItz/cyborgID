@@ -11,26 +11,26 @@
 
 <body>
     <!-- Navigation -->
-    <nav class="top-bar">
+    <header class="top-bar">
         <div class="nav-left">
             <p onclick="showAbout()">About Us</p>
             <p onclick="showInfo()">Info</p>
         </div>
-    </nav>
+    </header>
 
     <!-- Sidebar Overlay -->
     <div class="sidebar-overlay" onclick="closeSidebar()"></div>
 
     <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
+    <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="sidebar-title" id="sidebarTitle">Information</div>
             <button class="close-btn" onclick="closeSidebar()">X</button>
         </div>
         <div class="sidebar-content" id="sidebarContent"></div>
+    </aside>
 
-    </div>
-
+    <main>
     <!-- Video Header -->
     <div class="video-header">
         <video autoplay muted loop playsinline preload="auto">
@@ -55,6 +55,8 @@
             Dialogue generation
         </a>
     </div>
+
+    </main>
 
     <script src="static/scripts/index.js"></script>
 </body>

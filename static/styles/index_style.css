@@ -456,8 +456,8 @@ body {
 
 /* ===== УЛУЧШЕННЫЕ МЕДИА-ЗАПРОСЫ ===== */
 
-/* Large Tablets и небольшие ноутбуки */
-@media (max-width: 1024px) {
+/* Large tablets and small laptops */
+@media (max-width: 992px) {
     .top-bar {
         padding: 18px 30px;
     }
@@ -531,8 +531,8 @@ body {
     }
 }
 
-/* Большие телефоны */
-@media (max-width: 600px) {
+/* Large phones */
+@media (max-width: 576px) {
     .top-bar {
         padding: 15px 25px;
         flex-wrap: wrap;
@@ -575,7 +575,7 @@ body {
     }
 }
 
-/* Обычные телефоны */
+/* Phones */
 @media (max-width: 480px) {
     .top-bar {
         padding: 10px 15px;
