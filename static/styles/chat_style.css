@@ -577,7 +577,7 @@ body {
     justify-content: space-between;
     width: 100%;
     margin-left: auto;
-    margin-bottom: 4px;
+    margin-bottom: 5px;
     font-size: 0.8em;
     color: #ccc;
     font-family: 'Audiowide', sans-serif;
@@ -607,9 +607,12 @@ body {
 }
 
 .fullscreen-message.center .bubble-text {
-    background: rgba(109, 109, 109, 0.2);
-    border-color: rgba(79, 79, 79, 0.4);
+    background: rgba(109, 109, 109, 0.543);
+    border: 1px solid rgba(79, 79, 79, 0.4);
     text-align: center;
+    padding: 10px 20px;
+    display: inline-block;
+    border-radius: 12px;
 }
 
 .thinking-content {
