@@ -7,6 +7,7 @@ class BotDialogGenerator {
     this.currentBatchCount = 0; // Количество сообщений в текущей пачке генерации
     this.generatedMessages = []; // Сгенерированные сообщения
     this.delayMs = 1000; // Задержка между воспроизведением сообщений
+    this.thinkingDelayMs = 500; // Задержка перед показом "Thinking..."
     this.isPlaying = false; // Флаг для отслеживания начала диалога
     this.currentIndex = 0;
     this.timeoutId = null;
@@ -144,6 +145,17 @@ class BotDialogGenerator {
       this.delayMs = parseInt(e.target.value, 10);
       this.logMessage(`Delay set to ${this.delayMs} ms`, "info");
     });
+
+    // Fullscreen thinking delay slider
+    document
+      .getElementById("thinking-delay-range")
+      ?.addEventListener("input", (e) => {
+        this.thinkingDelayMs = parseInt(e.target.value, 10);
+        this.logMessage(
+          `Thinking delay set to ${this.thinkingDelayMs} ms`,
+          "info"
+        );
+      });
 
     // Model selection
     document.querySelectorAll("select").forEach((select) => {
@@ -469,6 +481,8 @@ class BotDialogGenerator {
     // Генерируем именно messageLimit сообщений в каждой пачке
     while (this.currentBatchCount < this.messageLimit && !this.isPaused) {
       try {
+        // Небольшая задержка перед показом "Thinking..."
+        await this.delay(this.thinkingDelayMs);
         // Показываем индикатор "Thinking..."
         this.showThinkingIndicator(currentBot);
 
@@ -660,6 +674,9 @@ const showNextMessage = async () => {
     showNextMessage();
     return;
   }
+
+  // Небольшая задержка перед отображением Thinking
+  await delay(this.thinkingDelayMs);
 
   // Показываем Thinking...
   const isLeft = sender === "bot1";
