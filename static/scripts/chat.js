@@ -22,6 +22,7 @@ class BotDialogGenerator {
       bot2: 0.7,
     };
     this.selectedModel = "";
+    this.useServiceKey = localStorage.getItem("useServiceKey") === "true";
 
     this.init();
   }
@@ -358,10 +359,8 @@ class BotDialogGenerator {
       });
 
       content.querySelector(".use-service-key")?.addEventListener("click", () => {
-        this.apiKeys.togetherai = "";
-        localStorage.removeItem("togetheraiKey");
-        const input = content.querySelector(".togetherai-key");
-        if (input) input.value = "";
+        this.useServiceKey = true;
+        localStorage.setItem("useServiceKey", "true");
         this.logMessage("Using service TogetherAI key", "info");
         this.updateModelInfo();
       });
@@ -426,6 +425,9 @@ class BotDialogGenerator {
     this.apiKeys.google =
       document.querySelector(".google-key")?.value.trim() || "";
 
+    this.useServiceKey = false;
+    localStorage.setItem("useServiceKey", "false");
+
     localStorage.setItem("openaiKey", this.apiKeys.openai);
     localStorage.setItem("togetheraiKey", this.apiKeys.togetherai);
     localStorage.setItem("googleKey", this.apiKeys.google);
@@ -439,6 +441,7 @@ class BotDialogGenerator {
     const openai = localStorage.getItem("openaiKey") || "";
     const together = localStorage.getItem("togetheraiKey") || "";
     const google = localStorage.getItem("googleKey") || "";
+    this.useServiceKey = localStorage.getItem("useServiceKey") === "true";
 
     if (openai) {
       this.apiKeys.openai = openai;
@@ -943,6 +946,10 @@ const showNextMessage = async () => {
   }
 
   async callTogetherAI(systemPrompt, userPrompt, temperature) {
+    if (!this.useServiceKey && !this.apiKeys.togetherai) {
+      this.logMessage("Укажите API ключ", "error");
+      throw new Error("Missing TogetherAI API key");
+    }
     const providers = [
       { provider: "QWEN2", name: "Qwen2" },
       { provider: "META_LLAMA", name: "Meta Llama" },
@@ -965,7 +972,7 @@ const showNextMessage = async () => {
             temperature,
             provider,
             mode: "autofill",
-            apiKey: this.apiKeys.togetherai || undefined,
+            apiKey: this.useServiceKey ? undefined : this.apiKeys.togetherai,
           }),
         });
 
@@ -1259,11 +1266,16 @@ const showNextMessage = async () => {
     const model = this.selectedModel || "none";
     const keyMap = {
       "GPT-4": this.apiKeys.openai,
-      TogetherAI: this.apiKeys.togetherai,
+      TogetherAI: this.useServiceKey ? "service" : this.apiKeys.togetherai,
       Gemini: this.apiKeys.google,
     };
     const key = keyMap[model] || "";
-    const shortKey = key ? `${key.slice(0, 4)}...${key.slice(-4)}` : "no key";
+    let shortKey;
+    if (model === "TogetherAI" && this.useServiceKey) {
+      shortKey = "service key";
+    } else {
+      shortKey = key ? `${key.slice(0, 4)}...${key.slice(-4)}` : "no key";
+    }
     document.querySelectorAll('.model-info').forEach((el) => {
       el.textContent = `${model} | ${shortKey}`;
     });
