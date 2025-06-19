@@ -938,7 +938,8 @@ const showNextMessage = async () => {
     });
 
     if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.status}`);
+      const msg = this.getFriendlyErrorMessage(response.status);
+      throw new Error(msg);
     }
 
     const data = await response.json();
@@ -977,8 +978,8 @@ const showNextMessage = async () => {
         });
 
         if (!response.ok) {
-          const errorBody = await response.text();
-          throw new Error(`${name} error ${response.status}: ${errorBody}`);
+          const friendly = this.getFriendlyErrorMessage(response.status);
+          throw new Error(`${name}: ${friendly}`);
         }
 
         const data = await response.json();
@@ -1028,7 +1029,8 @@ const showNextMessage = async () => {
     );
 
     if (!response.ok) {
-      throw new Error(`Google AI API error: ${response.status}`);
+      const msg = this.getFriendlyErrorMessage(response.status);
+      throw new Error(msg);
     }
 
     const data = await response.json();
@@ -1260,6 +1262,17 @@ const showNextMessage = async () => {
 
   delay(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  getFriendlyErrorMessage(status) {
+    const messages = {
+      400: "Некорректный запрос. Проверьте введенные данные.",
+      401: "Ошибка авторизации. Проверьте API ключ.",
+      404: "Ресурс не найден. Проверьте URL.",
+      429: "Слишком много запросов. Попробуйте чуть позже.",
+      500: "Сервер столкнулся с ошибкой. Повторите попытку позже.",
+    };
+    return messages[status] || `Неизвестная ошибка (${status}). Попробуйте еще раз.`;
   }
 
   updateModelInfo() {
