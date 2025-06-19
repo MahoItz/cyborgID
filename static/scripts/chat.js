@@ -591,17 +591,26 @@ class BotDialogGenerator {
   }
 
   toggleReplay() {
-    this.isReplaying = !this.isReplaying && this.generatedMessages.length > 0;
-
     const playBtn = document.getElementById("menu-play");
     const playIcon = '<img src="static/image/play.png" alt="Play">';
     const pauseIcon = '<img src="static/image/pause.png" alt="Pause">';
-    playBtn.innerHTML = this.isReplaying ? pauseIcon : playIcon;
 
     if (this.isReplaying) {
-      this.replayMessages();
-    } else {
+      // Pause replay
+      this.replayPaused = true;
+      this.isReplaying = false;
+      playBtn.innerHTML = playIcon;
       clearTimeout(this.timeoutId);
+    } else {
+      if (this.generatedMessages.length === 0) {
+        this.logMessage("No messages to replay", "warning");
+        return;
+      }
+      // Start/restart replay
+      this.replayPaused = false;
+      this.isReplaying = true;
+      playBtn.innerHTML = pauseIcon;
+      this.replayMessages();
     }
   }
 
@@ -671,12 +680,17 @@ const showNextMessage = async () => {
 
     this.currentIndex++;
     await delay(this.delayMs);
-    showNextMessage();
+    if (!this.replayPaused) {
+      showNextMessage();
+    }
     return;
   }
 
   // Небольшая задержка перед отображением Thinking
   await delay(this.thinkingDelayMs);
+  if (this.replayPaused) {
+    return;
+  }
 
   // Показываем Thinking...
   const isLeft = sender === "bot1";
@@ -696,6 +710,10 @@ const showNextMessage = async () => {
 
   // Задержка отображения Thinking
   await delay(this.delayMs);
+  if (this.replayPaused) {
+    container.removeChild(thinkingDiv);
+    return;
+  }
   container.removeChild(thinkingDiv);
 
   // Сообщение
@@ -716,7 +734,9 @@ const showNextMessage = async () => {
   container.scrollTop = container.scrollHeight;
 
   this.currentIndex++;
-  showNextMessage();
+  if (!this.replayPaused) {
+    showNextMessage();
+  }
 };
 
 
