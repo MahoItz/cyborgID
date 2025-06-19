@@ -591,6 +591,11 @@ class BotDialogGenerator {
     }
   }
 
+  getReplayMessages() {
+    // возвращает копию или ссылку на данные, с которыми работает полноэкранный режим
+    return [...this.dialogMessages];
+  }
+
   async replayMessages() {
     if (this.generatedMessages.length === 0) {
       this.logMessage("No messages to replay", "warning");
@@ -644,14 +649,14 @@ class BotDialogGenerator {
 
       const messageDiv = document.createElement("div");
 
-      // Если это initial prompt — отобразить по центру
+      // Initial prompt — по центру
       if (sender === "user") {
         messageDiv.className = "fullscreen-message bubble center";
         messageDiv.innerHTML = `
-        <div class="bubble-text">
-          <b>Initial Prompt:</b> ${msg.message}
-        </div>
-      `;
+      <div class="bubble-text">
+        <b>Initial Prompt:</b> ${msg.message}
+      </div>
+    `;
         container.appendChild(messageDiv);
         container.scrollTop = container.scrollHeight;
 
@@ -661,7 +666,7 @@ class BotDialogGenerator {
         return;
       }
 
-      // Показываем индикатор "Thinking..."
+      // Показываем Thinking...
       const isLeft = sender === "bot1";
       const thinkingWord =
         thinkingWords[Math.floor(Math.random() * thinkingWords.length)];
@@ -670,24 +675,26 @@ class BotDialogGenerator {
         isLeft ? "left" : "right"
       } thinking-indicator`;
       thinkingDiv.innerHTML = `
-      <div class="bubble-text thinking-content">
-        <span class="thinking-text">${thinkingWord}</span>
-        <span class="thinking-dots">
-          <span>.</span><span>.</span><span>.</span>
-        </span>
-      </div>
-    `;
+    <div class="bubble-text thinking-content">
+      <span class="thinking-text">${thinkingWord}</span>
+      <span class="thinking-dots">
+        <span>.</span><span>.</span><span>.</span>
+      </span>
+    </div>
+  `;
       container.appendChild(thinkingDiv);
       container.scrollTop = container.scrollHeight;
 
-      await delay(1000);
+      // Задержка отображения Thinking
+      await delay(this.delayMs);
       container.removeChild(thinkingDiv);
 
-      // Основное сообщение
+      // Сообщение
       messageDiv.className = `fullscreen-message bubble ${
         isLeft ? "left" : "right"
       }`;
       messageDiv.innerHTML = `
+    <div class="bubble-text">
       <div class="fullscreen-message-header">
         ${
           isLeft
@@ -695,13 +702,13 @@ class BotDialogGenerator {
             : `<span class="message-time">${timeStamp}</span><strong>${name}</strong>`
         }
       </div>
-      <div class="bubble-text">${msg.message}</div>
-    `;
+      ${msg.message}
+    </div>
+  `;
       container.appendChild(messageDiv);
       container.scrollTop = container.scrollHeight;
 
       this.currentIndex++;
-      await delay(this.delayMs);
       showNextMessage();
     };
 

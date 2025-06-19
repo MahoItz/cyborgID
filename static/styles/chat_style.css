@@ -551,7 +551,7 @@ body {
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: 70%;
+    max-width: 65%;
 }
 
 .fullscreen-message.left {
@@ -576,7 +576,7 @@ body {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    margin-left: auto; 
+    margin-left: auto;
     margin-bottom: 4px;
     font-size: 0.8em;
     color: #ccc;
@@ -593,16 +593,23 @@ body {
     word-wrap: break-word;
 }
 
+
+.fullscreen-message.center {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+}
+
 .fullscreen-message.right .bubble-text {
     background: rgba(0, 180, 255, 0.2);
     border-color: rgba(0, 180, 255, 0.4);
     text-align: right;
 }
 
-.fullscreen-message.center {
-    justify-content: center;
-    padding-left: 0;
-    padding-right: 0;
+.fullscreen-message.center .bubble-text {
+    background: rgba(109, 109, 109, 0.2);
+    border-color: rgba(79, 79, 79, 0.4);
+    text-align: center;
 }
 
 .thinking-content {
