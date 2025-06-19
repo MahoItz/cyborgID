@@ -1317,20 +1317,28 @@ class BotDialogGenerator {
 
   updateModelInfo() {
     const model = this.selectedModel || "none";
-    const keyMap = {
-      "GPT-4": this.apiKeys.openai,
-      TogetherAI: this.useServiceKey ? "service" : this.apiKeys.togetherai,
-      Gemini: this.apiKeys.google,
-    };
-    const key = keyMap[model] || "";
-    let shortKey;
-    if (model === "TogetherAI" && this.useServiceKey) {
-      shortKey = "service key";
-    } else {
-      shortKey = key ? `${key.slice(0, 4)}...${key.slice(-4)}` : "no key";
+    let keyText = "";
+    let key = "";
+
+    if (model === "GPT-4") {
+      key = this.apiKeys.openai;
+    } else if (model === "TogetherAI") {
+      if (this.useServiceKey) {
+        keyText = "Srvice Key";
+      } else {
+        key = this.apiKeys.togetherai;
+      }
+    } else if (model === "Gemini") {
+      key = this.apiKeys.google;
     }
+
+    if (!keyText) {
+      const shortKey = key ? `${key.slice(0, 2)}...${key.slice(-3)}` : "no key";
+      keyText = `User Key: ${shortKey}`;
+    }
+
     document.querySelectorAll(".model-info").forEach((el) => {
-      el.textContent = `${model} | ${shortKey}`;
+      el.textContent = `${model} | ${keyText}`;
     });
   }
 }
