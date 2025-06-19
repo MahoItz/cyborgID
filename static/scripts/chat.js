@@ -261,12 +261,12 @@ class BotDialogGenerator {
     const arrow = header.querySelector(".accordion-arrow");
     const content = header.nextElementSibling;
 
-    if (arrow.textContent === "▼") {
-      arrow.textContent = "▶";
-      if (content) content.style.display = "none";
-    } else {
-      arrow.textContent = "▼";
-      if (content) content.style.display = "block";
+    if (!content) return;
+
+    const isOpen = content.classList.toggle("open");
+
+    if (arrow) {
+      arrow.style.transform = isOpen ? "rotate(90deg)" : "rotate(0deg)";
     }
   }
 
@@ -368,16 +368,8 @@ class BotDialogGenerator {
         });
       });
 
-      // Обработчик клика на аккордион
-      header.addEventListener("click", () => {
-        const isOpen = content.classList.toggle("open");
-
-        // Повернуть стрелочку
-        const arrow = header.querySelector(".accordion-arrow");
-        if (arrow) {
-          arrow.style.transform = isOpen ? "rotate(90deg)" : "rotate(0deg)";
-        }
-      });
+      // Контент скрыт по умолчанию
+      content.classList.remove("open");
     });
   }
 

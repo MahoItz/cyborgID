@@ -253,48 +253,7 @@
     </div>
 
     <script>
-        // Desktop accordion functionality
-        document.querySelectorAll('.accordion-header').forEach(header => {
-            header.addEventListener('click', () => {
-                const arrow = header.querySelector('.accordion-arrow');
-                if (arrow.textContent === '▼') {
-                    arrow.textContent = '▶';
-                } else {
-                    arrow.textContent = '▼';
-                }
-            });
-        });
-
-        // Mobile accordion functionality
-        document.querySelectorAll('.mobile-accordion-header').forEach(header => {
-            header.addEventListener('click', () => {
-                const arrow = header.querySelector('.accordion-arrow');
-                if (arrow.textContent === '▼') {
-                    arrow.textContent = '▶';
-                } else {
-                    arrow.textContent = '▼';
-                }
-            });
-        });
-
-        // Mobile navigation
-        function showSection(sectionId, tabElement) {
-            // Hide all sections
-            document.querySelectorAll('.mobile-section').forEach(section => {
-                section.classList.remove('active');
-            });
-
-            // Remove active class from all tabs
-            document.querySelectorAll('.nav-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-
-            // Show selected section
-            document.getElementById(sectionId).classList.add('active');
-
-            // Add active class to clicked tab
-            tabElement.classList.add('active');
-        }
+        // Placeholder for browsers with JavaScript disabled
     </script>
     <script src="static/scripts/chat.js"></script>
 </body>
