@@ -21,6 +21,7 @@
             <div class="logs-section">
                 <div class="logs-header">Chat history cleared</div>
                 <div class="logs-header">Message counters have been reset</div>
+                <div class="logs-header model-info"></div>
             </div>
 
             <div class="settings-section"> <!-- Блок с настройками -->
@@ -28,9 +29,10 @@
                     <div class="control-group">
                         <label>Select model</label>
                         <select>
-                            <option>Open AI</option>
-                            <option>Together AI</option>
-                            <option>Gemini</option>
+                            <option value="" selected>Select model...</option>
+                            <option value="GPT-4">GPT-4</option>
+                            <option value="TogetherAI">TogetherAI</option>
+                            <option value="Gemini">Gemini</option>
                         </select>
                     </div>
 
@@ -195,9 +197,10 @@
                 <div class="mobile-control-group">
                     <label>Select model</label>
                     <select>
-                        <option>GPT-4</option>
-                        <option>TogetherAI</option>
-                        <option>Gemini</option>
+                        <option value="" selected>Select model...</option>
+                        <option value="GPT-4">GPT-4</option>
+                        <option value="TogetherAI">TogetherAI</option>
+                        <option value="Gemini">Gemini</option>
                     </select>
                 </div>
 
@@ -239,6 +242,7 @@
         <div class="mobile-logs-section">
             <div class="mobile-logs-header">Chat history cleared</div>
             <div class="mobile-logs-header">Message counters have been reset</div>
+            <div class="mobile-logs-header model-info"></div>
         </div>
     </div>
 

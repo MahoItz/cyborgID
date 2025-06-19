@@ -21,7 +21,7 @@ class BotDialogGenerator {
       bot1: 0.7,
       bot2: 0.7,
     };
-    this.selectedModel = "TogetherAI";
+    this.selectedModel = "";
 
     this.init();
   }
@@ -31,6 +31,7 @@ class BotDialogGenerator {
     this.setupEventListeners();
     this.setupAccordions();
     this.loadApiKeys();
+    this.loadSelectedModel();
     this.setupMobileNavigation();
     this.populateUserDropdowns();
     this.bindUserDeletion();
@@ -166,6 +167,11 @@ class BotDialogGenerator {
       ) {
         select.addEventListener("change", (e) => {
           this.selectedModel = e.target.value;
+          localStorage.setItem("selectedModel", this.selectedModel);
+          document
+            .querySelectorAll('.control-group select, .mobile-control-group select')
+            .forEach((s) => (s.value = this.selectedModel));
+          this.updateModelInfo();
         });
       }
     });
@@ -308,6 +314,7 @@ class BotDialogGenerator {
                         <button class="toggle-key" data-target="google">👁️</button>
                     </div>
                     <button class="save-keys">Save Keys</button>
+                    <button class="use-service-key">Use Service Key</button>
                 </div>
             `;
       } else if (header.textContent.includes("Creativity")) {
@@ -348,6 +355,15 @@ class BotDialogGenerator {
       // Кнопка сохранения ключей
       content.querySelector(".save-keys")?.addEventListener("click", () => {
         this.saveApiKeys();
+      });
+
+      content.querySelector(".use-service-key")?.addEventListener("click", () => {
+        this.apiKeys.togetherai = "";
+        localStorage.removeItem("togetheraiKey");
+        const input = content.querySelector(".togetherai-key");
+        if (input) input.value = "";
+        this.logMessage("Using service TogetherAI key", "info");
+        this.updateModelInfo();
       });
 
       // Кнопки очистки ключей
@@ -416,6 +432,7 @@ class BotDialogGenerator {
 
     this.logMessage("API keys saved successfully", "success");
     this.loadApiKeys();
+    this.updateModelInfo();
   }
 
   loadApiKeys() {
@@ -438,6 +455,21 @@ class BotDialogGenerator {
       const input = document.querySelector(".google-key");
       if (input) input.value = google;
     }
+    this.updateModelInfo();
+  }
+
+  loadSelectedModel() {
+    const saved = localStorage.getItem("selectedModel");
+    if (saved) {
+      this.selectedModel = saved;
+    }
+    document.querySelectorAll('.control-group select, .mobile-control-group select')
+      .forEach((s) => {
+        if (this.selectedModel) {
+          s.value = this.selectedModel;
+        }
+      });
+    this.updateModelInfo();
   }
 
   clearApiKey(type) {
@@ -447,9 +479,21 @@ class BotDialogGenerator {
     const input = document.querySelector(`.${type}-key`);
     if (input) input.value = "";
     this.logMessage(`${type} API key removed`, "info");
+    this.updateModelInfo();
+  }
+
+  updateApiKeysFromInputs() {
+    const o = document.querySelector(".openai-key");
+    if (o) this.apiKeys.openai = o.value.trim();
+    const t = document.querySelector(".togetherai-key");
+    if (t) this.apiKeys.togetherai = t.value.trim();
+    const g = document.querySelector(".google-key");
+    if (g) this.apiKeys.google = g.value.trim();
   }
 
   async startDialog() {
+    this.updateApiKeysFromInputs();
+    this.updateModelInfo();
     if (this.isGenerating && !this.isPaused) {
       this.logMessage("Dialog is already in progress", "warning");
       return;
@@ -476,7 +520,7 @@ class BotDialogGenerator {
       }
 
       if (!this.validateApiKeys()) {
-        this.logMessage("Please configure API keys first", "error");
+        this.logMessage("Please select model and configure API key", "error");
         return;
       }
 
@@ -492,7 +536,7 @@ class BotDialogGenerator {
     }
 
     if (!this.validateApiKeys()) {
-      this.logMessage("Please configure API keys first", "error");
+      this.logMessage("Please select model and configure API key", "error");
       return;
     }
 
@@ -1209,6 +1253,20 @@ const showNextMessage = async () => {
 
   delay(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  updateModelInfo() {
+    const model = this.selectedModel || "none";
+    const keyMap = {
+      "GPT-4": this.apiKeys.openai,
+      TogetherAI: this.apiKeys.togetherai,
+      Gemini: this.apiKeys.google,
+    };
+    const key = keyMap[model] || "";
+    const shortKey = key ? `${key.slice(0, 4)}...${key.slice(-4)}` : "no key";
+    document.querySelectorAll('.model-info').forEach((el) => {
+      el.textContent = `${model} | ${shortKey}`;
+    });
   }
 }
 

@@ -94,6 +94,14 @@ body {
     text-shadow: 0 0 10px currentColor;
 }
 
+.logs-header.model-info {
+    position: sticky;
+    top: 0;
+    text-align: center;
+    background: rgba(10, 10, 15, 0.8);
+    z-index: 1;
+}
+
 .logs-content {
     flex: 1;
     min-height: 0;
@@ -1347,6 +1355,14 @@ body {
         margin-bottom: 10px;
         font-size: 11px;
         flex-shrink: 0;
+        background: rgba(10, 10, 15, 0.8);
+    }
+
+    .mobile-logs-header.model-info {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 1;
     }
 
     .mobile-logs-content {
@@ -1588,6 +1604,29 @@ body {
     cursor: pointer;
     color: var(--text-secondary);
     transition: all 0.3s ease;
+}
+
+.api-keys-form .use-service-key {
+    background: linear-gradient(135deg, rgba(26, 10, 46, 0.9), rgba(16, 33, 62, 0.8));
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    margin-top: 10px;
+    padding: 6px 8px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+}
+
+.api-keys-form .use-service-key:hover {
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+    box-shadow: 0 0 10px rgba(53, 127, 236, 0.3);
+    transform: translateY(2px);
+}
+
+.api-keys-form .use-service-key:active {
+    background: #333;
+    transform: translateY(1px);
 }
 
 .api-keys-form .save-keys:hover {
