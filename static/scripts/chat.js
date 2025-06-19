@@ -552,12 +552,12 @@ class BotDialogGenerator {
     });
 
     // Остальная логика меню при наведении
-    triggerZone.addEventListener("mouseenter", () => {
+    triggerZone.addEventListener("pointerenter", () => {
       isInTriggerZone = true;
       menu.classList.add("visible");
     });
 
-    triggerZone.addEventListener("mouseleave", () => {
+    triggerZone.addEventListener("pointerleave", () => {
       isInTriggerZone = false;
       setTimeout(() => {
         if (!isInMenu) {
@@ -566,11 +566,11 @@ class BotDialogGenerator {
       }, 200);
     });
 
-    menu.addEventListener("mouseenter", () => {
+    menu.addEventListener("pointerenter", () => {
       isInMenu = true;
     });
 
-    menu.addEventListener("mouseleave", () => {
+    menu.addEventListener("pointerleave", () => {
       isInMenu = false;
       setTimeout(() => {
         if (!isInTriggerZone) {
@@ -588,6 +588,16 @@ class BotDialogGenerator {
         menu.classList.remove("visible");
       }
     });
+
+    const hideMenu = () => {
+      isInTriggerZone = false;
+      isInMenu = false;
+      menu.classList.remove("visible");
+    };
+
+    window.addEventListener("blur", hideMenu);
+    document.addEventListener("mouseleave", hideMenu);
+    document.addEventListener("pointerleave", hideMenu);
   }
 
   toggleReplay() {
