@@ -132,7 +132,6 @@ class BotDialogGenerator {
       this.isReplaying = false;
       this.replayPaused = false;
       this.currentIndex = 0;
-      this.generatedMessages = [];
       const container = document.getElementById("fullscreen-messages");
       container.innerHTML = "";
       const playBtn = document.getElementById("menu-play");
