@@ -289,6 +289,7 @@ class BotDialogGenerator {
                         <button class="clear-key" data-key="togetherai">
                             <img src="static/image/clear.png" alt="Delete">
                         </button>
+                        <button class="toggle-key" data-target="togetherai">👁️</button>
                     </div>
                     <div class="input-group">
                         <label>OpenAI API Key:</label>
@@ -296,6 +297,7 @@ class BotDialogGenerator {
                         <button class="clear-key" data-key="openai">
                             <img src="static/image/clear.png" alt="Delete">
                         </button>
+                        <button class="toggle-key" data-target="openai">👁️</button>
                     </div>
                     <div class="input-group">
                         <label>Google AI API Key:</label>
@@ -303,6 +305,7 @@ class BotDialogGenerator {
                         <button class="clear-key" data-key="google">
                             <img src="static/image/clear.png" alt="Delete">
                         </button>
+                        <button class="toggle-key" data-target="google">👁️</button>
                     </div>
                     <button class="save-keys">Save Keys</button>
                 </div>
@@ -351,6 +354,17 @@ class BotDialogGenerator {
       content.querySelectorAll(".clear-key").forEach((btn) => {
         btn.addEventListener("click", () => {
           this.clearApiKey(btn.dataset.key);
+        });
+      });
+
+      // Кнопки просмотра ключей
+      content.querySelectorAll(".toggle-key").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const target = btn.dataset.target;
+          const input = content.querySelector(`.${target}-key`);
+          if (input) {
+            input.type = input.type === "password" ? "text" : "password";
+          }
         });
       });
 
