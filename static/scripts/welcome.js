@@ -22,6 +22,52 @@ const message = document.getElementById("message");
 const autofillBtn = document.getElementById("autofill-btn");
 const submitBtn = document.getElementById("submit-btn");
 
+// Variables for shuffle animation
+let shuffleInterval = null;
+let originalValues = {};
+
+// Helper to generate random letters
+function randomLetters(length) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+}
+
+// Start showing random letters in all inputs
+function startShuffle() {
+    const inputs = form.querySelectorAll('input');
+    originalValues = {};
+    inputs.forEach(input => {
+        originalValues[input.id] = input.value;
+    });
+    shuffleInterval = setInterval(() => {
+        inputs.forEach(input => {
+            const len = input.type === 'date' ? 10 : 8;
+            input.value = randomLetters(len);
+        });
+    }, 100);
+}
+
+// Stop shuffle and optionally restore original values
+function stopShuffle(restore = true) {
+    if (shuffleInterval) {
+        clearInterval(shuffleInterval);
+        shuffleInterval = null;
+    }
+    if (restore) {
+        const inputs = form.querySelectorAll('input');
+        inputs.forEach(input => {
+            if (originalValues.hasOwnProperty(input.id)) {
+                input.value = originalValues[input.id];
+            }
+        });
+        originalValues = {};
+    }
+}
+
 // Utility Functions
 function showMessage(text, type = 'info') {
     message.textContent = text;
@@ -172,6 +218,7 @@ async function callAIWithFallback(prompt, systemPrompt, taskType = 'autofill') {
 async function autoFillForm() {
     setButtonState(autofillBtn, true, "Generating...");
     showMessage("AI is generating sample data for the form...", 'info');
+    startShuffle();
 
     try {
         const systemPrompt = "You are a helpful assistant that generates realistic and unique sample data for application forms. Each time, generate a completely new and different fictional person with a unique background.";
@@ -216,12 +263,14 @@ async function autoFillForm() {
             }
         });
 
+        stopShuffle(false);
         showMessage(`✅ Form auto-filled successfully using ${result.provider}! You can modify any fields before submitting.`, 'success');
         console.log("AI generated data:", jsonData);
 
     } catch (error) {
         console.error('Auto-fill error:', error);
         showMessage(`❌ Auto-fill error: ${error.message}`, 'error');
+        stopShuffle(true);
     } finally {
         setButtonState(autofillBtn, false, "Auto-fill with AI");
     }
