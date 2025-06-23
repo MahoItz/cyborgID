@@ -42,6 +42,57 @@ body {
     position: relative;
 }
 
+/* Navigation */
+.top-bar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 20px 40px;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.nav-left {
+    display: flex;
+    gap: 10px;
+}
+
+.top-bar a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 8px 10px;
+    border-radius: 8px;
+}
+
+.top-bar a:hover {
+    cursor: pointer;
+    color: #00ffff;
+    transform: translateY(-2px);
+}
+
+.top-bar a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #00ffff, #ff00ff);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.top-bar a:hover::after {
+    width: 80%;
+}
+
 /* Desktop Layout */
 .container {
     display: grid;
