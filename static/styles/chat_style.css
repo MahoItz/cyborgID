@@ -42,13 +42,66 @@ body {
     position: relative;
 }
 
+/* Navigation */
+.top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 20px 40px;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.nav-left {
+    display: flex;
+    gap: 10px;
+}
+
+.top-bar a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 8px 10px;
+    border-radius: 8px;
+}
+
+.top-bar a:hover {
+    cursor: pointer;
+    color: #00ffff;
+    transform: translateY(-2px);
+}
+
+.top-bar a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #00ffff, #ff00ff);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.top-bar a:hover::after {
+    width: 80%;
+}
+
 /* Desktop Layout */
 .container {
     display: grid;
     grid-template-columns: minmax(350px, 400px) 1fr;
-    height: 100vh;
+    height: calc(100vh - 80px);
     gap: 15px;
     padding: 15px;
+    margin-top: 80px;
     overflow: hidden;
     overflow-y: auto;
 }
@@ -989,10 +1042,10 @@ body {
 }
 
 .control-button.fullscreen {
-    position: fixed;
+    position: absolute;
     padding: 10px 15px;
-    top: 40px;
-    right: 45px;
+    top: 15px;
+    right: 20px;
     z-index: 999;
     color: var(--accent-info);
     border-color: var(--accent-info);
@@ -1120,6 +1173,11 @@ body {
         margin-bottom: 15px;
         gap: 8px;
         flex-shrink: 0;
+    }
+
+    .control-button.fullscreen {
+        position: static;
+        margin-left: auto;
     }
 
     .mobile-chat-content {
