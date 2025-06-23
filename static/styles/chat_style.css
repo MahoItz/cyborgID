@@ -30,8 +30,6 @@ body {
     padding: 0;
 }
 
-
-
 body {
     font-family: 'Aldrich', sans-serif;
     background: linear-gradient(135deg, #0a0a0f 0%, #1a0a2e 35%, #16213e 100%);
@@ -51,7 +49,7 @@ body {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    padding: 20px 40px;
+    padding: 5px 40px;
     z-index: 1000;
     transition: all 0.3s ease;
 }
@@ -69,29 +67,14 @@ body {
     transition: all 0.3s ease;
     position: relative;
     padding: 8px 10px;
+    border-bottom: 1px solid var(--border-color);
     border-radius: 8px;
 }
 
 .top-bar a:hover {
     cursor: pointer;
-    color: #00ffff;
+    color: var(--text-secondary);
     transform: translateY(-2px);
-}
-
-.top-bar a::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: 0;
-    height: 2px;
-    background: linear-gradient(90deg, #00ffff, #ff00ff);
-    transition: all 0.3s ease;
-    transform: translateX(-50%);
-}
-
-.top-bar a:hover::after {
-    width: 80%;
 }
 
 /* Desktop Layout */
@@ -101,7 +84,7 @@ body {
     height: calc(100vh - 80px);
     gap: 15px;
     padding: 15px;
-    margin-top: 80px;
+    margin-top: 2.5rem;
     overflow: hidden;
     overflow-y: auto;
 }
