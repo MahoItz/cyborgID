@@ -149,9 +149,6 @@
     <!-- Mobile Layout -->
     <div class="mobile-section active" id="chat-section">
         <div class="mobile-chat-section">
-            <div class="mobile-dialog-header">
-                <button class="control-button fullscreen">Full Screen</button>
-            </div>
             <!-- Chat messages will appear here -->
         </div>
 
@@ -165,7 +162,7 @@
             </div>
             <div class="mobile-input-wrapper">
                 <textarea class="mobile-input-textarea" placeholder="Enter your initial prompt here..."></textarea>
-                <button class="mobile-send-button">🛩️</button>
+                <button class="mobile-send-button"> <img src="static/image/send.png" alt="Send"></button>
             </div>
         </div>
     </div>
@@ -174,11 +171,9 @@
         <div class="mobile-bot-setup">
             <div class="mobile-bot-card">
                 <div class="mobile-bot-header">
-                    <h3 class="mobile-bot-title">You are Josefin Hello, a Swedish artist specializing in food</h3>
+                    <h3 class="mobile-bot-title">User 1</h3>
+                    <button class="mobile-delete-user-button">🗑️</button>
                     <select class="mobile-bot-select">
-                        <option>Josefin Hello</option>
-                        <option>Creative Writer</option>
-                        <option>Technical Expert</option>
                         <option>Default User</option>
                     </select>
                 </div>
@@ -187,11 +182,9 @@
 
             <div class="mobile-bot-card">
                 <div class="mobile-bot-header">
-                    <h3 class="mobile-bot-title">You are Leila Farouk, an interdisciplinary artist based in</h3>
+                    <h3 class="mobile-bot-title">User 2</h3>
+                    <button class="mobile-delete-user-button">🗑️</button>
                     <select class="mobile-bot-select">
-                        <option>Leila Farouk</option>
-                        <option>Creative Writer</option>
-                        <option>Technical Expert</option>
                         <option>Default User</option>
                     </select>
                 </div>
@@ -207,7 +200,7 @@
                     <label>Select model</label>
                     <select>
                         <option value="TogetherAI" selected>TogetherAI</option>
-                        <option value="GPT-4">GPT-4</option>
+                        <option value="GPT-4">OpenAI</option>
                         <option value="Gemini">Gemini</option>
                     </select>
                 </div>
@@ -217,15 +210,6 @@
                         <span>API Keys</span>
                         <span class="accordion-arrow">▼</span>
                     </div>
-                </div>
-
-                <div class="mobile-control-group">
-                    <label>Select user</label>
-                    <select>
-                        <option>Default User</option>
-                        <option>Creative Writer</option>
-                        <option>Technical Expert</option>
-                    </select>
                 </div>
 
                 <div class="mobile-accordion-item">
@@ -239,7 +223,6 @@
                     <label>Message limit</label>
                     <div class="number-input">
                         <input type="number" value="2" min="1" max="100">
-                        <button class="refresh-btn">🔄</button>
                     </div>
                 </div>
             </div>

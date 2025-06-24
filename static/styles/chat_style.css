@@ -247,19 +247,6 @@ body {
     box-shadow: var(--border-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* Fullscreen контейнер */
 #fullscreen-dialogue {
     position: fixed;
@@ -678,24 +665,6 @@ body {
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .dialog-content {
     flex: 1;
     overflow-y: auto;
@@ -1076,6 +1045,22 @@ body {
     display: none;
 }
 
+.mobile-delete-user-button {
+    background: linear-gradient(135deg, rgba(26, 10, 46, 0.9), rgba(16, 33, 62, 0.8));
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    margin-right: 8px;
+    padding: 6px 8px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+}
+
+.mobile-delete-user-button:active {
+    transform: translateY(2px) scale(1.1);
+    box-shadow: 0 6px 20px rgba(89, 145, 182, 0.367);
+}
+
 /* Scrollbar styling */
 ::-webkit-scrollbar {
     width: 8px;
@@ -1137,7 +1122,15 @@ body {
 
     /* Chat Section */
     .mobile-chat-section {
-        background: linear-gradient(135deg, #1a2e1a, #2a1a2a);
+        background:
+            var(--grid-pattern),
+            linear-gradient(135deg,
+                rgba(28, 22, 59, 0.9) 0%,
+                rgba(26, 10, 46, 0.8) 50%,
+                rgba(16, 33, 62, 0.7) 100%);
+        background-repeat: repeat;
+        background-position: top left;
+        background-attachment: local;
         border: 1px solid var(--border-color);
         border-radius: 8px;
         padding: 15px;
@@ -1150,24 +1143,13 @@ body {
         flex-direction: column;
     }
 
-    .mobile-dialog-header {
-        display: flex;
-        justify-content: flex-end;
-        margin-bottom: 15px;
-        gap: 8px;
-        flex-shrink: 0;
-    }
-
-    .control-button.fullscreen {
-        position: static;
-        margin-left: auto;
-    }
-
     .mobile-chat-content {
         flex: 1;
         overflow-y: auto;
         min-height: 0;
     }
+
+
 
     /* Bot Setup Section */
     .mobile-bot-setup {
@@ -1286,7 +1268,7 @@ body {
     }
 
     .mobile-input-textarea:focus {
-        border-color: #555;
+        border-color: #5d6afb;
     }
 
     .mobile-input-textarea::placeholder {
@@ -1296,8 +1278,8 @@ body {
     .mobile-send-button {
         position: absolute;
         right: 10px;
-        bottom: 10px;
-        background-color: var(--tertiary-bg);
+        bottom: 20px;
+        background-color: #19ffec11;
         border: 1px solid var(--border-hover);
         border-radius: 6px;
         padding: 8px 10px;
@@ -1307,9 +1289,13 @@ body {
         transition: all 0.2s;
     }
 
-    .mobile-send-button:hover {
-        background-color: var(--border-color);
-        color: var(--text-primary);
+    .mobile-send-button img {
+        width: 1.9em;
+    }
+
+    .mobile-send-button:active {
+        transform: translateY(2px) scale(1.1);
+        box-shadow: 0 6px 20px rgba(89, 145, 182, 0.367);
     }
 
     /* Settings Section */
@@ -1352,6 +1338,15 @@ body {
         outline: none;
     }
 
+    .mobile-control-group input:focus {
+        border-color: #1976d2;
+        transform: translateY(1px) scale(1.01);
+    }
+
+    .mobile-control-group select:active {
+        transform: translateY(1px) scale(1.01);
+    }
+
     .mobile-accordion-item {
         margin-bottom: 10px;
     }
@@ -1368,8 +1363,8 @@ body {
         transition: background-color 0.2s;
     }
 
-    .mobile-accordion-header:hover {
-        background-color: var(--border-color);
+    .mobile-accordion-header:active {
+        transform: translateY(1px) scale(1.01);
     }
 
     /* Logs Section */
