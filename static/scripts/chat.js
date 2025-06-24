@@ -1079,8 +1079,9 @@ class BotDialogGenerator {
 
   showThinkingIndicator(botNumber) {
     const dialogArea =
-      document.querySelector(".dialog-section") ||
-      document.querySelector(".mobile-chat-section");
+      document.querySelector(
+        ".mobile-section.active .mobile-chat-section"
+      ) || document.querySelector(".dialog-section");
     if (!dialogArea) return;
 
     // Удаляем предыдущий индикатор, если он есть
@@ -1127,8 +1128,9 @@ class BotDialogGenerator {
 
   addMessageToDialog(sender, message) {
     const dialogArea =
-      document.querySelector(".dialog-section") ||
-      document.querySelector(".mobile-chat-section");
+      document.querySelector(
+        ".mobile-section.active .mobile-chat-section"
+      ) || document.querySelector(".dialog-section");
     if (!dialogArea) return;
 
     const messageDiv = document.createElement("div");
