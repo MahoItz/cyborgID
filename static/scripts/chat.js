@@ -449,6 +449,38 @@ class BotDialogGenerator {
       if (title)
         title.textContent = selectedUser.Resume.substring(0, 60) + "...";
     }
+
+    // Sync the corresponding dropdown in the other layout
+    const firstDesktop = document.querySelector(
+      ".bot-profile:first-child select"
+    );
+    const firstMobile = document.querySelector(
+      ".mobile-bot-card:first-child select"
+    );
+    const secondDesktop = document.querySelector(
+      ".bot-profile:last-child select"
+    );
+    const secondMobile = document.querySelector(
+      ".mobile-bot-card:last-child select"
+    );
+
+    if (
+      selectElement === firstDesktop ||
+      selectElement === firstMobile
+    ) {
+      if (firstDesktop && firstDesktop !== selectElement)
+        firstDesktop.value = selectElement.value;
+      if (firstMobile && firstMobile !== selectElement)
+        firstMobile.value = selectElement.value;
+    } else if (
+      selectElement === secondDesktop ||
+      selectElement === secondMobile
+    ) {
+      if (secondDesktop && secondDesktop !== selectElement)
+        secondDesktop.value = selectElement.value;
+      if (secondMobile && secondMobile !== selectElement)
+        secondMobile.value = selectElement.value;
+    }
   }
 
   saveApiKeys() {
@@ -936,12 +968,16 @@ class BotDialogGenerator {
   }
 
   getBotName(botNumber) {
-    const selector =
-      botNumber === 1
-        ? ".bot-profile:first-child select, .mobile-bot-card:first-child select"
-        : ".bot-profile:last-child select, .mobile-bot-card:last-child select";
-    const select = document.querySelector(selector);
-    return select?.value || `Bot${botNumber}`;
+    // Prefer the value from the mobile dropdown if it exists
+    const mobileSelect = document.querySelector(
+      `.mobile-bot-card:nth-child(${botNumber}) select`
+    );
+    const desktopSelect = document.querySelector(
+      `.bot-profile:nth-child(${botNumber}) select`
+    );
+
+    const name = mobileSelect?.value || desktopSelect?.value;
+    return name || `Bot${botNumber}`;
   }
 
   async callAPI(systemPrompt, userPrompt, botNumber) {
