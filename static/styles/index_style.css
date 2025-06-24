@@ -457,7 +457,7 @@ body {
 /* ===== УЛУЧШЕННЫЕ МЕДИА-ЗАПРОСЫ ===== */
 
 /* Large tablets and small laptops */
-@media (max-width: 992px) {
+@media (max-width: 1200px) {
     .top-bar {
         padding: 18px 30px;
     }
@@ -478,8 +478,8 @@ body {
     }
 }
 
-/* Планшеты */
-@media (max-width: 768px) {
+/* Tablets */
+@media (max-width: 992px) {
     .top-bar {
         padding: 15px 25px;
         flex-wrap: wrap;
@@ -532,7 +532,7 @@ body {
 }
 
 /* Large phones */
-@media (max-width: 576px) {
+@media (max-width: 768px) {
     .top-bar {
         padding: 15px 25px;
         flex-wrap: wrap;
@@ -576,7 +576,7 @@ body {
 }
 
 /* Phones */
-@media (max-width: 480px) {
+@media (max-width: 576px) {
     .top-bar {
         padding: 10px 15px;
     }
@@ -629,8 +629,8 @@ body {
     }
 }
 
-/* Маленькие телефоны */
-@media (max-width: 360px) {
+/* Small phones */
+@media (max-width: 480px) {
     .top-bar {
         padding: 8px 12px;
     }
@@ -665,7 +665,7 @@ body {
 }
 
 /* Очень маленькие экраны */
-@media (max-width: 320px) {
+@media (max-width: 360px) {
     .center-logo h1 {
         font-size: 24px;
         line-height: 22px;

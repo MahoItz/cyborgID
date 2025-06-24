@@ -1100,7 +1100,7 @@ body {
 }
 
 /* Mobile and tablet layout */
-@media (max-width: 768px) {
+@media (max-width: 992px) {
     body {
         overflow-y: auto;
         padding-bottom: 70px;
@@ -1410,7 +1410,7 @@ body {
     }
 }
 
-@media (max-width: 576px) {
+@media (max-width: 768px) {
     .mobile-bot-title {
         font-size: 10px;
         min-width: 150px;
