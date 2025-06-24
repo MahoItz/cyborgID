@@ -1169,10 +1169,19 @@ class BotDialogGenerator {
   }
 
   getInitialPrompt() {
-    const textarea =
-      document.querySelector('textarea[placeholder*="initial prompt"]') ||
-      document.querySelector(".mobile-input-textarea");
-    return textarea?.value || "";
+    // Prioritize the visible mobile textarea if it exists
+    const mobileActive = document.querySelector(
+      ".mobile-section.active .mobile-input-textarea"
+    );
+    if (mobileActive) {
+      return mobileActive.value || "";
+    }
+
+    // Fallback to the desktop textarea
+    const desktopTextarea = document.querySelector(
+      ".input-wrapper textarea"
+    );
+    return desktopTextarea?.value || "";
   }
 
   validateApiKeys() {
