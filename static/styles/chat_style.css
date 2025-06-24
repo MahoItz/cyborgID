@@ -1125,7 +1125,7 @@ body {
 
     .mobile-section {
         flex: 1;
-        display: flex;
+        display: none;
         flex-direction: column;
         margin-bottom: 20px;
         min-height: 0;
