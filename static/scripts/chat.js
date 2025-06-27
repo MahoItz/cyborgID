@@ -1114,30 +1114,29 @@ class BotDialogGenerator {
   }
 
   showThinkingIndicator(botNumber) {
-    const dialogArea =
-      document.querySelector(
-        ".mobile-section.active .mobile-chat-section"
-      ) || document.querySelector(".dialog-section");
-    if (!dialogArea) return;
+    const dialogAreas = document.querySelectorAll(
+      ".dialog-section, .mobile-chat-section"
+    );
+    if (dialogAreas.length === 0) return;
 
     // Удаляем предыдущий индикатор, если он есть
     this.removeThinkingIndicator();
 
-    const thinkingDiv = document.createElement("div");
-    thinkingDiv.className = `message message-bot${botNumber} thinking-indicator`;
-    thinkingDiv.id = "thinking-indicator";
+    dialogAreas.forEach((dialogArea) => {
+      const thinkingDiv = document.createElement("div");
+      thinkingDiv.className = `message message-bot${botNumber} thinking-indicator`;
 
-    const botName = this.getBotName(botNumber);
-    const timeStamp = new Date().toLocaleTimeString();
-    let headerContent = "";
+      const botName = this.getBotName(botNumber);
+      const timeStamp = new Date().toLocaleTimeString();
+      let headerContent = "";
 
-    if (botNumber === 1) {
-      headerContent = `<strong>${botName}</strong><span class="message-time">${timeStamp}</span>`;
-    } else {
-      headerContent = `<span class="message-time">${timeStamp}</span><strong>${botName}</strong>`;
-    }
+      if (botNumber === 1) {
+        headerContent = `<strong>${botName}</strong><span class="message-time">${timeStamp}</span>`;
+      } else {
+        headerContent = `<span class="message-time">${timeStamp}</span><strong>${botName}</strong>`;
+      }
 
-    thinkingDiv.innerHTML = `
+      thinkingDiv.innerHTML = `
             <div class="message-header">
                 ${headerContent}
             </div>
@@ -1151,50 +1150,54 @@ class BotDialogGenerator {
             </div>
         `;
 
-    dialogArea.appendChild(thinkingDiv);
-    dialogArea.scrollTop = dialogArea.scrollHeight;
+      dialogArea.appendChild(thinkingDiv);
+      dialogArea.scrollTop = dialogArea.scrollHeight;
+    });
   }
 
   removeThinkingIndicator() {
-    const thinkingIndicator = document.getElementById("thinking-indicator");
-    if (thinkingIndicator) {
-      thinkingIndicator.remove();
-    }
+    document
+      .querySelectorAll(".thinking-indicator")
+      .forEach((indicator) => indicator.remove());
   }
 
   addMessageToDialog(sender, message) {
-    const dialogArea =
-      document.querySelector(
-        ".mobile-section.active .mobile-chat-section"
-      ) || document.querySelector(".dialog-section");
-    if (!dialogArea) return;
+    const dialogAreas = document.querySelectorAll(
+      ".dialog-section, .mobile-chat-section"
+    );
+    if (dialogAreas.length === 0) return;
 
-    const messageDiv = document.createElement("div");
-    messageDiv.className = `message message-${sender}`;
+    const messageHTML = (() => {
+      let senderLabel = "";
+      const timeStamp = new Date().toLocaleTimeString();
+      let headerContent = "";
 
-    let senderLabel = "";
-    let timeStamp = new Date().toLocaleTimeString();
-    let headerContent = "";
+      if (sender === "user") {
+        senderLabel = "Initial Prompt";
+        headerContent = `<strong>${senderLabel}</strong><span class="message-time">${timeStamp}</span>`;
+      } else if (sender === "bot1") {
+        senderLabel = this.getBotName(1);
+        headerContent = `<strong>${senderLabel}</strong><span class="message-time">${timeStamp}</span>`;
+      } else if (sender === "bot2") {
+        senderLabel = this.getBotName(2);
+        headerContent = `<span class="message-time">${timeStamp}</span><strong>${senderLabel}</strong>`;
+      }
 
-    if (sender === "user") {
-      senderLabel = "Initial Prompt";
-      headerContent = `<strong>${senderLabel}</strong><span class="message-time">${timeStamp}</span>`;
-    } else if (sender === "bot1") {
-      senderLabel = this.getBotName(1);
-      headerContent = `<strong>${senderLabel}</strong><span class="message-time">${timeStamp}</span>`;
-    } else if (sender === "bot2") {
-      senderLabel = this.getBotName(2);
-      headerContent = `<span class="message-time">${timeStamp}</span><strong>${senderLabel}</strong>`;
-    }
-
-    messageDiv.innerHTML = `
+      return `
             <div class="message-header">
                 ${headerContent}
             </div>
             <div class="message-content">${message}</div>
         `;
+    })();
 
-    dialogArea.appendChild(messageDiv);
+    dialogAreas.forEach((area) => {
+      const messageDiv = document.createElement("div");
+      messageDiv.className = `message message-${sender}`;
+      messageDiv.innerHTML = messageHTML;
+      area.appendChild(messageDiv);
+      area.scrollTop = area.scrollHeight;
+    });
     const name =
       sender === "bot1"
         ? this.getBotName(1)
@@ -1203,7 +1206,6 @@ class BotDialogGenerator {
         : "User";
 
     this.generatedMessages.push({ sender, message, name });
-    dialogArea.scrollTop = dialogArea.scrollHeight;
   }
 
   getInitialPrompt() {
