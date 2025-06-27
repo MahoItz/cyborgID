@@ -1207,11 +1207,11 @@ class BotDialogGenerator {
   }
 
   getInitialPrompt() {
-    // Prioritize the visible mobile textarea if it exists
+    // Prioritize the mobile textarea only when it's visible
     const mobileActive = document.querySelector(
       ".mobile-section.active .mobile-input-textarea"
     );
-    if (mobileActive) {
+    if (mobileActive && mobileActive.offsetParent !== null) {
       return mobileActive.value || "";
     }
 
