@@ -72,7 +72,7 @@ function showInstructions() {
             <li>Select yours and other sub-identities to generate a dialogue.</li>
             <li>Ask a common-sense question for them to discuss.</li>
             <li>Enjoy the upcoming generation of thoughts</li>
-            <li>Give us a feedback! (devil smile)</li>
+            <li>Give us a feedback!</li>
         </ol>
     `;
   showSidebar();
