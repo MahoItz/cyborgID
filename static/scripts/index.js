@@ -64,6 +64,20 @@ function showAbout() {
   showSidebar();
 }
 
+function showInstructions() {
+  document.getElementById("sidebarTitle").textContent = "Instructions";
+  document.getElementById("sidebarContent").innerHTML = `
+        <ol>
+            <li>Create your speculative Cyborg - Avatar via the questionnaire</li>
+            <li>Select yours and other sub-identities to generate a dialogue.</li>
+            <li>Ask a common-sense question for them to discuss.</li>
+            <li>Enjoy the upcoming generation of thoughts</li>
+            <li>Give us a feedback! (devil smile)</li>
+        </ol>
+    `;
+  showSidebar();
+}
+
 document.addEventListener("keydown", function (e) {
   if (e.key === "Escape") {
     closeSidebar();
