@@ -24,7 +24,7 @@ export default async function handler(req, res) {
       headers: (apiKey) => ({
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
-        "HTTP-Referer": req.headers.origin || "https://cyborg-id.vercel.app/", // fallback
+        Referer: req.headers.origin || "https://cyborg-id.vercel.app/", // fallback
         "X-Title": "Form Application",
       }),
       models: {
@@ -44,6 +44,10 @@ export default async function handler(req, res) {
   const modelName = selectedProvider.models[mode || "autofill"];
   if (!modelName) {
     return res.status(400).json({ error: "Invalid mode or model not found" });
+  }
+
+  if (!TOGETHER_API_KEY) {
+    return res.status(500).json({ error: "Missing Together API key" });
   }
 
   try {

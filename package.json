@@ -1,0 +1,7 @@
+{
+  "name": "cyborgid",
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}
