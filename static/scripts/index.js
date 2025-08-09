@@ -35,8 +35,8 @@ function showAbout() {
   document.getElementById("sidebarTitle").textContent = "About us";
   document.getElementById("sidebarContent").innerHTML = ` 
   <div class="person">
-    <h3>Evgenia</h3>
-    <p>Креативный мыслитель, исследует психологию, визуальную эстетику и сторителлинг. Обожает создавать смыслы через искусство и текст.</p>
+    <h3>Evgenia van Zonneveld</h3>
+    <p>Creative Direction</p>
     <div class="instagram">
         <img src="static/image/instagram.png">
         <a href="https://www.instagram.com/readheadthoughts?igsh=MXYzaTh3OTM5OHFraQ==" target="_blank">Instagram</a>
@@ -44,8 +44,8 @@ function showAbout() {
   </div>
 
   <div class="person">
-    <h3>Sofia</h3>
-    <p>UX/UI дизайнер и фронтенд-разработчица с тонким чувством стиля. Создаёт интерфейсы, которые не просто работают — они радуют пользователя.</p>
+    <h3>Sofia Oleynik</h3>
+    <p>UX/UI Web designer</p>
     <div class="instagram">
         <img src="static/image/instagram.png">
         <a href="https://www.instagram.com/sofiia.oli?igsh=MTd0Zmdpd3hoeHdyMQ==" target="_blank">Instagram</a>
@@ -53,8 +53,8 @@ function showAbout() {
   </div>
 
   <div class="person">
-    <h3>Aleksandr</h3>
-    <p>Full stack разработчик и UX/UI дизайнер. Совмещает техническую точность с визуальной гармонией, создавая веб-продукты с душой.</p>
+    <h3>Aleksandr Markov</h3>
+    <p>Full-stack Developer & UX/UI Designer.</p>
     <div class="instagram">
         <img src="static/image/instagram.png">
         <a href="https://www.instagram.com/chesterlink95?igsh=MXZneWZ4aTRmbHp0bg==" target="_blank">Instagram</a>
