@@ -67,13 +67,26 @@ function showAbout() {
 function showInstructions() {
   document.getElementById("sidebarTitle").textContent = "Instructions";
   document.getElementById("sidebarContent").innerHTML = `
-        <ol>
-            <li>Create your speculative Cyborg - Avatar via the questionnaire</li>
-            <li>Select yours and other sub-identities to generate a dialogue.</li>
-            <li>Ask a common-sense question for them to discuss.</li>
-            <li>Enjoy the upcoming generation of thoughts</li>
-            <li>Give us a feedback!</li>
-        </ol>
+        <div class="instruction">
+            <h3>1. Create your speculative Cyborg - Avatar via the questionnaire</h3>
+            <img src="static/image/instruction1.webp" alt="Create Cyborg Avatar" class="instruction-image">
+        </div>
+        <div class="instruction">
+            <h3>2. Select yours and other sub-identities to generate a dialogue.</h3>
+            <img src="static/image/instruction2.webp" alt="Select sub-identities" class="instruction-image">
+        </div>
+        <div class="instruction">
+            <h3>3. Ask a common-sense question for them to discuss.</h3>
+            <img src="static/image/instruction3.webp" alt="Ask a question" class="instruction-image">
+        </div>
+        <div class="instruction">
+            <h3>4. Enjoy the upcoming generation of thoughts</h3>
+            <img src="static/image/instruction4.webp" alt="Enjoy generated thoughts" class="instruction-image">
+        </div>
+        <div class="instruction">
+            <h3>5. Give us a feedback!</h3>
+            <img src="static/image/instruction5.webp" alt="Give feedback" class="instruction-image">
+        </div>
     `;
   showSidebar();
 }

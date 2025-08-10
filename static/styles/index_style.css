@@ -146,6 +146,16 @@ body {
     color: rgba(255, 255, 255, 0.8);
 }
 
+.sidebar-content .instruction {
+    margin-bottom: 30px;
+}
+
+.sidebar-content .instruction-image {
+    width: 100%;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
 .sidebar-content .instagram {
   margin-top: 10px;
 }
