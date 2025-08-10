@@ -119,6 +119,21 @@ document.addEventListener("DOMContentLoaded", function () {
         "linear-gradient(135deg, #000428, #004e92)";
     });
   }
+
+  const createBtn = document.querySelector(".create-avater-button");
+  if (createBtn) {
+    createBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      document.body.classList.add("fade-out");
+      document.body.addEventListener(
+        "animationend",
+        function () {
+          window.location.href = "welcome.html";
+        },
+        { once: true }
+      );
+    });
+  }
 });
 
 // Performance optimization: Pause video when tab is not visible
