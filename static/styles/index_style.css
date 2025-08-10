@@ -150,6 +150,10 @@ body {
     margin-bottom: 30px;
 }
 
+.sidebar-content .instruction h3 {
+    text-align: left;
+}
+
 .sidebar-content .instruction-image {
     width: 100%;
     border-radius: 10px;
