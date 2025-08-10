@@ -73,7 +73,6 @@ function showInstructions() {
         </div>
         <div class="instruction">
             <h3>2. Select yours and other sub-identities to generate a dialogue.</h3>
-            <img src="static/image/instruction2.webp" alt="Select sub-identities" class="instruction-image">
         </div>
         <div class="instruction">
             <h3>3. Ask a common-sense question for them to discuss.</h3>
@@ -85,7 +84,6 @@ function showInstructions() {
         </div>
         <div class="instruction">
             <h3>5. Give us a feedback!</h3>
-            <img src="static/image/instruction5.webp" alt="Give feedback" class="instruction-image">
         </div>
     `;
   showSidebar();
