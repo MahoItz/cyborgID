@@ -281,11 +281,13 @@ body {
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
 }
 
 .create-avater-button {
-    margin-right: 10px;
+    margin: 0;
     padding: 14px 24px;
     background: linear-gradient(135deg, #34a7fa, #5ce9ff, #34a7fa);
     color: #000000;
@@ -311,7 +313,7 @@ body {
 
 /* Dialogue generation Button */
 .dialogue-button {
-    margin-right: 10px;
+    margin: 0;
     padding: 14px 24px;
     background: linear-gradient(135deg, #9734fa, #d8b1ff, #8000ff);
     color: #000000;
