@@ -36,6 +36,14 @@ function randomLetters(length) {
     return result;
 }
 
+// Helper to generate a random date string in yyyy-MM-dd format
+function randomDateString() {
+    const year = 1900 + Math.floor(Math.random() * 200); // 1900-2099
+    const month = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
+    const day = String(Math.floor(Math.random() * 28) + 1).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
 // Start showing random letters in all inputs
 function startShuffle() {
     const inputs = form.querySelectorAll('input');
@@ -46,7 +54,7 @@ function startShuffle() {
     shuffleInterval = setInterval(() => {
         inputs.forEach(input => {
             const len = input.type === 'date' ? 10 : 8;
-            input.value = randomLetters(len);
+            input.value = input.type === 'date' ? randomDateString() : randomLetters(len);
         });
     }, 100);
 }
