@@ -406,16 +406,6 @@ body {
     }
 }
 
-.fade-out {
-    animation: fadeOutPage 0.5s forwards;
-}
-
-@keyframes fadeOutPage {
-    to {
-        opacity: 0;
-    }
-}
-
 /* Loading Animation */
 .video-header::after {
     content: '';
