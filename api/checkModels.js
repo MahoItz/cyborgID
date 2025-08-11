@@ -14,25 +14,39 @@ export default async function handler(req, res) {
     "Qwen/Qwen2-VL-72B-Instruct",
   ];
 
+  const result = {};
+
   try {
-    const response = await fetch("https://api.together.xyz/v1/models", {
-      headers: { Authorization: `Bearer ${apiKey}` },
-    });
-    const data = await response.json();
-
-    if (!response.ok) {
-      return res.status(response.status).json(data);
-    }
-
-    // Collect available model ids
-    const available = new Set(
-      Array.isArray(data?.data) ? data.data.map((m) => m.id) : []
-    );
-
-    // Return availability for required models only
-    const result = {};
     for (const model of REQUIRED_MODELS) {
-      result[model] = available.has(model);
+      try {
+        const resp = await fetch(
+          "https://api.together.xyz/v1/chat/completions",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${apiKey}`,
+            },
+            body: JSON.stringify({
+              model,
+              messages: [{ role: "user", content: "ping" }],
+              max_tokens: 1,
+            }),
+          }
+        );
+
+        if (resp.ok) {
+          result[model] = { available: true };
+        } else {
+          const errData = await resp.json().catch(() => ({}));
+          result[model] = {
+            available: false,
+            error: errData?.error || resp.statusText,
+          };
+        }
+      } catch (err) {
+        result[model] = { available: false, error: err.message };
+      }
     }
 
     return res.status(200).json(result);
