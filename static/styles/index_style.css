@@ -254,7 +254,7 @@ body {
 /* Logo */
 .center-logo {
     position: absolute;
-    top: 68%;
+    top: 60%;
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
@@ -524,11 +524,11 @@ body {
     .video-header {
         height: 65vh;
     }
-    
+
     .center-logo {
-        top: 55%;
+        top: 65%;
     }
-    
+
     .center-logo h1 {
         font-size: 55px;
         line-height: 50px;
@@ -576,9 +576,9 @@ body {
     }
 
     .center-logo {
-        top: 45%;
-    }    
-    
+        top: 65%;
+    }
+
     .center-logo h1 {
         font-size: 45px;
         line-height: 40px;
@@ -622,13 +622,13 @@ body {
     }
 
     .video-header video {
-        margin-top: 72%;
+        margin-top: 45%;
         width: 100%;
         height: auto;
     }
-    
+
     .center-logo {
-        top: 15%;
+        top: 60%;
         width: 95%;
     }
     
@@ -713,9 +713,9 @@ body {
     .video-header {
         height: 85vh;
     }
-    
+
     .center-logo {
-        top: 45%;
+        top: 65%;
     }
     
     .center-logo h1 {
