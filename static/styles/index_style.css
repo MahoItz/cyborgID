@@ -254,7 +254,7 @@ body {
 /* Logo */
 .center-logo {
     position: absolute;
-    top: 50%;
+    top: 55%;
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
@@ -526,7 +526,7 @@ body {
     }
 
     .center-logo {
-        top: 50%;
+        top: 55%;
     }
 
     .center-logo h1 {
@@ -576,7 +576,7 @@ body {
     }
 
     .center-logo {
-        top: 50%;
+        top: 55%;
     }
 
     .center-logo h1 {
@@ -628,7 +628,7 @@ body {
     }
 
     .center-logo {
-        top: 50%;
+        top: 55%;
         width: 95%;
     }
     
@@ -715,7 +715,7 @@ body {
     }
 
     .center-logo {
-        top: 50%;
+        top: 55%;
     }
     
     .center-logo h1 {
