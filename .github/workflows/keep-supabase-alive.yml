@@ -2,7 +2,7 @@ name: keep-supabase-alive
 
 on:
   schedule:
-    - cron: '0 6,18 * * *'   # два раза в день (06:00 и 18:00 UTC)
+    - cron: '0 6 * * 1,4'
   workflow_dispatch:
 
 jobs:
