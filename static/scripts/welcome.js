@@ -3,8 +3,8 @@ const AI_PROVIDERS = {
   META_LLAMA: {
     name: "Meta Llama",
     models: {
-      autofill: "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
-      summary: "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
+      autofill: "meta-llama/llama-3.3-70b-instruct",
+      summary: "meta-llama/llama-3.3-70b-instruct"
     }
   },
   QWEN3: {
