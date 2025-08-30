@@ -123,7 +123,7 @@ class BotDialogGenerator {
     // Message limit input
     document.querySelectorAll('input[type="number"]').forEach((input) => {
       input.addEventListener("change", (e) => {
-        this.messageLimit = parseInt(e.target.value) || 2;
+        this.messageLimit = parseInt(e.target.value) || 20;
       });
     });
 
