@@ -195,14 +195,18 @@ async function callAIWithFallback(prompt, systemPrompt, taskType = 'autofill') {
           response.statusText,
           errorBody
         );
-        throw new Error(userFriendlyMessage);
+        const err = new Error(userFriendlyMessage);
+        err.provider = config.name;
+        throw err;
       }
 
       const data = await response.json();
       const content = data.choices?.[0]?.message?.content?.trim();
 
       if (!content) {
-        throw new Error(`${config.name} вернул пустой ответ. Попробуйте еще раз.`);
+        const err = new Error(`${config.name} вернул пустой ответ. Попробуйте еще раз.`);
+        err.provider = config.name;
+        throw err;
       }
 
       console.log(`✅ Success with ${config.name}`);
@@ -210,12 +214,13 @@ async function callAIWithFallback(prompt, systemPrompt, taskType = 'autofill') {
 
     } catch (error) {
       console.error(`❌ ${config.name} failed:`, error.message);
+      error.provider = error.provider || config.name;
       lastError = error;
       userFriendlyErrors.push(`${config.name}: ${error.message}`);
 
       if (i < providers.length - 1) {
         const nextProvider = providers[i + 1].config.name;
-        showMessage(`${error.message} Switching to ${nextProvider}...`, 'info');
+        showMessage(`${error.message} Switching to ${nextProvider}...`, 'info', config.name);
         await new Promise(resolve => setTimeout(resolve, 1000));
       }
     }
@@ -223,7 +228,9 @@ async function callAIWithFallback(prompt, systemPrompt, taskType = 'autofill') {
 
     // If we get here, all providers failed
     const combinedErrors = userFriendlyErrors.join('\n\n');
-    throw new Error(`All AI services are unavailable:\n\n${combinedErrors}\n\nPlease try again later or contact the administrator.`);
+    const finalError = new Error(`All AI services are unavailable:\n\n${combinedErrors}\n\nPlease try again later or contact the administrator.`);
+    finalError.provider = lastError?.provider;
+    throw finalError;
 }
 
 // AI Auto-fill functionality with fallback
@@ -281,7 +288,7 @@ async function autoFillForm() {
 
     } catch (error) {
         console.error('Auto-fill error:', error);
-        showMessage(`Auto-fill error: ${error.message}`, 'error');
+        showMessage(`Auto-fill error: ${error.message}`, 'error', error.provider);
         stopShuffle(true);
     } finally {
         setButtonState(autofillBtn, false, "Auto-fill with AI");
@@ -314,7 +321,9 @@ Candidate Profile:
         console.log(`Summary generated using ${result.provider}`);
         return { summary: result.content, provider: result.provider };
     } catch (error) {
-        throw new Error(`Failed to generate summary: ${error.message}`);
+        const err = new Error(`Failed to generate summary: ${error.message}`);
+        err.provider = error.provider;
+        throw err;
     }
 }
 
@@ -415,7 +424,7 @@ form.addEventListener("submit", async (e) => {
 
     } catch (error) {
         console.error('Submission error:', error);
-        showMessage(`Error: ${error.message}`, 'error');
+        showMessage(`Error: ${error.message}`, 'error', error.provider);
     } finally {
         setButtonState(submitBtn, false, "Submit Application");
     }
