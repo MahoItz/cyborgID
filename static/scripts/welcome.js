@@ -7,11 +7,11 @@ const AI_PROVIDERS = {
       summary: "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
     }
   },
-  QWEN2: {
-    name: "Qwen2",
+  QWEN3: {
+    name: "Qwen3",
     models: {
-      autofill: "Qwen/Qwen2-VL-72B-Instruct",
-      summary: "Qwen/Qwen2-VL-72B-Instruct"
+      autofill: "qwen/qwen3-30b-a3b-thinking-2507",
+      summary: "qwen/qwen3-30b-a3b-thinking-2507"
     }
   }
 };
@@ -157,8 +157,8 @@ async function callAIWithFallback(prompt, systemPrompt, taskType = 'autofill') {
       providerKey: "META_LLAMA",
     },
     {
-      config: AI_PROVIDERS.QWEN2,
-      providerKey: "QWEN2",
+      config: AI_PROVIDERS.QWEN3,
+      providerKey: "QWEN3",
     }
   ];
 

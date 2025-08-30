@@ -1028,7 +1028,7 @@ class BotDialogGenerator {
       throw new Error("Missing TogetherAI API key");
     }
     const providers = [
-      { provider: "QWEN2", name: "Qwen2" },
+      { provider: "QWEN3", name: "Qwen3" },
       { provider: "META_LLAMA", name: "Meta Llama" },
     ];
 

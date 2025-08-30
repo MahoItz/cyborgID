@@ -19,7 +19,7 @@ export default async function handler(req, res) {
         summary: "meta-llama/llama-3.3-70b-instruct",
       },
     },
-    QWEN2: {
+    QWEN3: {
       name: "Qwen3",
       url: "https://openrouter.ai/api/v1/chat/completions",
       headers: (apiKey) => ({
@@ -29,8 +29,8 @@ export default async function handler(req, res) {
         "X-Title": "Form Application",
       }),
       models: {
-        autofill: "qwen/qwen3-30b-a3b-thinking-2507",
-        summary: "qwen/qwen3-30b-a3b-thinking-2507",
+        autofill: "qwen/qwen3-30b-a3b-thinking-2507", // модель Qwen3
+        summary: "qwen/qwen3-30b-a3b-thinking-2507", // модель Qwen3
       },
     },
   };

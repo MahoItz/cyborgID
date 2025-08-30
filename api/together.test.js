@@ -20,7 +20,8 @@ function createRes() {
 }
 
 test('returns 500 when API key missing', async () => {
-  delete process.env.TOGETHER_API_KEY;
+  const originalKey = process.env.OPENROUTER_API_KEY;
+  delete process.env.OPENROUTER_API_KEY;
   global.fetch = () => {
     throw new Error('fetch should not be called');
   };
@@ -40,12 +41,13 @@ test('returns 500 when API key missing', async () => {
   await handler(req, res);
 
   assert.equal(res.statusCode, 500);
-  assert.deepEqual(res.jsonData, { error: 'Missing Together API key' });
+  assert.deepEqual(res.jsonData, { error: 'Missing OpenRouter API key' });
 
   global.fetch = originalFetch;
+  process.env.OPENROUTER_API_KEY = originalKey;
 });
 
-test('uses Referer header for QWEN2 provider', async () => {
+test('uses HTTP-Referer header for QWEN3 provider', async () => {
   let receivedHeaders;
   global.fetch = async (url, options) => {
     receivedHeaders = options.headers;
@@ -61,7 +63,7 @@ test('uses Referer header for QWEN2 provider', async () => {
       systemPrompt: 'sys',
       userPrompt: 'hi',
       temperature: 0.5,
-      provider: 'QWEN2',
+      provider: 'QWEN3',
       mode: 'autofill',
       apiKey: 'test',
     },
@@ -72,8 +74,8 @@ test('uses Referer header for QWEN2 provider', async () => {
   await handler(req, res);
 
   assert.equal(res.statusCode, 200);
-  assert.equal(receivedHeaders.Referer, 'https://example.com');
-  assert.ok(!('HTTP-Referer' in receivedHeaders));
+  assert.equal(receivedHeaders['HTTP-Referer'], 'https://example.com');
+  assert.ok(!('Referer' in receivedHeaders));
 
   global.fetch = originalFetch;
 });
