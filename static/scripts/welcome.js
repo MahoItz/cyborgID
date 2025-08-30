@@ -179,7 +179,7 @@ async function callAIWithFallback(prompt, systemPrompt, taskType = 'autofill') {
         mode: taskType,
       };
 
-      const response = await fetch("/api/together", {
+      const response = await fetch("/api/openrouter", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

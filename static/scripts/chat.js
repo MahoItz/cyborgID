@@ -21,8 +21,8 @@ class BotDialogGenerator {
       bot1: 0.7,
       bot2: 0.7,
     };
-    // Default to TogetherAI with a service key unless user saved another choice
-    this.selectedModel = "TogetherAI";
+    // Default to OpenRouter with a service key unless user saved another choice
+    this.selectedModel = "OpenRouter";
     const stored = localStorage.getItem("useServiceKey");
     this.useServiceKey = stored === null ? true : stored === "true";
 
@@ -332,12 +332,12 @@ class BotDialogGenerator {
                         <button class="toggle-key" data-target="openai">👁️</button>
                     </div>
                     <div class="input-group">
-                        <label>Together AI:</label>
-                        <input type="password" class="togetherai-key" placeholder="...">
-                        <button class="clear-key" data-key="togetherai">
+                        <label>OpenRouter:</label>
+                        <input type="password" class="openrouter-key" placeholder="...">
+                        <button class="clear-key" data-key="openrouter">
                             <img src="static/image/clear.png" alt="Delete">
                         </button>
-                        <button class="toggle-key" data-target="togetherai">👁️</button>
+                        <button class="toggle-key" data-target="openrouter">👁️</button>
                     </div>
                     <div class="input-group">
                         <label>Gemini AI:</label>
@@ -396,7 +396,7 @@ class BotDialogGenerator {
         ?.addEventListener("click", () => {
           this.useServiceKey = true;
           localStorage.setItem("useServiceKey", "true");
-          this.logMessage("Using service TogetherAI key", "info");
+          this.logMessage("Using service OpenRouter key", "info");
           this.updateModelInfo();
         });
 
@@ -486,8 +486,8 @@ class BotDialogGenerator {
   saveApiKeys() {
     this.apiKeys.openai =
       document.querySelector(".openai-key")?.value.trim() || "";
-    this.apiKeys.togetherai =
-      document.querySelector(".togetherai-key")?.value.trim() || "";
+    this.apiKeys.openrouter =
+      document.querySelector(".openrouter-key")?.value.trim() || "";
     this.apiKeys.google =
       document.querySelector(".google-key")?.value.trim() || "";
 
@@ -495,7 +495,7 @@ class BotDialogGenerator {
     localStorage.setItem("useServiceKey", "false");
 
     localStorage.setItem("openaiKey", this.apiKeys.openai);
-    localStorage.setItem("togetheraiKey", this.apiKeys.togetherai);
+    localStorage.setItem("openrouterKey", this.apiKeys.openrouter);
     localStorage.setItem("googleKey", this.apiKeys.google);
 
     this.logMessage("API keys saved successfully", "success");
@@ -505,7 +505,7 @@ class BotDialogGenerator {
 
   loadApiKeys() {
     const openai = localStorage.getItem("openaiKey") || "";
-    const together = localStorage.getItem("togetheraiKey") || "";
+    const openrouter = localStorage.getItem("openrouterKey") || "";
     const google = localStorage.getItem("googleKey") || "";
     const stored = localStorage.getItem("useServiceKey");
     this.useServiceKey = stored === null ? true : stored === "true";
@@ -515,10 +515,10 @@ class BotDialogGenerator {
       const input = document.querySelector(".openai-key");
       if (input) input.value = openai;
     }
-    if (together) {
-      this.apiKeys.togetherai = together;
-      const input = document.querySelector(".togetherai-key");
-      if (input) input.value = together;
+    if (openrouter) {
+      this.apiKeys.openrouter = openrouter;
+      const input = document.querySelector(".openrouter-key");
+      if (input) input.value = openrouter;
     }
     if (google) {
       this.apiKeys.google = google;
@@ -556,8 +556,8 @@ class BotDialogGenerator {
   updateApiKeysFromInputs() {
     const o = document.querySelector(".openai-key");
     if (o) this.apiKeys.openai = o.value.trim();
-    const t = document.querySelector(".togetherai-key");
-    if (t) this.apiKeys.togetherai = t.value.trim();
+    const r = document.querySelector(".openrouter-key");
+    if (r) this.apiKeys.openrouter = r.value.trim();
     const g = document.querySelector(".google-key");
     if (g) this.apiKeys.google = g.value.trim();
   }
@@ -591,7 +591,7 @@ class BotDialogGenerator {
       }
 
       if (!this.validateApiKeys()) {
-        this.logMessage("Please select the model and configure the API key or select the Together AI model and use the Service Key in the API KEYS menu", "error");
+        this.logMessage("Please select the model and configure the API key or select the OpenRouter model and use the Service Key in the API KEYS menu", "error");
         return;
       }
 
@@ -607,7 +607,7 @@ class BotDialogGenerator {
     }
 
     if (!this.validateApiKeys()) {
-      this.logMessage("Please select the model and configure the API key or select the Together AI model and use the Service Key in the API KEYS menu", "error");
+      this.logMessage("Please select the model and configure the API key or select the OpenRouter model and use the Service Key in the API KEYS menu", "error");
       return;
     }
 
@@ -984,8 +984,8 @@ class BotDialogGenerator {
     const temperature = this.temperatures[`bot${botNumber}`];
 
     switch (this.selectedModel) {
-      case "TogetherAI":
-        return await this.callTogetherAI(systemPrompt, userPrompt, temperature);
+      case "OpenRouter":
+        return await this.callOpenRouter(systemPrompt, userPrompt, temperature);
       case "GPT-4":
         return await this.callOpenAI(systemPrompt, userPrompt, temperature);
       case "Gemini":
@@ -1022,10 +1022,10 @@ class BotDialogGenerator {
     return data.choices[0].message.content;
   }
 
-  async callTogetherAI(systemPrompt, userPrompt, temperature) {
-    if (!this.useServiceKey && !this.apiKeys.togetherai) {
+  async callOpenRouter(systemPrompt, userPrompt, temperature) {
+    if (!this.useServiceKey && !this.apiKeys.openrouter) {
       this.logMessage("Please provide an API key or use a Service Key in the API KEYS menu", "error");
-      throw new Error("Missing TogetherAI API key");
+      throw new Error("Missing OpenRouter API key");
     }
     const providers = [
       { provider: "QWEN3", name: "Qwen3" },
@@ -1038,7 +1038,7 @@ class BotDialogGenerator {
       try {
         console.log(`🧠 Trying ${name}...`);
 
-        const response = await fetch("/api/together", {
+        const response = await fetch("/api/openrouter", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -1049,7 +1049,7 @@ class BotDialogGenerator {
             temperature,
             provider,
             mode: "autofill",
-            apiKey: this.useServiceKey ? undefined : this.apiKeys.togetherai,
+            apiKey: this.useServiceKey ? undefined : this.apiKeys.openrouter,
           }),
         });
 
@@ -1074,7 +1074,7 @@ class BotDialogGenerator {
     }
 
     throw new Error(
-      `❌ Обе модели TogetherAI не ответили: ${lastError.message}`
+      `❌ Обе модели OpenRouter не ответили: ${lastError.message}`
     );
   }
 
@@ -1226,7 +1226,7 @@ class BotDialogGenerator {
 
   validateApiKeys() {
     switch (this.selectedModel) {
-      case "TogetherAI":
+      case "OpenRouter":
         return true;
       case "GPT-4":
         return this.apiKeys.openai.length > 0;
@@ -1371,11 +1371,11 @@ class BotDialogGenerator {
 
     if (model === "GPT-4") {
       key = this.apiKeys.openai;
-    } else if (model === "TogetherAI") {
+    } else if (model === "OpenRouter") {
       if (this.useServiceKey) {
-        keyText = "Srvice Key";
+        keyText = "Service Key";
       } else {
-        key = this.apiKeys.togetherai;
+        key = this.apiKeys.openrouter;
       }
     } else if (model === "Gemini") {
       key = this.apiKeys.google;

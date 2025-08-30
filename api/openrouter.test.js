@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import handler from './together.js';
+import handler from './openrouter.js';
 
 const originalFetch = global.fetch;
 
