@@ -77,9 +77,13 @@ function stopShuffle(restore = true) {
 }
 
 // Utility Functions
-function showMessage(text, type = 'info') {
-    message.textContent = text;
+function showMessage(text, type = 'info', model = '') {
+    const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+    const icon = icons[type] || '';
     message.className = `message-${type}`;
+    const modelHtml = model ? `<div class="message-model">${model}</div>` : '';
+    const contentHtml = `<div class="message-box">${icon} ${text.replace(/\n/g, '<br>')}</div>`;
+    message.innerHTML = modelHtml + contentHtml;
 }
 
 function setButtonState(button, disabled, text) {
@@ -272,12 +276,12 @@ async function autoFillForm() {
         });
 
         stopShuffle(false);
-        showMessage(`✅ Form auto-filled successfully using ${result.provider}! You can modify any fields before submitting.`, 'success');
+        showMessage(`Form auto-filled successfully! You can modify any fields before submitting.`, 'success', result.provider);
         console.log("AI generated data:", jsonData);
 
     } catch (error) {
         console.error('Auto-fill error:', error);
-        showMessage(`❌ Auto-fill error: ${error.message}`, 'error');
+        showMessage(`Auto-fill error: ${error.message}`, 'error');
         stopShuffle(true);
     } finally {
         setButtonState(autofillBtn, false, "Auto-fill with AI");
@@ -308,7 +312,7 @@ Candidate Profile:
     try {
         const result = await callAIWithFallback(userPrompt, systemPrompt, 'summary');
         console.log(`Summary generated using ${result.provider}`);
-        return result.content;
+        return { summary: result.content, provider: result.provider };
     } catch (error) {
         throw new Error(`Failed to generate summary: ${error.message}`);
     }
@@ -398,7 +402,7 @@ form.addEventListener("submit", async (e) => {
         showMessage("Generating summary...", 'info');
 
         // Generate AI summary
-        const summary = await generateSummary(formData);
+        const { summary, provider } = await generateSummary(formData);
 
         showMessage("Submitting to database...", 'info');
 
@@ -406,12 +410,12 @@ form.addEventListener("submit", async (e) => {
         await submitToSupabase(formData.get("system_name"), summary);
 
         // Success
-        showMessage(`✅ Application submitted successfully!\n\nGenerated Summary:\n${summary}`, 'success');
+        showMessage(`Application submitted successfully!\n\nGenerated Summary:\n${summary}`, 'success', provider);
         form.reset();
 
     } catch (error) {
         console.error('Submission error:', error);
-        showMessage(`❌ Error: ${error.message}`, 'error');
+        showMessage(`Error: ${error.message}`, 'error');
     } finally {
         setButtonState(submitBtn, false, "Submit Application");
     }
