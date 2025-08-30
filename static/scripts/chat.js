@@ -355,11 +355,11 @@ class BotDialogGenerator {
         content.innerHTML = `
                 <div class="creativity-controls">
                     <div class="slider-group">
-                        <label>Bot 1 Temperature: <span id="temp1-value">0.7</span></label>
+                        <label>User 1 Temperature: <span id="temp1-value">0.7</span></label>
                         <input type="range" id="temp1-slider" min="0" max="2" step="0.1" value="0.7">
                     </div>
                     <div class="slider-group">
-                        <label>Bot 2 Temperature: <span id="temp2-value">0.7</span></label>
+                        <label>User 2 Temperature: <span id="temp2-value">0.7</span></label>
                         <input type="range" id="temp2-slider" min="0" max="2" step="0.1" value="0.7">
                     </div>
                 </div>
