@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-  const { systemPrompt, userPrompt, temperature, provider, mode, apiKey } = req.body;
+  const { systemPrompt, userPrompt, temperature, provider, mode, apiKey, top_p, seed } = req.body;
 
   const OPENROUTER_API_KEY = apiKey || process.env.OPENROUTER_API_KEY;
 
@@ -62,7 +62,9 @@ export default async function handler(req, res) {
           },
           { role: "user", content: userPrompt },
         ],
-        temperature: temperature,
+        temperature,
+        top_p,
+        seed,
         max_tokens: 500,
       }),
     });
