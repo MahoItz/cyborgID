@@ -2,7 +2,7 @@ class BotDialogGenerator {
   constructor() {
     this.isGenerating = false;
     this.isPaused = false;
-    this.messageLimit = 20;
+    this.messageLimit = 2;
     this.users = [];
     this.currentBatchCount = 0; // Количество сообщений в текущей пачке генерации
     this.generatedMessages = []; // Сгенерированные сообщения
@@ -123,7 +123,7 @@ class BotDialogGenerator {
     // Message limit input
     document.querySelectorAll('input[type="number"]').forEach((input) => {
       input.addEventListener("change", (e) => {
-        this.messageLimit = parseInt(e.target.value) || 20;
+        this.messageLimit = parseInt(e.target.value) || 2;
       });
     });
 
