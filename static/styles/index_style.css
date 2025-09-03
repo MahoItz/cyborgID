@@ -292,7 +292,7 @@ body {
 /* Buttons */
 .buttons {
     position: absolute;
-    bottom: 15%;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -540,7 +540,7 @@ body {
     }
     
     .buttons {
-        bottom: 10%;
+        bottom: 20px;
         flex-direction: column;
         gap: 15px;
         width: 90%;
@@ -590,7 +590,7 @@ body {
     }
     
     .buttons {
-        bottom: 8%;
+        bottom: 20px;
         width: 95%;
         gap: 12px;
     }
@@ -643,7 +643,7 @@ body {
     }
     
     .buttons {
-        bottom: 20%;
+        bottom: 20px;
         width: 95%;
         gap: 10px;
     }
@@ -729,7 +729,7 @@ body {
     }
     
     .buttons {
-        bottom: 3%;
+        bottom: 20px;
         flex-direction: row;
         gap: 10px;
     }
@@ -749,7 +749,7 @@ body {
     }
     
     .buttons {
-        bottom: 12%;
+        bottom: 20px;
     }
 }
 
