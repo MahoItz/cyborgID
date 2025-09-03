@@ -565,6 +565,15 @@ class BotDialogGenerator {
   async startDialog() {
     this.updateApiKeysFromInputs();
     this.updateModelInfo();
+
+    // Automatically open fullscreen mode when starting a dialog
+    const fullscreenDialogue = document.getElementById("fullscreen-dialogue");
+    if (fullscreenDialogue && !fullscreenDialogue.classList.contains("active")) {
+      fullscreenDialogue.classList.add("active");
+      if (!this.vantaEffect) {
+        this.initVantaBackground();
+      }
+    }
     if (this.isGenerating && !this.isPaused) {
       this.logMessage("Dialog is already in progress", "warning");
       return;
@@ -1153,6 +1162,22 @@ class BotDialogGenerator {
       dialogArea.appendChild(thinkingDiv);
       dialogArea.scrollTop = dialogArea.scrollHeight;
     });
+
+    const fsContainer = document.getElementById("fullscreen-messages");
+    if (fsContainer) {
+      const fsDiv = document.createElement("div");
+      fsDiv.className = `fullscreen-message bubble ${
+        botNumber === 1 ? "left" : "right"
+      } thinking-indicator`;
+      fsDiv.innerHTML = `
+        <div class="bubble-text thinking-content">
+          <span class="thinking-text">Thinking</span>
+          <span class="thinking-dots"><span>.</span><span>.</span><span>.</span></span>
+        </div>
+      `;
+      fsContainer.appendChild(fsDiv);
+      fsContainer.scrollTop = fsContainer.scrollHeight;
+    }
   }
 
   removeThinkingIndicator() {
@@ -1167,29 +1192,27 @@ class BotDialogGenerator {
     );
     if (dialogAreas.length === 0) return;
 
-    const messageHTML = (() => {
-      let senderLabel = "";
-      const timeStamp = new Date().toLocaleTimeString();
-      let headerContent = "";
+    const timeStamp = new Date().toLocaleTimeString();
+    let senderLabel = "";
+    let headerContent = "";
 
-      if (sender === "user") {
-        senderLabel = "Initial Prompt";
-        headerContent = `<strong>${senderLabel}</strong><span class="message-time">${timeStamp}</span>`;
-      } else if (sender === "bot1") {
-        senderLabel = this.getBotName(1);
-        headerContent = `<strong>${senderLabel}</strong><span class="message-time">${timeStamp}</span>`;
-      } else if (sender === "bot2") {
-        senderLabel = this.getBotName(2);
-        headerContent = `<span class="message-time">${timeStamp}</span><strong>${senderLabel}</strong>`;
-      }
+    if (sender === "user") {
+      senderLabel = "Initial Prompt";
+      headerContent = `<strong>${senderLabel}</strong><span class="message-time">${timeStamp}</span>`;
+    } else if (sender === "bot1") {
+      senderLabel = this.getBotName(1);
+      headerContent = `<strong>${senderLabel}</strong><span class="message-time">${timeStamp}</span>`;
+    } else if (sender === "bot2") {
+      senderLabel = this.getBotName(2);
+      headerContent = `<span class="message-time">${timeStamp}</span><strong>${senderLabel}</strong>`;
+    }
 
-      return `
+    const messageHTML = `
             <div class="message-header">
                 ${headerContent}
             </div>
             <div class="message-content">${message}</div>
         `;
-    })();
 
     dialogAreas.forEach((area) => {
       const messageDiv = document.createElement("div");
@@ -1198,6 +1221,31 @@ class BotDialogGenerator {
       area.appendChild(messageDiv);
       area.scrollTop = area.scrollHeight;
     });
+
+    const fsContainer = document.getElementById("fullscreen-messages");
+    if (fsContainer) {
+      const fsDiv = document.createElement("div");
+      if (sender === "user") {
+        fsDiv.className = "fullscreen-message bubble center";
+        fsDiv.innerHTML = `<div class="bubble-text"><b>Initial Prompt:</b> ${message}</div>`;
+      } else {
+        const isLeft = sender === "bot1";
+        fsDiv.className = `fullscreen-message bubble ${isLeft ? "left" : "right"}`;
+        fsDiv.innerHTML = `
+          <div class="bubble-text">
+            <div class="fullscreen-message-header">${
+              isLeft
+                ? `<strong>${senderLabel}</strong><span class="message-time">${timeStamp}</span>`
+                : `<span class="message-time">${timeStamp}</span><strong>${senderLabel}</strong>`
+            }</div>
+            ${message}
+          </div>
+        `;
+      }
+      fsContainer.appendChild(fsDiv);
+      fsContainer.scrollTop = fsContainer.scrollHeight;
+    }
+
     const name =
       sender === "bot1"
         ? this.getBotName(1)
@@ -1310,6 +1358,8 @@ class BotDialogGenerator {
       const messages = area.querySelectorAll(".message");
       messages.forEach((msg) => msg.remove());
     });
+    const fsContainer = document.getElementById("fullscreen-messages");
+    if (fsContainer) fsContainer.innerHTML = "";
   }
 
   clearLogs() {
