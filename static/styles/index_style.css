@@ -254,12 +254,11 @@ body {
 /* Logo */
 .center-logo {
     position: absolute;
-    bottom: 10%;
+    bottom: 0;
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
     z-index: 10;
-    padding: 20px;
     opacity: 0;
     animation: logoReveal 1.2s ease-out forwards;
 }
@@ -366,11 +365,11 @@ body {
 @keyframes logoReveal {
     from {
         opacity: 0;
-        transform: translate(-50%, -60%);
+        transform: translate(-50%, -70%);
     }
     to {
         opacity: 1;
-        transform: translate(-50%, -50%);
+        transform: translate(-50%, -40%);
     }
 }
 
