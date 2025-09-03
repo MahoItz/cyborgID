@@ -103,7 +103,7 @@ class BotDialogGenerator {
 
     document
       .getElementById("menu-play")
-      ?.addEventListener("click", () => this.toggleReplay());
+      ?.addEventListener("click", () => this.togglePause());
 
     document
       .getElementById("delay-slider")
@@ -622,6 +622,7 @@ class BotDialogGenerator {
 
     this.isGenerating = true;
     this.isPaused = false;
+    this.updatePauseButtons();
 
     try {
       await this.generateDialog();
@@ -1311,6 +1312,13 @@ class BotDialogGenerator {
     pauseButtons.forEach((btn) => {
       btn.textContent = this.isPaused ? "Resume" : "Pause";
     });
+
+    const menuPlayBtn = document.getElementById("menu-play");
+    if (menuPlayBtn) {
+      menuPlayBtn.innerHTML = this.isPaused
+        ? '<img src="static/image/play.png" alt="Play">'
+        : '<img src="static/image/pause.png" alt="Pause">';
+    }
   }
 
   clearDialog() {
