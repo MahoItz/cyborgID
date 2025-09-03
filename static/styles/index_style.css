@@ -254,12 +254,13 @@ body {
 /* Logo */
 .center-logo {
     position: absolute;
-    bottom: 15%;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
     text-align: center;
     z-index: 10;
-    animation: fadeInDown 2s ease-out;
+    opacity: 0;
+    animation: logoFadeIn 1.5s ease-out forwards;
 }
 
 .center-logo h1 {
@@ -361,10 +362,10 @@ body {
 }
 
 /* Animations */
-@keyframes fadeInDown {
+@keyframes logoFadeIn {
     from {
         opacity: 0;
-        transform: translate(-50%, -80%);
+        transform: translate(-50%, -60%);
     }
     to {
         opacity: 1;
@@ -525,9 +526,6 @@ body {
         height: 65vh;
     }
 
-    .center-logo {
-        bottom: 15%;
-    }
     
     .center-logo h1 {
         font-size: 55px;
@@ -575,9 +573,6 @@ body {
         height: 50vh;
     }
 
-    .center-logo {
-        bottom: 20%;
-    }
     
     .center-logo h1 {
         font-size: 45px;
@@ -628,7 +623,6 @@ body {
     }
     
     .center-logo {
-        bottom: 10%;
         width: 95%;
     }
     
@@ -714,9 +708,6 @@ body {
         height: 85vh;
     }
 
-    .center-logo {
-        bottom: 12%;
-    }
     
     .center-logo h1 {
         font-size: 30px;
