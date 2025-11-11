@@ -36,7 +36,9 @@ function showAbout() {
   document.getElementById("sidebarContent").innerHTML = ` 
   <div class="person">
     <h3>Evgenia van Zonneveld</h3>
-    <p>Creative Direction</p>
+    <p>Evgeniia van Zonneveld is a multidisciplinary artist based in the Netherlands.
+Her practice spans installation, sculpture, and performance by using attributes of transformative materials such as clay, glass, metal, electronics etc. She explores the boundaries between human and non-human forms, the body and technology and reflects on the female body as a site of creation and conflict, shaped by biology, social costructs, and personal experience.
+Her work was exhibited across Belgium, France, Germany, Netherlands and Finland.</p>
     <div class="instagram">
         <img src="static/image/instagram.png">
         <a href="https://www.instagram.com/readheadthoughts?igsh=MXYzaTh3OTM5OHFraQ==" target="_blank">Instagram</a>
@@ -45,7 +47,8 @@ function showAbout() {
 
   <div class="person">
     <h3>Sofia Oleynik</h3>
-    <p>UX/UI Web designer</p>
+    <p>Sofiia Oliinyk is a graphic designer based in the Netherlands.
+Her practice delves into the visual exploration of human identity, going beyond appearance to reveal the layers of emotion, experience, and individuality that shape a person. Through graphic language, typography, and visual storytelling, she seeks to capture the essence of inner worlds and personal narratives behind the surface.</p>
     <div class="instagram">
         <img src="static/image/instagram.png">
         <a href="https://www.instagram.com/sofiia.oli?igsh=MTd0Zmdpd3hoeHdyMQ==" target="_blank">Instagram</a>
@@ -54,7 +57,8 @@ function showAbout() {
 
   <div class="person">
     <h3>Aleksandr Markov</h3>
-    <p>Full-stack Developer & UX/UI Designer.</p>
+    <p>Aleksandr Markov is a digital media artist and creative technologist based in Russia.
+He works at the intersection of code and visual expression, creating experimental pieces that explore how algorithms, emerging technologies, and artificial intelligence are reshaping human perception and way of communication. Through interactive installations, generative art, and digital experiments, he investigates the invisible systems that mediate our reality, from the way we process information to how we find connections in an increasingly computational world.</p>
     <div class="instagram">
         <img src="static/image/instagram.png">
         <a href="https://www.instagram.com/chesterlink95?igsh=MXZneWZ4aTRmbHp0bg==" target="_blank">Instagram</a>
