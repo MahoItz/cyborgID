@@ -174,7 +174,9 @@ async function callAIWithFallback(prompt, systemPrompt, taskType = 'autofill') {
       const requestBody = {
         systemPrompt: systemPrompt,
         userPrompt: prompt,
-        temperature: taskType === 'autofill' ? 0.7 : 0.4,
+        temperature: taskType === 'autofill' ? 1.3 : 1.1,
+        top_p: 0.9,
+        seed: Math.floor(Math.random() * 1000000),
         provider: providerKey,
         mode: taskType,
       };
